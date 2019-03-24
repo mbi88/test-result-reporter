@@ -11,3 +11,17 @@ CREATE TABLE public.users
 );
 
 CREATE UNIQUE INDEX users_id_uindex ON public.users (id);
+
+CREATE SEQUENCE test_run_id_seq START 1;
+
+CREATE TABLE public.test_runs
+(
+    id int DEFAULT NEXTVAL('test_run_id_seq') PRIMARY KEY NOT NULL,
+    name text NOT NULL,
+    run_result json,
+    created_at timestamp,
+    updated_at timestamp
+);
+
+CREATE UNIQUE INDEX test_run_id_uindex ON public.users (id);
+
