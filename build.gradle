@@ -1,75 +1,35 @@
 buildscript {
     repositories {
-        jcenter()
-    }
-    dependencies {
-        classpath 'com.palantir:jacoco-coverage:0.4.0'
-    }
-}
-
-plugins {
-    id 'ru.vyarus.quality' version '3.3.0'
-}
-
-allprojects {
-    apply plugin: 'ru.vyarus.quality'
-    apply plugin: 'java'
-    apply plugin: 'com.palantir.jacoco-coverage'
-    apply plugin: 'com.palantir.jacoco-full-report'
-
-    repositories {
         mavenCentral()
-        jcenter()
-        maven { url "https://jitpack.io" }
     }
-
     dependencies {
-        implementation group: 'org.testng', name: 'testng', version: '6.14.3'
-        implementation group: 'org.json', name: 'json', version: '20180130'
-        implementation group: 'io.rest-assured', name: 'rest-assured', version: '3.3.0'
-    }
-
-    task sourcesJar(type: Jar, dependsOn: classes) {
-        classifier = 'sources'
-        from sourceSets.main.allSource
-    }
-
-    task javadocJar(type: Jar, dependsOn: javadoc) {
-        classifier = 'javadoc'
-        from javadoc.destinationDir
-    }
-
-    artifacts {
-        archives sourcesJar
-        archives javadocJar
+        classpath("org.springframework.boot:spring-boot-gradle-plugin:2.1.3.RELEASE")
     }
 }
 
-subprojects {
-    test {
-        useTestNG() {
-            testLogging {
-                events "passed", "skipped", "failed"
-                exceptionFormat = 'full'
-                showStandardStreams = false
-            }
+apply plugin: 'java'
+apply plugin: 'org.springframework.boot'
+apply plugin: 'io.spring.dependency-management'
 
-            options {
-                setParallel('classes')
-                setThreadCount(10)
-            }
-        }
-    }
-
-    quality {
-        checkstyle = true
-        pmd = true
-        findbugs = true
-        codenarc = true
-        spotbugs = true
-    }
+bootJar {
+    baseName = 'test-result-reporter-api'
+    version = '1.0'
 }
 
-tasks.jacocoFullReport.dependsOn subprojects.collect { it.tasks.test }
+repositories {
+    mavenCentral()
+}
 
-wrapper.gradleVersion = '5.2.1'
+dependencies {
+    compile group: "org.springframework.boot", name: "spring-boot-starter-web"
+    compile group: "org.springframework.boot", name: "spring-boot-starter-actuator"
+    compile group: 'org.springframework.boot', name: 'spring-boot-starter-data-jpa'
+    testCompile group: "org.springframework.boot", name: "spring-boot-starter-test"
+    compile group: 'io.springfox', name: 'springfox-swagger-ui', version: '2.9.2'
+    compile group: 'io.springfox', name: 'springfox-swagger2', version: '2.9.2'
+    testCompile group: 'com.jayway.jsonpath', name: 'json-path'
+    compile group: 'org.postgresql', name: 'postgresql'
+    compile group: 'org.json', name: 'json', version: '20180813'
+    compile group: 'org.modelmapper', name: 'modelmapper', version: '2.3.2'
+    compile group: 'com.vladmihalcea', name: 'hibernate-types-52', version: '2.4.2'
+}

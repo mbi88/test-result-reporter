@@ -1,8 +1,11 @@
-# idea
+# Idea
 .idea/
 *.iml
 
-# gradle
+# Gradle
 .gradle/
 out/
 build/
+
+# Env vars
+.env
