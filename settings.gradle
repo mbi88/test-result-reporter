@@ -1,0 +1,3 @@
+rootProject.name = 'test-result-reporter'
+include('parser', 'reporter')
+
