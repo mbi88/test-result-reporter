@@ -9,12 +9,15 @@ import springfox.documentation.spi.DocumentationType;
 import springfox.documentation.spring.web.plugins.Docket;
 import springfox.documentation.swagger2.annotations.EnableSwagger2;
 
+/**
+ * Application.
+ */
 @SpringBootApplication
 @EnableSwagger2
 public class Application {
 
-    public static void main(String[] args) {
-        SpringApplication application = new SpringApplication(Application.class);
+    public static void main(final String[] args) {
+        final var application = new SpringApplication(Application.class);
         application.setDefaultProperties(new AppConfig().getProperties());
         application.run(args);
     }

@@ -1,5 +1,7 @@
 package com.mbi.api.controllers;
 
+import com.mbi.api.exceptions.AlreadyExistsException;
+import com.mbi.api.exceptions.BadRequestException;
 import com.mbi.api.exceptions.NotFoundException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -9,6 +11,9 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import java.sql.Timestamp;
 
+/**
+ * Exception controller advice.
+ */
 @ControllerAdvice
 public class ExceptionControllerAdvice {
 
@@ -17,46 +22,71 @@ public class ExceptionControllerAdvice {
     public ResponseEntity<ErrorResponse> handleNotFoundException(final NotFoundException ex) {
         return new ResponseEntity<>(
                 new ErrorResponse(HttpStatus.NOT_FOUND.value(),
-                        ex.getError(),
-                        ex.getException(),
-                        ex.getMessage(),
-                        new Timestamp(System.currentTimeMillis())),
+                        ex.getMessage(), ex.getError(),
+                        new Timestamp(System.currentTimeMillis()), ex.getException()
+                ),
                 HttpStatus.NOT_FOUND);
     }
 
-    private class ErrorResponse {
-        private final int status;
-        private final String error;
-        private final String exception;
-        private final String message;
-        private final Timestamp timestamp;
+    @ExceptionHandler(AlreadyExistsException.class)
+    @ResponseBody
+    public ResponseEntity<ErrorResponse> handleAlreadyExistsException(final AlreadyExistsException ex) {
+        return new ResponseEntity<>(
+                new ErrorResponse(HttpStatus.CONFLICT.value(),
+                        ex.getMessage(), ex.getError(),
+                        new Timestamp(System.currentTimeMillis()), ex.getException()
+                ),
+                HttpStatus.CONFLICT);
+    }
 
-        private ErrorResponse(int status, String error, String exception, String message, Timestamp timestamp) {
+    @ExceptionHandler(BadRequestException.class)
+    @ResponseBody
+    public ResponseEntity<ErrorResponse> handleBadRequestException(final BadRequestException ex) {
+        return new ResponseEntity<>(
+                new ErrorResponse(HttpStatus.BAD_REQUEST.value(),
+                        ex.getMessage(), ex.getError(),
+                        new Timestamp(System.currentTimeMillis()), ex.getException()
+                ),
+                HttpStatus.BAD_REQUEST);
+    }
+
+    /**
+     * Error response pojo.
+     */
+    private static final class ErrorResponse {
+        private final int status;
+        private final String message;
+        private final String error;
+        private final Timestamp timestamp;
+        private final String exception;
+
+        private ErrorResponse(final int status, final String message, final String error, final Timestamp timestamp,
+                              final String exception) {
             this.status = status;
-            this.error = error;
-            this.exception = exception;
             this.message = message;
+            this.error = error;
             this.timestamp = timestamp;
+            this.exception = exception;
         }
 
         public int getStatus() {
             return status;
         }
 
-        public String getError() {
-            return error;
-        }
-
-        public String getException() {
-            return exception;
-        }
-
         public String getMessage() {
             return message;
         }
 
+        public String getError() {
+            return error;
+        }
+
         public Timestamp getTimestamp() {
             return timestamp;
+        }
+
+        public String getException() {
+            return exception;
         }
     }
 }

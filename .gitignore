@@ -9,3 +9,6 @@ build/
 
 # Env vars
 .env
+
+# Postgres
+postgres-data

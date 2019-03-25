@@ -1,18 +1,18 @@
 package com.mbi.api.entities.health;
 
+/**
+ * Health entity.
+ */
 public class HealthEntity {
 
     private String status;
     private String version;
 
-    public HealthEntity() {
-    }
-
     public String getStatus() {
         return status;
     }
 
-    public void setStatus(String status) {
+    public void setStatus(final String status) {
         this.status = status;
     }
 
@@ -20,7 +20,7 @@ public class HealthEntity {
         return version;
     }
 
-    public void setVersion(String version) {
+    public void setVersion(final String version) {
         this.version = version;
     }
 }
