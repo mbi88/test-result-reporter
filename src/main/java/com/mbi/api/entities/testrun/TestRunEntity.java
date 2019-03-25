@@ -1,16 +1,14 @@
 package com.mbi.api.entities.testrun;
 
-import com.vladmihalcea.hibernate.type.json.JsonBinaryType;
-import org.hibernate.annotations.*;
+import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.UpdateTimestamp;
 
 import javax.persistence.*;
-import javax.persistence.Entity;
-import javax.persistence.Table;
 import java.util.Date;
+import java.util.Set;
 
 @Entity
 @Table(name = "test_runs")
-@TypeDefs({@TypeDef(name = "jsonb", typeClass = JsonBinaryType.class)})
 @SequenceGenerator(name = "test_run_id_seq", sequenceName = "test_run_id_seq", allocationSize = 1)
 public class TestRunEntity {
 
@@ -18,15 +16,22 @@ public class TestRunEntity {
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "test_run_id_seq")
     private Long id;
 
-    private String name;
+    private String total;
 
-    @Type(type = "jsonb")
-    @Column(columnDefinition = "jsonb")
-    private RunResultEntity runResult;
+    private String passed;
+
+    private String failed;
+
+    private String skipped;
+
+    private String ignored;
+
+    @OneToMany(mappedBy = "testRunEntity", fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+    private Set<SuiteEntity> suites;
 
     @CreationTimestamp
     @Temporal(TemporalType.TIMESTAMP)
-    @Column(nullable = false, updatable=false)
+    @Column(nullable = false, updatable = false)
     private Date createdAt;
 
     @UpdateTimestamp
@@ -44,20 +49,44 @@ public class TestRunEntity {
         this.id = id;
     }
 
-    public String getName() {
-        return name;
+    public String getTotal() {
+        return total;
     }
 
-    public void setName(String name) {
-        this.name = name;
+    public void setTotal(String total) {
+        this.total = total;
     }
 
-    public RunResultEntity getRunResult() {
-        return runResult;
+    public String getPassed() {
+        return passed;
     }
 
-    public void setRunResult(RunResultEntity runResult) {
-        this.runResult = runResult;
+    public void setPassed(String passed) {
+        this.passed = passed;
+    }
+
+    public String getFailed() {
+        return failed;
+    }
+
+    public void setFailed(String failed) {
+        this.failed = failed;
+    }
+
+    public String getSkipped() {
+        return skipped;
+    }
+
+    public void setSkipped(String skipped) {
+        this.skipped = skipped;
+    }
+
+    public String getIgnored() {
+        return ignored;
+    }
+
+    public void setIgnored(String ignored) {
+        this.ignored = ignored;
     }
 
     public Date getCreatedAt() {
@@ -74,5 +103,13 @@ public class TestRunEntity {
 
     public void setUpdatedAt(Date updatedAt) {
         this.updatedAt = updatedAt;
+    }
+
+    public Set<SuiteEntity> getSuites() {
+        return suites;
+    }
+
+    public void setSuites(Set<SuiteEntity> suites) {
+        this.suites = suites;
     }
 }

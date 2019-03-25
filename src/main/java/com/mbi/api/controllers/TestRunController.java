@@ -1,7 +1,7 @@
 package com.mbi.api.controllers;
 
-import com.mbi.api.models.response.UserCreatedModel;
-import com.mbi.api.models.testrun.TestRunModel;
+import com.mbi.api.models.response.CreatedModel;
+import com.mbi.api.models.request.TestRunModel;
 import com.mbi.api.services.TestRunService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -20,7 +20,7 @@ public class TestRunController {
     public TestRunService testRunService;
 
     @RequestMapping(method = POST, path = "/parse/testng", produces = "application/json", consumes = "application/xml")
-    public ResponseEntity<UserCreatedModel> create(@Valid @RequestBody TestRunModel testRunModel) {
-        return testRunService.parse(testRunModel);
+    public ResponseEntity<CreatedModel> parseTestNG(@Valid @RequestBody TestRunModel testRunModel) {
+        return testRunService.parseTestNG(testRunModel);
     }
 }

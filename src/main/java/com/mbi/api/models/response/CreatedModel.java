@@ -1,6 +1,6 @@
 package com.mbi.api.models.response;
 
-public class UserCreatedModel {
+public class CreatedModel {
 
     private long id;
 
