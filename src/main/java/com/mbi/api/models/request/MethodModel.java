@@ -3,16 +3,17 @@ package com.mbi.api.models.request;
 import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
-import java.util.Set;
 
-@XmlRootElement(name = "suite")
-public class SuiteModel {
+@XmlRootElement(name = "test-method")
+public class MethodModel {
 
     private String name;
 
     private String duration;
 
-    private Set<TestModel> tests;
+    private String status;
+
+    private ExceptionModel exception;
 
     @XmlAttribute
     public String getName() {
@@ -32,12 +33,21 @@ public class SuiteModel {
         this.duration = duration;
     }
 
-    @XmlElement(name = "test")
-    public Set<TestModel> getTests() {
-        return tests;
+    @XmlElement(name = "exception")
+    public ExceptionModel getException() {
+        return exception;
     }
 
-    public void setTests(Set<TestModel> tests) {
-        this.tests = tests;
+    public void setException(ExceptionModel exception) {
+        this.exception = exception;
+    }
+
+    @XmlAttribute
+    public String getStatus() {
+        return status;
+    }
+
+    public void setStatus(String status) {
+        this.status = status;
     }
 }

@@ -5,14 +5,14 @@ import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
 import java.util.Set;
 
-@XmlRootElement(name = "suite")
-public class SuiteModel {
+@XmlRootElement(name = "test")
+public class TestModel {
 
     private String name;
 
     private String duration;
 
-    private Set<TestModel> tests;
+    private Set<ClassModel> classes;
 
     @XmlAttribute
     public String getName() {
@@ -32,12 +32,12 @@ public class SuiteModel {
         this.duration = duration;
     }
 
-    @XmlElement(name = "test")
-    public Set<TestModel> getTests() {
-        return tests;
+    @XmlElement(name = "class")
+    public Set<ClassModel> getClasses() {
+        return classes;
     }
 
-    public void setTests(Set<TestModel> tests) {
-        this.tests = tests;
+    public void setClasses(Set<ClassModel> classes) {
+        this.classes = classes;
     }
 }

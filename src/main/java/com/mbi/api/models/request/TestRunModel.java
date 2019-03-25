@@ -20,33 +20,13 @@ public class TestRunModel {
 
     private Set<SuiteModel> suites;
 
-    public void setTotal(String total) {
-        this.total = total;
-    }
-
-    public void setPassed(String passed) {
-        this.passed = passed;
-    }
-
-    public void setFailed(String failed) {
-        this.failed = failed;
-    }
-
-    public void setSkipped(String skipped) {
-        this.skipped = skipped;
-    }
-
-    public void setIgnored(String ignored) {
-        this.ignored = ignored;
-    }
-
-    public void setSuites(Set<SuiteModel> suites) {
-        this.suites = suites;
-    }
-
     @XmlAttribute
     public String getTotal() {
         return total;
+    }
+
+    public void setTotal(String total) {
+        this.total = total;
     }
 
     @XmlAttribute
@@ -54,9 +34,17 @@ public class TestRunModel {
         return passed;
     }
 
+    public void setPassed(String passed) {
+        this.passed = passed;
+    }
+
     @XmlAttribute
     public String getFailed() {
         return failed;
+    }
+
+    public void setFailed(String failed) {
+        this.failed = failed;
     }
 
     @XmlAttribute
@@ -64,13 +52,25 @@ public class TestRunModel {
         return skipped;
     }
 
+    public void setSkipped(String skipped) {
+        this.skipped = skipped;
+    }
+
     @XmlAttribute
     public String getIgnored() {
         return ignored;
     }
 
+    public void setIgnored(String ignored) {
+        this.ignored = ignored;
+    }
+
     @XmlElement(name = "suite")
     public Set<SuiteModel> getSuites() {
         return suites;
+    }
+
+    public void setSuites(Set<SuiteModel> suites) {
+        this.suites = suites;
     }
 }

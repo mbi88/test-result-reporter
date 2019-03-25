@@ -1,6 +1,7 @@
 package com.mbi.api.entities.testrun;
 
 import javax.persistence.*;
+import java.util.Set;
 
 @Entity
 @Table(name = "suites")
@@ -18,6 +19,9 @@ public class SuiteEntity {
     private String name;
 
     private String duration;
+
+    @OneToMany(mappedBy = "suiteEntity", fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+    private Set<TestEntity> tests;
 
     public SuiteEntity() {
     }
@@ -52,5 +56,13 @@ public class SuiteEntity {
 
     public void setId(Long id) {
         this.id = id;
+    }
+
+    public Set<TestEntity> getTests() {
+        return tests;
+    }
+
+    public void setTests(Set<TestEntity> tests) {
+        this.tests = tests;
     }
 }
