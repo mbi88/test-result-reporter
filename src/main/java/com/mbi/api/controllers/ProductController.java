@@ -1,0 +1,40 @@
+package com.mbi.api.controllers;
+
+import com.mbi.api.exceptions.AlreadyExistsException;
+import com.mbi.api.exceptions.NotFoundException;
+import com.mbi.api.models.request.ProductModel;
+import com.mbi.api.models.response.CreatedModel;
+import com.mbi.api.models.response.ProductResponse;
+import com.mbi.api.services.ProductService;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
+
+import javax.validation.Valid;
+
+import static org.springframework.web.bind.annotation.RequestMethod.*;
+
+@RestController
+public class ProductController {
+
+    @Autowired
+    private ProductService productService;
+
+    @RequestMapping(method = POST, path = "/products", produces = "application/json", consumes = "application/json")
+    public ResponseEntity<CreatedModel> create(@Valid @RequestBody ProductModel productModel) throws AlreadyExistsException {
+        return productService.createProduct(productModel);
+    }
+
+    @RequestMapping(method = GET, path = "/products/{name}", produces = "application/json")
+    public ResponseEntity<ProductResponse> getByName(@PathVariable(value = "name") String name) throws NotFoundException {
+        return productService.getProductByName(name);
+    }
+
+    @RequestMapping(method = DELETE, path = "/products/{name}", produces = "application/json")
+    public ResponseEntity deleteByName(@PathVariable(value = "name") String name) throws NotFoundException {
+        return productService.deleteProductByName(name);
+    }
+}

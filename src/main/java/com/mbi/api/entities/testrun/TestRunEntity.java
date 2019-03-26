@@ -26,6 +26,8 @@ public class TestRunEntity {
 
     private String ignored;
 
+    private Long productId;
+
     @OneToMany(mappedBy = "testRunEntity", fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     private Set<SuiteEntity> suites;
 
@@ -111,5 +113,13 @@ public class TestRunEntity {
 
     public void setSuites(Set<SuiteEntity> suites) {
         this.suites = suites;
+    }
+
+    public Long getProductId() {
+        return productId;
+    }
+
+    public void setProductId(Long productId) {
+        this.productId = productId;
     }
 }

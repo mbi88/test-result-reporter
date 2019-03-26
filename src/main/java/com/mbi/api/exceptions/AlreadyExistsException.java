@@ -5,18 +5,18 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 
 import java.util.Arrays;
 
-@ResponseStatus(value = HttpStatus.NOT_FOUND)
-public class NotFoundException extends Exception {
+@ResponseStatus(value = HttpStatus.CONFLICT)
+public class AlreadyExistsException extends Exception {
 
     private Class entityClassName;
 
-    public NotFoundException(Class entity) {
+    public AlreadyExistsException(Class entity) {
         this.entityClassName = entity;
     }
 
     @Override
     public String getMessage() {
-        return getEntityClassName().toUpperCase() + " NOT FOUND";
+        return getEntityClassName().toUpperCase() + " ALREADY EXISTS";
     }
 
     private String getEntityClassName() {
@@ -28,6 +28,6 @@ public class NotFoundException extends Exception {
     }
 
     public String getError() {
-        return "Entity Not Found";
+        return "Entity Already Exists";
     }
 }
