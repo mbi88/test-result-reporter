@@ -13,6 +13,9 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+import java.util.stream.Collectors;
+
 @Service
 public class ProductService {
 
@@ -55,5 +58,14 @@ public class ProductService {
         productRepository.delete(productEntity);
 
         return new ResponseEntity(HttpStatus.NO_CONTENT);
+    }
+
+    public ResponseEntity<List<ProductResponse>> getAllProducts() {
+        var productsResponse = ((List<ProductEntity>) productRepository.findAll())
+                .stream()
+                .map(p -> new ModelMapper().map(p, ProductResponse.class))
+                .collect(Collectors.toList());
+
+        return new ResponseEntity<>(productsResponse, HttpStatus.OK);
     }
 }

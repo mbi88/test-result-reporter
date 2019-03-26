@@ -15,6 +15,8 @@ import org.springframework.web.bind.annotation.RestController;
 
 import javax.validation.Valid;
 
+import java.util.List;
+
 import static org.springframework.web.bind.annotation.RequestMethod.*;
 
 @RestController
@@ -31,6 +33,11 @@ public class ProductController {
     @RequestMapping(method = GET, path = "/products/{name}", produces = "application/json")
     public ResponseEntity<ProductResponse> getByName(@PathVariable(value = "name") String name) throws NotFoundException {
         return productService.getProductByName(name);
+    }
+
+    @RequestMapping(method = GET, path = "/products", produces = "application/json")
+    public ResponseEntity<List<ProductResponse>> getAll() {
+        return productService.getAllProducts();
     }
 
     @RequestMapping(method = DELETE, path = "/products/{name}", produces = "application/json")
