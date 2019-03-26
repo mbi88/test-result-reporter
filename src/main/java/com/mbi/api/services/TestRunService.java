@@ -1,10 +1,12 @@
 package com.mbi.api.services;
 
 import com.mbi.api.entities.product.ProductEntity;
+import com.mbi.api.entities.testrun.TestRunEntity;
 import com.mbi.api.exceptions.NotFoundException;
 import com.mbi.api.mappers.TestRunMapper;
 import com.mbi.api.models.request.TestRunModel;
 import com.mbi.api.models.response.CreatedModel;
+import com.mbi.api.models.response.TestRunResponse;
 import com.mbi.api.repositories.ProductRepository;
 import com.mbi.api.repositories.TestRunRepository;
 import org.modelmapper.ModelMapper;
@@ -35,5 +37,22 @@ public class TestRunService {
         var createdModel = new ModelMapper().map(testRunEntity, CreatedModel.class);
 
         return new ResponseEntity<>(createdModel, HttpStatus.CREATED);
+    }
+
+    public ResponseEntity<TestRunResponse> getTestRunById(String productName, long id) throws NotFoundException {
+        if (productRepository.findByName(productName).isEmpty()) {
+            throw new NotFoundException(ProductEntity.class);
+        }
+        var productEntity = productRepository.findByName(productName).get();
+
+        if (testRunRepository.findByIdAndProductId(id, productEntity.getId()).isEmpty()) {
+            throw new NotFoundException(TestRunEntity.class);
+        }
+        var testRunEntity = testRunRepository.findById(id).get();
+
+        var testRunResponse = new ModelMapper().map(testRunEntity, TestRunResponse.class);
+        testRunResponse.setProductName(productEntity.getName());
+
+        return new ResponseEntity<>(testRunResponse, HttpStatus.OK);
     }
 }
