@@ -3,7 +3,6 @@ package com.mbi.api.services;
 import com.mbi.api.entities.product.ProductEntity;
 import com.mbi.api.entities.testrun.TestRunEntity;
 import com.mbi.api.enums.MethodStatus;
-import com.mbi.api.exceptions.ExceptionSupplier;
 import com.mbi.api.exceptions.NotFoundException;
 import com.mbi.api.mappers.TestRunMapper;
 import com.mbi.api.models.request.TestRunModel;
@@ -20,6 +19,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 import static com.mbi.api.exceptions.ExceptionSupplier.NOT_FOUND_ERROR_MESSAGE;
@@ -37,7 +37,7 @@ public class TestRunService {
     @Autowired
     private MethodRepository methodRepository;
 
-    public ResponseEntity<CreatedModel> parseTestNG(TestRunModel testRunModel, String productName) throws NotFoundException {
+    public ResponseEntity<CreatedModel> parseTestNG(final TestRunModel testRunModel, final String productName) throws NotFoundException {
         var productEntity = productRepository.findByName(productName)
                 .orElseThrow(NOT_FOUND_SUPPLIER.apply(ProductEntity.class, NOT_FOUND_ERROR_MESSAGE));
 
@@ -50,7 +50,7 @@ public class TestRunService {
         return new ResponseEntity<>(createdModel, HttpStatus.CREATED);
     }
 
-    public ResponseEntity<TestRunResponse> getTestRunById(long id) throws NotFoundException {
+    public ResponseEntity<TestRunResponse> getTestRunById(final long id) throws NotFoundException {
         var testRunEntity = testRunRepository.findById(id)
                 .orElseThrow(NOT_FOUND_SUPPLIER.apply(TestRunEntity.class, NOT_FOUND_ERROR_MESSAGE));
 
@@ -59,8 +59,19 @@ public class TestRunService {
         return new ResponseEntity<>(testRunResponse, HttpStatus.OK);
     }
 
-    public ResponseEntity<List<TestRunResponse>> getAllTestRuns() {
-        var testRuns = ((List<TestRunEntity>) testRunRepository.findAll())
+    public ResponseEntity<List<TestRunResponse>> getAllTestRuns(final String productName) throws NotFoundException {
+        List<TestRunEntity> testRunEntities;
+
+        if (Objects.isNull(productName) || productName.isBlank()) {
+            testRunEntities = (List<TestRunEntity>) testRunRepository.findAll();
+        } else {
+            var product = productRepository.findByName(productName)
+                    .orElseThrow(NOT_FOUND_SUPPLIER.apply(ProductEntity.class, NOT_FOUND_ERROR_MESSAGE));
+            testRunEntities = testRunRepository.findAllByProduct(product)
+                    .orElseThrow(NOT_FOUND_SUPPLIER.apply(TestRunEntity.class, "No test runs in this product"));
+        }
+
+        var testRuns = testRunEntities
                 .stream()
                 .map(testRun -> new ModelMapper().map(testRun, TestRunResponse.class))
                 .collect(Collectors.toList());
@@ -68,7 +79,7 @@ public class TestRunService {
         return new ResponseEntity<>(testRuns, HttpStatus.OK);
     }
 
-    public ResponseEntity<List<MethodResponse>> getMethodsByStatus(long id, MethodStatus status) throws NotFoundException {
+    public ResponseEntity<List<MethodResponse>> getMethodsByStatus(final long id, final MethodStatus status) throws NotFoundException {
         testRunRepository.findById(id)
                 .orElseThrow(NOT_FOUND_SUPPLIER.apply(TestRunEntity.class, NOT_FOUND_ERROR_MESSAGE));
 

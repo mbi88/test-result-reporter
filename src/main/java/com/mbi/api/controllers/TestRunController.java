@@ -37,8 +37,8 @@ public class TestRunController {
     }
 
     @RequestMapping(method = GET, path = "/reporters/testng/test-runs", produces = "application/json")
-    public ResponseEntity<List<TestRunResponse>> getAllTestRuns() {
-        return testRunService.getAllTestRuns();
+    public ResponseEntity<List<TestRunResponse>> getAllTestRuns(@RequestParam(value = "productName", required = false) String productName) throws NotFoundException {
+        return testRunService.getAllTestRuns(productName);
     }
 
     @RequestMapping(method = GET, path = "/reporters/testng/test-runs/{id}/failed", produces = "application/json")
