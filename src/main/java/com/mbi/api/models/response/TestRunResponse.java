@@ -16,6 +16,8 @@ public class TestRunResponse {
 
     private String productName;
 
+    private int duration;
+
     public long getId() {
         return id;
     }
@@ -70,5 +72,13 @@ public class TestRunResponse {
 
     public void setProductName(String productName) {
         this.productName = productName;
+    }
+
+    public int getDuration() {
+        return duration;
+    }
+
+    public void setDuration(int duration) {
+        this.duration = duration;
     }
 }

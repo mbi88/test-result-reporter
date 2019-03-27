@@ -4,7 +4,7 @@ import com.mbi.api.exceptions.AlreadyExistsException;
 import com.mbi.api.exceptions.BadRequestException;
 import com.mbi.api.exceptions.NotFoundException;
 import com.mbi.api.models.request.ProductModel;
-import com.mbi.api.models.response.CreatedModel;
+import com.mbi.api.models.response.CreatedResponse;
 import com.mbi.api.models.response.ProductResponse;
 import com.mbi.api.services.ProductService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,7 +27,7 @@ public class ProductController {
     private ProductService productService;
 
     @RequestMapping(method = POST, path = "/products", produces = "application/json", consumes = "application/json")
-    public ResponseEntity<CreatedModel> create(@Valid @RequestBody ProductModel productModel) throws AlreadyExistsException {
+    public ResponseEntity<CreatedResponse> create(@Valid @RequestBody ProductModel productModel) throws AlreadyExistsException {
         return productService.createProduct(productModel);
     }
 

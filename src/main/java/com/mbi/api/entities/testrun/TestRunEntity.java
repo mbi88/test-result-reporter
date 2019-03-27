@@ -27,6 +27,8 @@ public class TestRunEntity {
 
     private String ignored;
 
+    private int duration;
+
     @OneToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "product_id")
     private ProductEntity product;
@@ -124,5 +126,13 @@ public class TestRunEntity {
 
     public void setProduct(ProductEntity product) {
         this.product = product;
+    }
+
+    public int getDuration() {
+        return duration;
+    }
+
+    public void setDuration(int duration) {
+        this.duration = duration;
     }
 }

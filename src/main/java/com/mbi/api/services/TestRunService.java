@@ -6,7 +6,7 @@ import com.mbi.api.enums.MethodStatus;
 import com.mbi.api.exceptions.NotFoundException;
 import com.mbi.api.mappers.TestRunMapper;
 import com.mbi.api.models.request.TestRunModel;
-import com.mbi.api.models.response.CreatedModel;
+import com.mbi.api.models.response.CreatedResponse;
 import com.mbi.api.models.response.MethodResponse;
 import com.mbi.api.models.response.TestRunResponse;
 import com.mbi.api.repositories.MethodRepository;
@@ -37,7 +37,7 @@ public class TestRunService {
     @Autowired
     private MethodRepository methodRepository;
 
-    public ResponseEntity<CreatedModel> parseTestNG(final TestRunModel testRunModel, final String productName) throws NotFoundException {
+    public ResponseEntity<CreatedResponse> parseTestNG(final TestRunModel testRunModel, final String productName) throws NotFoundException {
         var productEntity = productRepository.findByName(productName)
                 .orElseThrow(NOT_FOUND_SUPPLIER.apply(ProductEntity.class, NOT_FOUND_ERROR_MESSAGE));
 
@@ -45,7 +45,7 @@ public class TestRunService {
         testRunEntity.setProduct(productEntity);
         testRunRepository.save(testRunEntity);
 
-        var createdModel = new ModelMapper().map(testRunEntity, CreatedModel.class);
+        var createdModel = new ModelMapper().map(testRunEntity, CreatedResponse.class);
 
         return new ResponseEntity<>(createdModel, HttpStatus.CREATED);
     }

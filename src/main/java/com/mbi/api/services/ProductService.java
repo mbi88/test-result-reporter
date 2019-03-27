@@ -5,7 +5,7 @@ import com.mbi.api.exceptions.AlreadyExistsException;
 import com.mbi.api.exceptions.BadRequestException;
 import com.mbi.api.exceptions.NotFoundException;
 import com.mbi.api.models.request.ProductModel;
-import com.mbi.api.models.response.CreatedModel;
+import com.mbi.api.models.response.CreatedResponse;
 import com.mbi.api.models.response.ProductResponse;
 import com.mbi.api.repositories.ProductRepository;
 import com.mbi.api.repositories.TestRunRepository;
@@ -29,14 +29,14 @@ public class ProductService {
     @Autowired
     private TestRunRepository testRunRepository;
 
-    public ResponseEntity<CreatedModel> createProduct(final ProductModel productModel) throws AlreadyExistsException {
+    public ResponseEntity<CreatedResponse> createProduct(final ProductModel productModel) throws AlreadyExistsException {
         if (productRepository.findByName(productModel.getName()).isPresent()) {
             throw EXISTS_SUPPLIER.apply(ProductEntity.class, ALREADY_EXISTS_ERROR_MESSAGE).get();
         }
 
         var productEntity = new ModelMapper().map(productModel, ProductEntity.class);
         productRepository.save(productEntity);
-        var createdModel = new ModelMapper().map(productEntity, CreatedModel.class);
+        var createdModel = new ModelMapper().map(productEntity, CreatedResponse.class);
 
         return new ResponseEntity<>(createdModel, HttpStatus.CREATED);
     }

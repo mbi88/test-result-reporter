@@ -23,6 +23,12 @@ public class TestRunMapper implements Mapper<TestRunEntity, TestRunModel> {
 
         testRunEntity.setSuites(suitesSet);
 
+        int testsDuration = 0;
+        for (var suite : testRunEntity.getSuites()) {
+            testsDuration += Integer.parseInt(suite.getDuration());
+        }
+        testRunEntity.setDuration(testsDuration);
+
         return testRunEntity;
     }
 }

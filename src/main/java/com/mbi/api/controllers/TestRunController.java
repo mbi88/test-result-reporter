@@ -3,7 +3,7 @@ package com.mbi.api.controllers;
 import com.mbi.api.enums.MethodStatus;
 import com.mbi.api.exceptions.NotFoundException;
 import com.mbi.api.models.request.TestRunModel;
-import com.mbi.api.models.response.CreatedModel;
+import com.mbi.api.models.response.CreatedResponse;
 import com.mbi.api.models.response.MethodResponse;
 import com.mbi.api.models.response.TestRunResponse;
 import com.mbi.api.services.TestRunService;
@@ -25,7 +25,7 @@ public class TestRunController {
 
     @RequestMapping(method = POST, path = "/reporters/testng/test-runs", produces = "application/json",
             consumes = "application/xml")
-    public ResponseEntity<CreatedModel> parseTestNG(
+    public ResponseEntity<CreatedResponse> parseTestNG(
             @RequestParam(value = "productName") String productName,
             @Valid @RequestBody TestRunModel testRunModel) throws NotFoundException {
         return testRunService.parseTestNG(testRunModel, productName);
