@@ -1,6 +1,7 @@
 package com.mbi.api.services;
 
 import com.mbi.api.entities.product.ProductEntity;
+import com.mbi.api.entities.testrun.MethodEntity;
 import com.mbi.api.entities.testrun.TestRunEntity;
 import com.mbi.api.enums.MethodStatus;
 import com.mbi.api.exceptions.NotFoundException;
@@ -83,7 +84,8 @@ public class TestRunService {
         testRunRepository.findById(id)
                 .orElseThrow(NOT_FOUND_SUPPLIER.apply(TestRunEntity.class, NOT_FOUND_ERROR_MESSAGE));
 
-        var methods = methodRepository.findAllByStatusAndTestRunId(status.name(), (int) id).get()
+        var methods = methodRepository.findAllByStatusAndTestRunId(status.name(), (int) id)
+                .orElseThrow(NOT_FOUND_SUPPLIER.apply(MethodEntity.class, NOT_FOUND_ERROR_MESSAGE))
                 .stream()
                 .map(m -> new ModelMapper().map(m, MethodResponse.class))
                 .collect(Collectors.toList());
