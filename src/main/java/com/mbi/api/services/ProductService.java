@@ -53,8 +53,10 @@ public class ProductService {
         var productEntity = productRepository.findByName(name)
                 .orElseThrow(NOT_FOUND_SUPPLIER.apply(ProductEntity.class, NOT_FOUND_ERROR_MESSAGE));
 
-        testRunRepository.findAllByProduct(productEntity)
-                .orElseThrow(BAD_REQUEST_SUPPLIER.apply(ProductEntity.class, "Can't remove product! Dependent test runs exist"));
+        if (testRunRepository.findAllByProduct(productEntity).isPresent()) {
+            throw BAD_REQUEST_SUPPLIER.apply(ProductEntity.class,
+                    "Can't remove product! Dependent test runs exist").get();
+        }
 
         productRepository.delete(productEntity);
 
