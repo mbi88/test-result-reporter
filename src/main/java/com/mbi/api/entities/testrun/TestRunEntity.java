@@ -1,5 +1,6 @@
 package com.mbi.api.entities.testrun;
 
+import com.mbi.api.entities.product.ProductEntity;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
@@ -26,7 +27,9 @@ public class TestRunEntity {
 
     private String ignored;
 
-    private Long productId;
+    @OneToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "product_id")
+    private ProductEntity product;
 
     @OneToMany(mappedBy = "testRunEntity", fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     private Set<SuiteEntity> suites;
@@ -115,11 +118,11 @@ public class TestRunEntity {
         this.suites = suites;
     }
 
-    public Long getProductId() {
-        return productId;
+    public ProductEntity getProduct() {
+        return product;
     }
 
-    public void setProductId(Long productId) {
-        this.productId = productId;
+    public void setProduct(ProductEntity product) {
+        this.product = product;
     }
 }

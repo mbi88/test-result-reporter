@@ -12,8 +12,8 @@ public class TestEntity {
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "test_id_seq")
     private Long id;
 
-    @ManyToOne(cascade= CascadeType.ALL)
-    @JoinColumn(name="suite_id")
+    @ManyToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "suite_id")
     private SuiteEntity suiteEntity;
 
     @OneToMany(mappedBy = "testEntity", fetch = FetchType.EAGER, cascade = CascadeType.ALL)

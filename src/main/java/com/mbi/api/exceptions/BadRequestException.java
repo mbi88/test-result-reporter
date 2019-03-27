@@ -5,13 +5,13 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 
 import java.util.Arrays;
 
-@ResponseStatus(value = HttpStatus.CONFLICT)
-public class AlreadyExistsException extends Exception {
+@ResponseStatus(value = HttpStatus.BAD_REQUEST)
+public class BadRequestException extends Exception {
 
     private Class entityClassName;
     private String message;
 
-    public AlreadyExistsException(Class entity, String message) {
+    public BadRequestException(Class entity, String message) {
         this.entityClassName = entity;
         this.message = message;
     }
@@ -30,6 +30,6 @@ public class AlreadyExistsException extends Exception {
     }
 
     public String getError() {
-        return "Entity Already Exists";
+        return "Bad request";
     }
 }

@@ -1,5 +1,7 @@
 package com.mbi.api.entities.product;
 
+import com.mbi.api.entities.testrun.TestRunEntity;
+
 import javax.persistence.*;
 
 @Entity
@@ -12,6 +14,9 @@ public class ProductEntity {
     private Long id;
 
     private String name;
+
+    @OneToOne(mappedBy = "product", fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+    private TestRunEntity testRunEntity;
 
     public ProductEntity() {
     }
@@ -30,5 +35,13 @@ public class ProductEntity {
 
     public void setName(String name) {
         this.name = name;
+    }
+
+    public TestRunEntity getTestRunEntity() {
+        return testRunEntity;
+    }
+
+    public void setTestRunEntity(TestRunEntity testRunEntity) {
+        this.testRunEntity = testRunEntity;
     }
 }

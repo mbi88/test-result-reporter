@@ -9,14 +9,16 @@ import java.util.Arrays;
 public class NotFoundException extends Exception {
 
     private Class entityClassName;
+    private String message;
 
-    public NotFoundException(Class entity) {
+    public NotFoundException(Class entity, String message) {
         this.entityClassName = entity;
+        this.message = message;
     }
 
     @Override
     public String getMessage() {
-        return getEntityClassName().toUpperCase() + " NOT FOUND";
+        return getEntityClassName() + ": " + message;
     }
 
     private String getEntityClassName() {

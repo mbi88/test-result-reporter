@@ -1,6 +1,7 @@
 package com.mbi.api.controllers;
 
 import com.mbi.api.exceptions.AlreadyExistsException;
+import com.mbi.api.exceptions.BadRequestException;
 import com.mbi.api.exceptions.NotFoundException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -33,6 +34,17 @@ public class ExceptionControllerAdvice {
                         new Timestamp(System.currentTimeMillis()), ex.getException()
                 ),
                 HttpStatus.CONFLICT);
+    }
+
+    @ExceptionHandler(BadRequestException.class)
+    @ResponseBody
+    public ResponseEntity<ErrorResponse> handleBadRequestException(final BadRequestException ex) {
+        return new ResponseEntity<>(
+                new ErrorResponse(HttpStatus.BAD_REQUEST.value(),
+                        ex.getMessage(), ex.getError(),
+                        new Timestamp(System.currentTimeMillis()), ex.getException()
+                ),
+                HttpStatus.BAD_REQUEST);
     }
 
     private class ErrorResponse {
