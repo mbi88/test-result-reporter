@@ -10,11 +10,9 @@ public class MethodResponse {
 
     private String status;
 
+    private String className;
+
     private String exception;
-
-    private String productName;
-
-    private long testRunId;
 
     public long getId() {
         return id;
@@ -56,19 +54,11 @@ public class MethodResponse {
         this.exception = exception;
     }
 
-    public String getProductName() {
-        return productName;
+    public String getClassName() {
+        return className;
     }
 
-    public void setProductName(String productName) {
-        this.productName = productName;
-    }
-
-    public long getTestRunId() {
-        return testRunId;
-    }
-
-    public void setTestRunId(long testRunId) {
-        this.testRunId = testRunId;
+    public void setClassName(String className) {
+        this.className = className;
     }
 }

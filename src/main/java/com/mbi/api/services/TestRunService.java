@@ -55,7 +55,6 @@ public class TestRunService {
                 .orElseThrow(NOT_FOUND_SUPPLIER.apply(TestRunEntity.class, NOT_FOUND_ERROR_MESSAGE));
 
         var testRunResponse = new ModelMapper().map(testRunEntity, TestRunResponse.class);
-        testRunResponse.setProductName(testRunEntity.getProduct().getName());
 
         return new ResponseEntity<>(testRunResponse, HttpStatus.OK);
     }
