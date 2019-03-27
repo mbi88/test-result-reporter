@@ -5,13 +5,16 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 
 import java.util.Arrays;
 
-@ResponseStatus(value = HttpStatus.CONFLICT)
+/**
+ * Already exists exception.
+ */
+@ResponseStatus(HttpStatus.CONFLICT)
 public class AlreadyExistsException extends Exception {
 
-    private Class entityClassName;
-    private String message;
+    private final Class entityClassName;
+    private final String message;
 
-    public AlreadyExistsException(Class entity, String message) {
+    public AlreadyExistsException(final Class entity, final String message) {
         this.entityClassName = entity;
         this.message = message;
     }

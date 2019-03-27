@@ -20,6 +20,9 @@ import java.util.stream.Collectors;
 
 import static com.mbi.api.exceptions.ExceptionSupplier.*;
 
+/**
+ * Product service.
+ */
 @Service
 public class ProductService {
 
@@ -29,28 +32,29 @@ public class ProductService {
     @Autowired
     private TestRunRepository testRunRepository;
 
-    public ResponseEntity<CreatedResponse> createProduct(final ProductModel productModel) throws AlreadyExistsException {
+    public ResponseEntity<CreatedResponse> createProduct(final ProductModel productModel)
+            throws AlreadyExistsException {
         if (productRepository.findByName(productModel.getName()).isPresent()) {
             throw EXISTS_SUPPLIER.apply(ProductEntity.class, ALREADY_EXISTS_ERROR_MESSAGE).get();
         }
 
-        var productEntity = new ModelMapper().map(productModel, ProductEntity.class);
+        final var productEntity = new ModelMapper().map(productModel, ProductEntity.class);
         productRepository.save(productEntity);
-        var createdModel = new ModelMapper().map(productEntity, CreatedResponse.class);
+        final var createdModel = new ModelMapper().map(productEntity, CreatedResponse.class);
 
         return new ResponseEntity<>(createdModel, HttpStatus.CREATED);
     }
 
     public ResponseEntity<ProductResponse> getProductByName(final String name) throws NotFoundException {
-        var productEntity = productRepository.findByName(name)
+        final var productEntity = productRepository.findByName(name)
                 .orElseThrow(NOT_FOUND_SUPPLIER.apply(ProductEntity.class, NOT_FOUND_ERROR_MESSAGE));
-        var productResponse = new ModelMapper().map(productEntity, ProductResponse.class);
+        final var productResponse = new ModelMapper().map(productEntity, ProductResponse.class);
 
         return new ResponseEntity<>(productResponse, HttpStatus.OK);
     }
 
     public ResponseEntity deleteProductByName(final String name) throws NotFoundException, BadRequestException {
-        var productEntity = productRepository.findByName(name)
+        final var productEntity = productRepository.findByName(name)
                 .orElseThrow(NOT_FOUND_SUPPLIER.apply(ProductEntity.class, NOT_FOUND_ERROR_MESSAGE));
 
         if (testRunRepository.findAllByProduct(productEntity).isPresent()) {
@@ -64,7 +68,7 @@ public class ProductService {
     }
 
     public ResponseEntity<List<ProductResponse>> getAllProducts() {
-        var productsResponse = ((List<ProductEntity>) productRepository.findAll())
+        final var productsResponse = ((List<ProductEntity>) productRepository.findAll())
                 .stream()
                 .map(p -> new ModelMapper().map(p, ProductResponse.class))
                 .collect(Collectors.toList());

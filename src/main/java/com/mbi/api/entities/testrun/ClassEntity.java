@@ -3,6 +3,9 @@ package com.mbi.api.entities.testrun;
 import javax.persistence.*;
 import java.util.Set;
 
+/**
+ * Class entity.
+ */
 @Entity
 @Table(name = "classes")
 @SequenceGenerator(name = "class_id_seq", sequenceName = "class_id_seq", allocationSize = 1)
@@ -21,14 +24,11 @@ public class ClassEntity {
 
     private String name;
 
-    public ClassEntity() {
-    }
-
     public Long getId() {
         return id;
     }
 
-    public void setId(Long id) {
+    public void setId(final Long id) {
         this.id = id;
     }
 
@@ -36,7 +36,7 @@ public class ClassEntity {
         return name;
     }
 
-    public void setName(String name) {
+    public void setName(final String name) {
         this.name = name;
     }
 
@@ -44,7 +44,7 @@ public class ClassEntity {
         return testEntity;
     }
 
-    public void setTestEntity(TestEntity testEntity) {
+    public void setTestEntity(final TestEntity testEntity) {
         this.testEntity = testEntity;
     }
 
@@ -52,7 +52,7 @@ public class ClassEntity {
         return methods;
     }
 
-    public void setMethods(Set<MethodEntity> methods) {
+    public void setMethods(final Set<MethodEntity> methods) {
         this.methods = methods;
     }
 }

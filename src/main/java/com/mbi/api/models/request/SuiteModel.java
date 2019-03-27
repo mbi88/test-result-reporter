@@ -5,6 +5,9 @@ import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
 import java.util.Set;
 
+/**
+ * Suite request model.
+ */
 @XmlRootElement(name = "suite")
 public class SuiteModel {
 
@@ -19,7 +22,7 @@ public class SuiteModel {
         return name;
     }
 
-    public void setName(String name) {
+    public void setName(final String name) {
         this.name = name;
     }
 
@@ -28,7 +31,7 @@ public class SuiteModel {
         return duration;
     }
 
-    public void setDuration(String duration) {
+    public void setDuration(final String duration) {
         this.duration = duration;
     }
 
@@ -37,7 +40,7 @@ public class SuiteModel {
         return tests;
     }
 
-    public void setTests(Set<TestModel> tests) {
+    public void setTests(final Set<TestModel> tests) {
         this.tests = tests;
     }
 }

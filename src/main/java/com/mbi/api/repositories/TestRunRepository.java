@@ -8,6 +8,9 @@ import org.springframework.stereotype.Repository;
 import java.util.List;
 import java.util.Optional;
 
+/**
+ * Test run repository.
+ */
 @Repository
 public interface TestRunRepository extends CrudRepository<TestRunEntity, Long> {
     Optional<List<TestRunEntity>> findAllByProduct(ProductEntity product);

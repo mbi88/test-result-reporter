@@ -6,16 +6,19 @@ import org.modelmapper.ModelMapper;
 
 import java.util.stream.Collectors;
 
+/**
+ * Suite mapper.
+ */
 class SuiteMapper implements Mapper<SuiteEntity, SuiteModel> {
 
     @Override
-    public SuiteEntity map(SuiteModel suiteModel) {
-        var suiteEntity = new ModelMapper().map(suiteModel, SuiteEntity.class);
+    public SuiteEntity map(final SuiteModel suiteModel) {
+        final var suiteEntity = new ModelMapper().map(suiteModel, SuiteEntity.class);
 
-        var testsSet = suiteModel.getTests()
+        final var testsSet = suiteModel.getTests()
                 .stream()
                 .map(testModel -> {
-                    var testEntity = new TestMapper().map(testModel);
+                    final var testEntity = new TestMapper().map(testModel);
                     testEntity.setSuiteEntity(suiteEntity);
                     return testEntity;
                 })

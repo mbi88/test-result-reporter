@@ -11,6 +11,9 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import java.sql.Timestamp;
 
+/**
+ * Exception controller advice.
+ */
 @ControllerAdvice
 public class ExceptionControllerAdvice {
 
@@ -47,14 +50,18 @@ public class ExceptionControllerAdvice {
                 HttpStatus.BAD_REQUEST);
     }
 
-    private class ErrorResponse {
+    /**
+     * Error response pojo.
+     */
+    private static final class ErrorResponse {
         private final int status;
         private final String message;
         private final String error;
         private final Timestamp timestamp;
         private final String exception;
 
-        private ErrorResponse(int status, String message, String error, Timestamp timestamp, String exception) {
+        private ErrorResponse(final int status, final String message, final String error, final Timestamp timestamp,
+                              final String exception) {
             this.status = status;
             this.message = message;
             this.error = error;

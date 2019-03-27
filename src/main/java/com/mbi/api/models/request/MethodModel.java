@@ -4,6 +4,9 @@ import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
 
+/**
+ * Method request model.
+ */
 @XmlRootElement(name = "test-method")
 public class MethodModel {
 
@@ -20,7 +23,7 @@ public class MethodModel {
         return name;
     }
 
-    public void setName(String name) {
+    public void setName(final String name) {
         this.name = name;
     }
 
@@ -29,7 +32,7 @@ public class MethodModel {
         return duration;
     }
 
-    public void setDuration(String duration) {
+    public void setDuration(final String duration) {
         this.duration = duration;
     }
 
@@ -38,7 +41,7 @@ public class MethodModel {
         return exception;
     }
 
-    public void setException(ExceptionModel exception) {
+    public void setException(final ExceptionModel exception) {
         this.exception = exception;
     }
 
@@ -47,7 +50,7 @@ public class MethodModel {
         return status;
     }
 
-    public void setStatus(String status) {
+    public void setStatus(final String status) {
         this.status = status;
     }
 }

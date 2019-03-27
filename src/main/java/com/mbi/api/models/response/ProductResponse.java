@@ -1,5 +1,9 @@
 package com.mbi.api.models.response;
 
+
+/**
+ * Product response model.
+ */
 public class ProductResponse {
 
     private long id;
@@ -10,7 +14,7 @@ public class ProductResponse {
         return id;
     }
 
-    public void setId(long id) {
+    public void setId(final long id) {
         this.id = id;
     }
 
@@ -18,7 +22,7 @@ public class ProductResponse {
         return name;
     }
 
-    public void setName(String name) {
+    public void setName(final String name) {
         this.name = name;
     }
 }

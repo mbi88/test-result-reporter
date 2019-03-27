@@ -26,6 +26,9 @@ import java.util.stream.Collectors;
 import static com.mbi.api.exceptions.ExceptionSupplier.NOT_FOUND_ERROR_MESSAGE;
 import static com.mbi.api.exceptions.ExceptionSupplier.NOT_FOUND_SUPPLIER;
 
+/**
+ * Test run service.
+ */
 @Service
 public class TestRunService {
 
@@ -38,41 +41,42 @@ public class TestRunService {
     @Autowired
     private MethodRepository methodRepository;
 
-    public ResponseEntity<CreatedResponse> parseTestNG(final TestRunModel testRunModel, final String productName) throws NotFoundException {
-        var productEntity = productRepository.findByName(productName)
+    public ResponseEntity<CreatedResponse> parseTestNG(final TestRunModel testRunModel,
+                                                       final String productName) throws NotFoundException {
+        final var productEntity = productRepository.findByName(productName)
                 .orElseThrow(NOT_FOUND_SUPPLIER.apply(ProductEntity.class, NOT_FOUND_ERROR_MESSAGE));
 
-        var testRunEntity = new TestRunMapper().map(testRunModel);
+        final var testRunEntity = new TestRunMapper().map(testRunModel);
         testRunEntity.setProduct(productEntity);
         testRunRepository.save(testRunEntity);
 
-        var createdModel = new ModelMapper().map(testRunEntity, CreatedResponse.class);
+        final var createdModel = new ModelMapper().map(testRunEntity, CreatedResponse.class);
 
         return new ResponseEntity<>(createdModel, HttpStatus.CREATED);
     }
 
     public ResponseEntity<TestRunResponse> getTestRunById(final long id) throws NotFoundException {
-        var testRunEntity = testRunRepository.findById(id)
+        final var testRunEntity = testRunRepository.findById(id)
                 .orElseThrow(NOT_FOUND_SUPPLIER.apply(TestRunEntity.class, NOT_FOUND_ERROR_MESSAGE));
 
-        var testRunResponse = new ModelMapper().map(testRunEntity, TestRunResponse.class);
+        final var testRunResponse = new ModelMapper().map(testRunEntity, TestRunResponse.class);
 
         return new ResponseEntity<>(testRunResponse, HttpStatus.OK);
     }
 
     public ResponseEntity<List<TestRunResponse>> getAllTestRuns(final String productName) throws NotFoundException {
-        List<TestRunEntity> testRunEntities;
+        final List<TestRunEntity> testRunEntities;
 
         if (Objects.isNull(productName) || productName.isBlank()) {
             testRunEntities = (List<TestRunEntity>) testRunRepository.findAll();
         } else {
-            var product = productRepository.findByName(productName)
+            final var product = productRepository.findByName(productName)
                     .orElseThrow(NOT_FOUND_SUPPLIER.apply(ProductEntity.class, NOT_FOUND_ERROR_MESSAGE));
             testRunEntities = testRunRepository.findAllByProduct(product)
                     .orElseThrow(NOT_FOUND_SUPPLIER.apply(TestRunEntity.class, "No test runs in this product"));
         }
 
-        var testRuns = testRunEntities
+        final var testRuns = testRunEntities
                 .stream()
                 .map(testRun -> new ModelMapper().map(testRun, TestRunResponse.class))
                 .collect(Collectors.toList());
@@ -80,11 +84,12 @@ public class TestRunService {
         return new ResponseEntity<>(testRuns, HttpStatus.OK);
     }
 
-    public ResponseEntity<List<MethodResponse>> getMethodsByStatus(final long id, final MethodStatus status) throws NotFoundException {
+    public ResponseEntity<List<MethodResponse>> getMethodsByStatus(final long id,
+                                                                   final MethodStatus status) throws NotFoundException {
         testRunRepository.findById(id)
                 .orElseThrow(NOT_FOUND_SUPPLIER.apply(TestRunEntity.class, NOT_FOUND_ERROR_MESSAGE));
 
-        var methods = methodRepository.findAllByStatusAndTestRunId(status.name(), (int) id)
+        final var methods = methodRepository.findAllByStatusAndTestRunId(status.name(), (int) id)
                 .orElseThrow(NOT_FOUND_SUPPLIER.apply(MethodEntity.class, NOT_FOUND_ERROR_MESSAGE))
                 .stream()
                 .map(m -> new ModelMapper().map(m, MethodResponse.class))

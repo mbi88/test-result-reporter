@@ -6,16 +6,19 @@ import org.modelmapper.ModelMapper;
 
 import java.util.stream.Collectors;
 
+/**
+ * Test run mapper.
+ */
 public class TestRunMapper implements Mapper<TestRunEntity, TestRunModel> {
 
     @Override
-    public TestRunEntity map(TestRunModel testRunModel) {
-        var testRunEntity = new ModelMapper().map(testRunModel, TestRunEntity.class);
+    public TestRunEntity map(final TestRunModel testRunModel) {
+        final var testRunEntity = new ModelMapper().map(testRunModel, TestRunEntity.class);
 
-        var suitesSet = testRunModel.getSuites()
+        final var suitesSet = testRunModel.getSuites()
                 .stream()
                 .map(suiteModel -> {
-                    var suiteEntity = new SuiteMapper().map(suiteModel);
+                    final var suiteEntity = new SuiteMapper().map(suiteModel);
                     suiteEntity.setTestRunEntity(testRunEntity);
                     return suiteEntity;
                 })

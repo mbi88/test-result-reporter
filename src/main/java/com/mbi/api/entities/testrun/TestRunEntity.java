@@ -8,6 +8,9 @@ import javax.persistence.*;
 import java.util.Date;
 import java.util.Set;
 
+/**
+ * Test run entity.
+ */
 @Entity
 @Table(name = "test_runs")
 @SequenceGenerator(name = "test_run_id_seq", sequenceName = "test_run_id_seq", allocationSize = 1)
@@ -45,14 +48,11 @@ public class TestRunEntity {
     @Temporal(TemporalType.TIMESTAMP)
     private Date updatedAt;
 
-    public TestRunEntity() {
-    }
-
     public Long getId() {
         return id;
     }
 
-    public void setId(Long id) {
+    public void setId(final Long id) {
         this.id = id;
     }
 
@@ -60,7 +60,7 @@ public class TestRunEntity {
         return total;
     }
 
-    public void setTotal(String total) {
+    public void setTotal(final String total) {
         this.total = total;
     }
 
@@ -68,7 +68,7 @@ public class TestRunEntity {
         return passed;
     }
 
-    public void setPassed(String passed) {
+    public void setPassed(final String passed) {
         this.passed = passed;
     }
 
@@ -76,7 +76,7 @@ public class TestRunEntity {
         return failed;
     }
 
-    public void setFailed(String failed) {
+    public void setFailed(final String failed) {
         this.failed = failed;
     }
 
@@ -84,7 +84,7 @@ public class TestRunEntity {
         return skipped;
     }
 
-    public void setSkipped(String skipped) {
+    public void setSkipped(final String skipped) {
         this.skipped = skipped;
     }
 
@@ -92,31 +92,31 @@ public class TestRunEntity {
         return ignored;
     }
 
-    public void setIgnored(String ignored) {
+    public void setIgnored(final String ignored) {
         this.ignored = ignored;
     }
 
     public Date getCreatedAt() {
-        return createdAt;
+        return new Date(createdAt.getTime());
     }
 
-    public void setCreatedAt(Date createdAt) {
-        this.createdAt = createdAt;
+    public void setCreatedAt(final Date createdAt) {
+        this.createdAt = new Date(createdAt.getTime());
     }
 
     public Date getUpdatedAt() {
-        return updatedAt;
+        return new Date(updatedAt.getTime());
     }
 
-    public void setUpdatedAt(Date updatedAt) {
-        this.updatedAt = updatedAt;
+    public void setUpdatedAt(final Date updatedAt) {
+        this.updatedAt = new Date(updatedAt.getTime());
     }
 
     public Set<SuiteEntity> getSuites() {
         return suites;
     }
 
-    public void setSuites(Set<SuiteEntity> suites) {
+    public void setSuites(final Set<SuiteEntity> suites) {
         this.suites = suites;
     }
 
@@ -124,7 +124,7 @@ public class TestRunEntity {
         return product;
     }
 
-    public void setProduct(ProductEntity product) {
+    public void setProduct(final ProductEntity product) {
         this.product = product;
     }
 
@@ -132,7 +132,7 @@ public class TestRunEntity {
         return duration;
     }
 
-    public void setDuration(int duration) {
+    public void setDuration(final int duration) {
         this.duration = duration;
     }
 }

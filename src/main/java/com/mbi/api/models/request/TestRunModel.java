@@ -5,6 +5,9 @@ import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
 import java.util.Set;
 
+/**
+ * Test run request model.
+ */
 @XmlRootElement(name = "testng-results")
 public class TestRunModel {
 
@@ -25,7 +28,7 @@ public class TestRunModel {
         return total;
     }
 
-    public void setTotal(String total) {
+    public void setTotal(final String total) {
         this.total = total;
     }
 
@@ -34,7 +37,7 @@ public class TestRunModel {
         return passed;
     }
 
-    public void setPassed(String passed) {
+    public void setPassed(final String passed) {
         this.passed = passed;
     }
 
@@ -43,7 +46,7 @@ public class TestRunModel {
         return failed;
     }
 
-    public void setFailed(String failed) {
+    public void setFailed(final String failed) {
         this.failed = failed;
     }
 
@@ -52,7 +55,7 @@ public class TestRunModel {
         return skipped;
     }
 
-    public void setSkipped(String skipped) {
+    public void setSkipped(final String skipped) {
         this.skipped = skipped;
     }
 
@@ -61,7 +64,7 @@ public class TestRunModel {
         return ignored;
     }
 
-    public void setIgnored(String ignored) {
+    public void setIgnored(final String ignored) {
         this.ignored = ignored;
     }
 
@@ -70,7 +73,7 @@ public class TestRunModel {
         return suites;
     }
 
-    public void setSuites(Set<SuiteModel> suites) {
+    public void setSuites(final Set<SuiteModel> suites) {
         this.suites = suites;
     }
 }

@@ -1,5 +1,8 @@
 package com.mbi.api.models.response;
 
+/**
+ * Method response model.
+ */
 public class MethodResponse {
 
     private long id;
@@ -18,7 +21,7 @@ public class MethodResponse {
         return id;
     }
 
-    public void setId(long id) {
+    public void setId(final long id) {
         this.id = id;
     }
 
@@ -26,7 +29,7 @@ public class MethodResponse {
         return name;
     }
 
-    public void setName(String name) {
+    public void setName(final String name) {
         this.name = name;
     }
 
@@ -34,7 +37,7 @@ public class MethodResponse {
         return duration;
     }
 
-    public void setDuration(String duration) {
+    public void setDuration(final String duration) {
         this.duration = duration;
     }
 
@@ -42,7 +45,7 @@ public class MethodResponse {
         return status;
     }
 
-    public void setStatus(String status) {
+    public void setStatus(final String status) {
         this.status = status;
     }
 
@@ -50,7 +53,7 @@ public class MethodResponse {
         return exception;
     }
 
-    public void setException(String exception) {
+    public void setException(final String exception) {
         this.exception = exception;
     }
 
@@ -58,7 +61,7 @@ public class MethodResponse {
         return className;
     }
 
-    public void setClassName(String className) {
+    public void setClassName(final String className) {
         this.className = className;
     }
 }

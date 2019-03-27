@@ -6,16 +6,19 @@ import org.modelmapper.ModelMapper;
 
 import java.util.stream.Collectors;
 
+/**
+ * Class mapper.
+ */
 class ClassMapper implements Mapper<ClassEntity, ClassModel> {
 
     @Override
-    public ClassEntity map(ClassModel classModel) {
-        var classEntity = new ModelMapper().map(classModel, ClassEntity.class);
+    public ClassEntity map(final ClassModel classModel) {
+        final var classEntity = new ModelMapper().map(classModel, ClassEntity.class);
 
-        var methodsSet = classModel.getMethods()
+        final var methodsSet = classModel.getMethods()
                 .stream()
                 .map(methodModel -> {
-                    var methodEntity = new MethodMapper().map(methodModel);
+                    final var methodEntity = new MethodMapper().map(methodModel);
                     methodEntity.setClassEntity(classEntity);
                     return methodEntity;
                 })

@@ -17,6 +17,9 @@ import java.util.List;
 import static org.springframework.web.bind.annotation.RequestMethod.GET;
 import static org.springframework.web.bind.annotation.RequestMethod.POST;
 
+/**
+ * Test run controller.
+ */
 @RestController
 public class TestRunController {
 
@@ -26,28 +29,32 @@ public class TestRunController {
     @RequestMapping(method = POST, path = "/reporters/testng/test-runs", produces = "application/json",
             consumes = "application/xml")
     public ResponseEntity<CreatedResponse> parseTestNG(
-            @RequestParam(value = "productName") String productName,
-            @Valid @RequestBody TestRunModel testRunModel) throws NotFoundException {
+            @RequestParam("productName") final String productName,
+            @Valid @RequestBody final TestRunModel testRunModel) throws NotFoundException {
         return testRunService.parseTestNG(testRunModel, productName);
     }
 
     @RequestMapping(method = GET, path = "/reporters/testng/test-runs/{id}", produces = "application/json")
-    public ResponseEntity<TestRunResponse> getTestRun(@PathVariable(value = "id") long id) throws NotFoundException {
+    public ResponseEntity<TestRunResponse> getTestRun(@PathVariable("id") final long id)
+            throws NotFoundException {
         return testRunService.getTestRunById(id);
     }
 
     @RequestMapping(method = GET, path = "/reporters/testng/test-runs", produces = "application/json")
-    public ResponseEntity<List<TestRunResponse>> getAllTestRuns(@RequestParam(value = "productName", required = false) String productName) throws NotFoundException {
+    public ResponseEntity<List<TestRunResponse>> getAllTestRuns(
+            @RequestParam(value = "productName", required = false) final String productName) throws NotFoundException {
         return testRunService.getAllTestRuns(productName);
     }
 
     @RequestMapping(method = GET, path = "/reporters/testng/test-runs/{id}/failed", produces = "application/json")
-    public ResponseEntity<List<MethodResponse>> getFailedTestCases(@PathVariable(value = "id") long id) throws NotFoundException {
+    public ResponseEntity<List<MethodResponse>> getFailedTestCases(@PathVariable("id") final long id)
+            throws NotFoundException {
         return testRunService.getMethodsByStatus(id, MethodStatus.FAIL);
     }
 
     @RequestMapping(method = GET, path = "/reporters/testng/test-runs/{id}/passed", produces = "application/json")
-    public ResponseEntity<List<MethodResponse>> getPassedTestCases(@PathVariable(value = "id") long id) throws NotFoundException {
+    public ResponseEntity<List<MethodResponse>> getPassedTestCases(@PathVariable("id") final long id)
+            throws NotFoundException {
         return testRunService.getMethodsByStatus(id, MethodStatus.PASS);
     }
 }

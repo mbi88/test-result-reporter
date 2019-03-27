@@ -5,6 +5,9 @@ import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
 import java.util.Set;
 
+/**
+ * Class request model.
+ */
 @XmlRootElement(name = "class")
 public class ClassModel {
 
@@ -17,7 +20,7 @@ public class ClassModel {
         return name;
     }
 
-    public void setName(String name) {
+    public void setName(final String name) {
         this.name = name;
     }
 
@@ -26,7 +29,7 @@ public class ClassModel {
         return methods;
     }
 
-    public void setMethods(Set<MethodModel> methods) {
+    public void setMethods(final Set<MethodModel> methods) {
         this.methods = methods;
     }
 }

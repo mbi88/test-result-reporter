@@ -6,6 +6,9 @@ import org.springframework.stereotype.Repository;
 
 import java.util.Optional;
 
+/**
+ * Product repository.
+ */
 @Repository
 public interface ProductRepository extends CrudRepository<ProductEntity, Long> {
     Optional<ProductEntity> findByName(String name);

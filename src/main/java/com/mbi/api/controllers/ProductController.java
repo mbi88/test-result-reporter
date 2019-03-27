@@ -15,11 +15,13 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.validation.Valid;
-
 import java.util.List;
 
 import static org.springframework.web.bind.annotation.RequestMethod.*;
 
+/**
+ * Product controller.
+ */
 @RestController
 public class ProductController {
 
@@ -27,12 +29,14 @@ public class ProductController {
     private ProductService productService;
 
     @RequestMapping(method = POST, path = "/products", produces = "application/json", consumes = "application/json")
-    public ResponseEntity<CreatedResponse> create(@Valid @RequestBody ProductModel productModel) throws AlreadyExistsException {
+    public ResponseEntity<CreatedResponse> create(@Valid @RequestBody final ProductModel productModel)
+            throws AlreadyExistsException {
         return productService.createProduct(productModel);
     }
 
     @RequestMapping(method = GET, path = "/products/{name}", produces = "application/json")
-    public ResponseEntity<ProductResponse> getByName(@PathVariable(value = "name") String name) throws NotFoundException {
+    public ResponseEntity<ProductResponse> getByName(@PathVariable("name") final String name)
+            throws NotFoundException {
         return productService.getProductByName(name);
     }
 
@@ -42,7 +46,8 @@ public class ProductController {
     }
 
     @RequestMapping(method = DELETE, path = "/products/{name}", produces = "application/json")
-    public ResponseEntity deleteByName(@PathVariable(value = "name") String name) throws NotFoundException, BadRequestException {
+    public ResponseEntity deleteByName(@PathVariable("name") final String name)
+            throws NotFoundException, BadRequestException {
         return productService.deleteProductByName(name);
     }
 }

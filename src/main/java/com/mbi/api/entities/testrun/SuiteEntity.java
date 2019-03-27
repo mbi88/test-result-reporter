@@ -3,6 +3,9 @@ package com.mbi.api.entities.testrun;
 import javax.persistence.*;
 import java.util.Set;
 
+/**
+ * Suite entity.
+ */
 @Entity
 @Table(name = "suites")
 @SequenceGenerator(name = "suite_id_seq", sequenceName = "suite_id_seq", allocationSize = 1)
@@ -23,14 +26,11 @@ public class SuiteEntity {
     @OneToMany(mappedBy = "suiteEntity", fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     private Set<TestEntity> tests;
 
-    public SuiteEntity() {
-    }
-
     public TestRunEntity getTestRunEntity() {
         return testRunEntity;
     }
 
-    public void setTestRunEntity(TestRunEntity testRunEntity) {
+    public void setTestRunEntity(final TestRunEntity testRunEntity) {
         this.testRunEntity = testRunEntity;
     }
 
@@ -38,7 +38,7 @@ public class SuiteEntity {
         return name;
     }
 
-    public void setName(String name) {
+    public void setName(final String name) {
         this.name = name;
     }
 
@@ -46,7 +46,7 @@ public class SuiteEntity {
         return duration;
     }
 
-    public void setDuration(String duration) {
+    public void setDuration(final String duration) {
         this.duration = duration;
     }
 
@@ -54,7 +54,7 @@ public class SuiteEntity {
         return id;
     }
 
-    public void setId(Long id) {
+    public void setId(final Long id) {
         this.id = id;
     }
 
@@ -62,7 +62,7 @@ public class SuiteEntity {
         return tests;
     }
 
-    public void setTests(Set<TestEntity> tests) {
+    public void setTests(final Set<TestEntity> tests) {
         this.tests = tests;
     }
 }

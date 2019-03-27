@@ -6,16 +6,19 @@ import org.modelmapper.ModelMapper;
 
 import java.util.stream.Collectors;
 
+/**
+ * Tests mapper.
+ */
 class TestMapper implements Mapper<TestEntity, TestModel> {
 
     @Override
-    public TestEntity map(TestModel testModel) {
-        var testEntity = new ModelMapper().map(testModel, TestEntity.class);
+    public TestEntity map(final TestModel testModel) {
+        final var testEntity = new ModelMapper().map(testModel, TestEntity.class);
 
-        var classesSet = testModel.getClasses()
+        final var classesSet = testModel.getClasses()
                 .stream()
                 .map(classModel -> {
-                    var classEntity = new ClassMapper().map(classModel);
+                    final var classEntity = new ClassMapper().map(classModel);
                     classEntity.setTestEntity(testEntity);
                     return classEntity;
                 })

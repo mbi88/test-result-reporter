@@ -5,13 +5,16 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 
 import java.util.Arrays;
 
-@ResponseStatus(value = HttpStatus.NOT_FOUND)
+/**
+ * Not found exception.
+ */
+@ResponseStatus(HttpStatus.NOT_FOUND)
 public class NotFoundException extends Exception {
 
-    private Class entityClassName;
-    private String message;
+    private final Class entityClassName;
+    private final String message;
 
-    public NotFoundException(Class entity, String message) {
+    public NotFoundException(final Class entity, final String message) {
         this.entityClassName = entity;
         this.message = message;
     }

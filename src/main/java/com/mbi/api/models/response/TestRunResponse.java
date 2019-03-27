@@ -1,5 +1,8 @@
 package com.mbi.api.models.response;
 
+/**
+ * Test run response model.
+ */
 public class TestRunResponse {
 
     private long id;
@@ -22,7 +25,7 @@ public class TestRunResponse {
         return id;
     }
 
-    public void setId(long id) {
+    public void setId(final long id) {
         this.id = id;
     }
 
@@ -30,7 +33,7 @@ public class TestRunResponse {
         return total;
     }
 
-    public void setTotal(String total) {
+    public void setTotal(final String total) {
         this.total = total;
     }
 
@@ -38,7 +41,7 @@ public class TestRunResponse {
         return passed;
     }
 
-    public void setPassed(String passed) {
+    public void setPassed(final String passed) {
         this.passed = passed;
     }
 
@@ -46,7 +49,7 @@ public class TestRunResponse {
         return failed;
     }
 
-    public void setFailed(String failed) {
+    public void setFailed(final String failed) {
         this.failed = failed;
     }
 
@@ -54,7 +57,7 @@ public class TestRunResponse {
         return skipped;
     }
 
-    public void setSkipped(String skipped) {
+    public void setSkipped(final String skipped) {
         this.skipped = skipped;
     }
 
@@ -62,7 +65,7 @@ public class TestRunResponse {
         return ignored;
     }
 
-    public void setIgnored(String ignored) {
+    public void setIgnored(final String ignored) {
         this.ignored = ignored;
     }
 
@@ -70,7 +73,7 @@ public class TestRunResponse {
         return productName;
     }
 
-    public void setProductName(String productName) {
+    public void setProductName(final String productName) {
         this.productName = productName;
     }
 
@@ -78,7 +81,7 @@ public class TestRunResponse {
         return duration;
     }
 
-    public void setDuration(int duration) {
+    public void setDuration(final int duration) {
         this.duration = duration;
     }
 }

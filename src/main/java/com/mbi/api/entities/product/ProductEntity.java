@@ -4,6 +4,9 @@ import com.mbi.api.entities.testrun.TestRunEntity;
 
 import javax.persistence.*;
 
+/**
+ * Product entity.
+ */
 @Entity
 @Table(name = "products")
 @SequenceGenerator(name = "product_id_seq", sequenceName = "product_id_seq", allocationSize = 1)
@@ -18,14 +21,11 @@ public class ProductEntity {
     @OneToOne(mappedBy = "product", fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     private TestRunEntity testRunEntity;
 
-    public ProductEntity() {
-    }
-
     public Long getId() {
         return id;
     }
 
-    public void setId(Long id) {
+    public void setId(final Long id) {
         this.id = id;
     }
 
@@ -33,7 +33,7 @@ public class ProductEntity {
         return name;
     }
 
-    public void setName(String name) {
+    public void setName(final String name) {
         this.name = name;
     }
 
@@ -41,7 +41,7 @@ public class ProductEntity {
         return testRunEntity;
     }
 
-    public void setTestRunEntity(TestRunEntity testRunEntity) {
+    public void setTestRunEntity(final TestRunEntity testRunEntity) {
         this.testRunEntity = testRunEntity;
     }
 }

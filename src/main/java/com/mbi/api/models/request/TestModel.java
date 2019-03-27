@@ -5,6 +5,9 @@ import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
 import java.util.Set;
 
+/**
+ * Test request model.
+ */
 @XmlRootElement(name = "test")
 public class TestModel {
 
@@ -19,7 +22,7 @@ public class TestModel {
         return name;
     }
 
-    public void setName(String name) {
+    public void setName(final String name) {
         this.name = name;
     }
 
@@ -28,7 +31,7 @@ public class TestModel {
         return duration;
     }
 
-    public void setDuration(String duration) {
+    public void setDuration(final String duration) {
         this.duration = duration;
     }
 
@@ -37,7 +40,7 @@ public class TestModel {
         return classes;
     }
 
-    public void setClasses(Set<ClassModel> classes) {
+    public void setClasses(final Set<ClassModel> classes) {
         this.classes = classes;
     }
 }

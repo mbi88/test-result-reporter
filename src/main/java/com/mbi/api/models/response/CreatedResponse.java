@@ -1,5 +1,8 @@
 package com.mbi.api.models.response;
 
+/**
+ * Created entity response model.
+ */
 public class CreatedResponse {
 
     private long id;
@@ -8,7 +11,7 @@ public class CreatedResponse {
         return id;
     }
 
-    public void setId(long id) {
+    public void setId(final long id) {
         this.id = id;
     }
 }
