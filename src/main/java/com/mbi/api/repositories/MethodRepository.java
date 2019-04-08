@@ -14,9 +14,14 @@ import java.util.Optional;
 @Repository
 public interface MethodRepository extends CrudRepository<MethodEntity, Long> {
 
-    @Query(value = "select * from methods where status = ?1 and class_id in "
-            + "(select id from classes where test_id in "
-            + "(select id from tests where suite_id in "
-            + "(select id from suites where test_run_id = ?2)))", nativeQuery = true)
+    @Query(value = "\n"
+            + "select m.id, m.duration, m.exception, m.status, m.name, m.class_id\n"
+            + "from methods m\n"
+            + "         inner join classes c on m.class_id = c.id\n"
+            + "         inner join tests t on c.test_id = t.id\n"
+            + "         inner join suites s on t.suite_id = s.id\n"
+            + "         inner join test_runs tr on s.test_run_id = tr.id\n"
+            + "where status = ?1\n"
+            + "  and tr.id = ?2", nativeQuery = true)
     Optional<List<MethodEntity>> findAllByStatusAndTestRunId(String status, int id);
 }
