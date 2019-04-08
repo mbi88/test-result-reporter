@@ -9,6 +9,7 @@ import com.mbi.api.mappers.TestRunMapper;
 import com.mbi.api.models.request.TestRunModel;
 import com.mbi.api.models.response.CreatedResponse;
 import com.mbi.api.models.response.MethodResponse;
+import com.mbi.api.models.response.TestRunDeltaResponse;
 import com.mbi.api.models.response.TestRunResponse;
 import com.mbi.api.repositories.MethodRepository;
 import com.mbi.api.repositories.ProductRepository;
@@ -21,6 +22,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Objects;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 
 import static com.mbi.api.exceptions.ExceptionSupplier.NOT_FOUND_ERROR_MESSAGE;
@@ -96,5 +98,33 @@ public class TestRunService {
                 .collect(Collectors.toList());
 
         return new ResponseEntity<>(methods, HttpStatus.OK);
+    }
+
+    public ResponseEntity<TestRunDeltaResponse> getBuildDifference(final long id) throws NotFoundException {
+        final var currentTestRun = testRunRepository.findById(id)
+                .orElseThrow(NOT_FOUND_SUPPLIER.apply(TestRunEntity.class, NOT_FOUND_ERROR_MESSAGE));
+        final long prevTestRinId = testRunRepository.findPreviousById(currentTestRun.getId().intValue())
+                .orElseThrow(NOT_FOUND_SUPPLIER.apply(TestRunEntity.class, NOT_FOUND_ERROR_MESSAGE));
+        final var prevTestRun = testRunRepository.findById(prevTestRinId)
+                .orElseThrow(NOT_FOUND_SUPPLIER.apply(TestRunEntity.class, NOT_FOUND_ERROR_MESSAGE));
+
+        final int duration = currentTestRun.getDuration() - prevTestRun.getDuration();
+        final int total = Integer.parseInt(currentTestRun.getTotal()) - Integer.parseInt(prevTestRun.getTotal());
+        final int passed = Integer.parseInt(currentTestRun.getPassed()) - Integer.parseInt(prevTestRun.getPassed());
+        final int failed = Integer.parseInt(currentTestRun.getFailed()) - Integer.parseInt(prevTestRun.getFailed());
+        final int skipped = Integer.parseInt(currentTestRun.getSkipped()) - Integer.parseInt(prevTestRun.getSkipped());
+
+        final Function<Integer, String> map = integer -> (integer == 0) ? String.valueOf(integer) : (integer > 0)
+                ? "↑".concat(String.valueOf(integer))
+                : "↓".concat(String.valueOf(integer).substring(1));
+
+        final var deltaResponse = new TestRunDeltaResponse();
+        deltaResponse.setDurationDiff(map.apply(duration));
+        deltaResponse.setTotalDiff(map.apply(total));
+        deltaResponse.setPassedDiff(map.apply(passed));
+        deltaResponse.setFailedDiff(map.apply(failed));
+        deltaResponse.setSkippedDiff(map.apply(skipped));
+
+        return new ResponseEntity<>(deltaResponse, HttpStatus.OK);
     }
 }

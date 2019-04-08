@@ -5,6 +5,7 @@ import com.mbi.api.exceptions.NotFoundException;
 import com.mbi.api.models.request.TestRunModel;
 import com.mbi.api.models.response.CreatedResponse;
 import com.mbi.api.models.response.MethodResponse;
+import com.mbi.api.models.response.TestRunDeltaResponse;
 import com.mbi.api.models.response.TestRunResponse;
 import com.mbi.api.services.TestRunService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -56,5 +57,11 @@ public class TestRunController {
     public ResponseEntity<List<MethodResponse>> getPassedTestCases(@PathVariable("id") final long id)
             throws NotFoundException {
         return testRunService.getMethodsByStatus(id, MethodStatus.PASS);
+    }
+
+    @RequestMapping(method = GET, path = "/reporters/testng/test-runs/{id}/delta", produces = "application/json")
+    public ResponseEntity<TestRunDeltaResponse> getBuildDelta(@PathVariable("id") final long id)
+            throws NotFoundException {
+        return testRunService.getBuildDifference(id);
     }
 }
