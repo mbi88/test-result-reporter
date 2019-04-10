@@ -14,18 +14,18 @@ public class ProductEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "product_id_seq")
-    private Long id;
+    private Integer id;
 
     private String name;
 
     @OneToOne(mappedBy = "product", fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     private TestRunEntity testRunEntity;
 
-    public Long getId() {
+    public Integer getId() {
         return id;
     }
 
-    public void setId(final Long id) {
+    public void setId(final Integer id) {
         this.id = id;
     }
 

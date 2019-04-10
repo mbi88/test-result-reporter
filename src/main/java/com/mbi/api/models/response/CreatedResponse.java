@@ -5,13 +5,13 @@ package com.mbi.api.models.response;
  */
 public class CreatedResponse {
 
-    private long id;
+    private int id;
 
-    public long getId() {
+    public int getId() {
         return id;
     }
 
-    public void setId(final long id) {
+    public void setId(final int id) {
         this.id = id;
     }
 }

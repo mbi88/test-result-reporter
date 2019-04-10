@@ -18,28 +18,28 @@ public class TestRunEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "test_run_id_seq")
-    private Long id;
+    private Integer id;
 
-    private String total;
+    private int total;
 
-    private String passed;
+    private int passed;
 
-    private String failed;
+    private int failed;
 
-    private String skipped;
+    private int skipped;
 
-    private String ignored;
+    private int ignored;
 
     private int duration;
 
     private boolean successful;
 
+    @OneToMany(mappedBy = "testRunEntity", fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+    private Set<TestCaseEntity> testCases;
+
     @OneToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "product_id")
     private ProductEntity product;
-
-    @OneToMany(mappedBy = "testRunEntity", fetch = FetchType.EAGER, cascade = CascadeType.ALL)
-    private Set<SuiteEntity> suites;
 
     @CreationTimestamp
     @Temporal(TemporalType.TIMESTAMP)
@@ -50,51 +50,51 @@ public class TestRunEntity {
     @Temporal(TemporalType.TIMESTAMP)
     private Date updatedAt;
 
-    public Long getId() {
+    public Integer getId() {
         return id;
     }
 
-    public void setId(final Long id) {
+    public void setId(final Integer id) {
         this.id = id;
     }
 
-    public String getTotal() {
+    public int getTotal() {
         return total;
     }
 
-    public void setTotal(final String total) {
+    public void setTotal(final int total) {
         this.total = total;
     }
 
-    public String getPassed() {
+    public int getPassed() {
         return passed;
     }
 
-    public void setPassed(final String passed) {
+    public void setPassed(final int passed) {
         this.passed = passed;
     }
 
-    public String getFailed() {
+    public int getFailed() {
         return failed;
     }
 
-    public void setFailed(final String failed) {
+    public void setFailed(final int failed) {
         this.failed = failed;
     }
 
-    public String getSkipped() {
+    public int getSkipped() {
         return skipped;
     }
 
-    public void setSkipped(final String skipped) {
+    public void setSkipped(final int skipped) {
         this.skipped = skipped;
     }
 
-    public String getIgnored() {
+    public int getIgnored() {
         return ignored;
     }
 
-    public void setIgnored(final String ignored) {
+    public void setIgnored(final int ignored) {
         this.ignored = ignored;
     }
 
@@ -112,14 +112,6 @@ public class TestRunEntity {
 
     public void setUpdatedAt(final Date updatedAt) {
         this.updatedAt = new Date(updatedAt.getTime());
-    }
-
-    public Set<SuiteEntity> getSuites() {
-        return suites;
-    }
-
-    public void setSuites(final Set<SuiteEntity> suites) {
-        this.suites = suites;
     }
 
     public ProductEntity getProduct() {
@@ -144,5 +136,13 @@ public class TestRunEntity {
 
     public void setSuccessful(final boolean successful) {
         this.successful = successful;
+    }
+
+    public Set<TestCaseEntity> getTestCases() {
+        return testCases;
+    }
+
+    public void setTestCases(final Set<TestCaseEntity> testCases) {
+        this.testCases = testCases;
     }
 }

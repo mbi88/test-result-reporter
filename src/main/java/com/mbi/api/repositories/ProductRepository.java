@@ -10,6 +10,6 @@ import java.util.Optional;
  * Product repository.
  */
 @Repository
-public interface ProductRepository extends CrudRepository<ProductEntity, Long> {
+public interface ProductRepository extends CrudRepository<ProductEntity, Integer> {
     Optional<ProductEntity> findByName(String name);
 }

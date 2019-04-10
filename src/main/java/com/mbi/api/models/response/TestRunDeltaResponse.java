@@ -5,53 +5,53 @@ package com.mbi.api.models.response;
  */
 public class TestRunDeltaResponse {
 
-    private String durationDiff;
+    private int durationDiff;
 
-    private String totalDiff;
+    private int totalDiff;
 
-    private String passedDiff;
+    private int passedDiff;
 
-    private String failedDiff;
+    private int failedDiff;
 
-    private String skippedDiff;
+    private int skippedDiff;
 
-    public String getDurationDiff() {
+    public int getDurationDiff() {
         return durationDiff;
     }
 
-    public void setDurationDiff(final String durationDiff) {
+    public void setDurationDiff(final int durationDiff) {
         this.durationDiff = durationDiff;
     }
 
-    public String getTotalDiff() {
+    public int getTotalDiff() {
         return totalDiff;
     }
 
-    public void setTotalDiff(final String totalDiff) {
+    public void setTotalDiff(final int totalDiff) {
         this.totalDiff = totalDiff;
     }
 
-    public String getPassedDiff() {
+    public int getPassedDiff() {
         return passedDiff;
     }
 
-    public void setPassedDiff(final String passedDiff) {
+    public void setPassedDiff(final int passedDiff) {
         this.passedDiff = passedDiff;
     }
 
-    public String getFailedDiff() {
+    public int getFailedDiff() {
         return failedDiff;
     }
 
-    public void setFailedDiff(final String failedDiff) {
+    public void setFailedDiff(final int failedDiff) {
         this.failedDiff = failedDiff;
     }
 
-    public String getSkippedDiff() {
+    public int getSkippedDiff() {
         return skippedDiff;
     }
 
-    public void setSkippedDiff(final String skippedDiff) {
+    public void setSkippedDiff(final int skippedDiff) {
         this.skippedDiff = skippedDiff;
     }
 }

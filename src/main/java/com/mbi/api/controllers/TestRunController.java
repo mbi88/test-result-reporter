@@ -1,10 +1,8 @@
 package com.mbi.api.controllers;
 
-import com.mbi.api.enums.MethodStatus;
 import com.mbi.api.exceptions.NotFoundException;
 import com.mbi.api.models.request.TestRunModel;
 import com.mbi.api.models.response.CreatedResponse;
-import com.mbi.api.models.response.MethodResponse;
 import com.mbi.api.models.response.TestRunDeltaResponse;
 import com.mbi.api.models.response.TestRunResponse;
 import com.mbi.api.services.TestRunService;
@@ -27,40 +25,27 @@ public class TestRunController {
     @Autowired
     private TestRunService testRunService;
 
-    @RequestMapping(method = POST, path = "/reporters/testng/test-runs", produces = "application/json",
-            consumes = "application/xml")
-    public ResponseEntity<CreatedResponse> parseTestNG(
+    @RequestMapping(method = POST, path = "/test-runs", produces = "application/json", consumes = "application/json")
+    public ResponseEntity<CreatedResponse> create(
             @RequestParam("productName") final String productName,
             @Valid @RequestBody final TestRunModel testRunModel) throws NotFoundException {
-        return testRunService.parseTestNG(testRunModel, productName);
+        return testRunService.createTestRun(testRunModel, productName);
     }
 
-    @RequestMapping(method = GET, path = "/reporters/testng/test-runs/{id}", produces = "application/json")
-    public ResponseEntity<TestRunResponse> getTestRun(@PathVariable("id") final long id)
+    @RequestMapping(method = GET, path = "/test-runs/{id}", produces = "application/json")
+    public ResponseEntity<TestRunResponse> getTestRun(@PathVariable("id") final int id)
             throws NotFoundException {
         return testRunService.getTestRunById(id);
     }
 
-    @RequestMapping(method = GET, path = "/reporters/testng/test-runs", produces = "application/json")
+    @RequestMapping(method = GET, path = "/test-runs", produces = "application/json")
     public ResponseEntity<List<TestRunResponse>> getAllTestRuns(
             @RequestParam(value = "productName", required = false) final String productName) throws NotFoundException {
         return testRunService.getAllTestRuns(productName);
     }
 
-    @RequestMapping(method = GET, path = "/reporters/testng/test-runs/{id}/failed", produces = "application/json")
-    public ResponseEntity<List<MethodResponse>> getFailedTestCases(@PathVariable("id") final long id)
-            throws NotFoundException {
-        return testRunService.getMethodsByStatus(id, MethodStatus.FAIL);
-    }
-
-    @RequestMapping(method = GET, path = "/reporters/testng/test-runs/{id}/passed", produces = "application/json")
-    public ResponseEntity<List<MethodResponse>> getPassedTestCases(@PathVariable("id") final long id)
-            throws NotFoundException {
-        return testRunService.getMethodsByStatus(id, MethodStatus.PASS);
-    }
-
-    @RequestMapping(method = GET, path = "/reporters/testng/test-runs/{id}/delta", produces = "application/json")
-    public ResponseEntity<TestRunDeltaResponse> getBuildDelta(@PathVariable("id") final long id)
+    @RequestMapping(method = GET, path = "/test-runs/{id}/delta", produces = "application/json")
+    public ResponseEntity<TestRunDeltaResponse> getBuildDelta(@PathVariable("id") final int id)
             throws NotFoundException {
         return testRunService.getBuildDifference(id);
     }

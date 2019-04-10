@@ -1,4 +1,4 @@
-package com.mbi.api.models.request;
+package com.mbi.api.models.request.testng;
 
 import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlElement;

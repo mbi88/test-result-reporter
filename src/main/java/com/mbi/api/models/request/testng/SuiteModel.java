@@ -1,4 +1,4 @@
-package com.mbi.api.models.request;
+package com.mbi.api.models.request.testng;
 
 import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlElement;
@@ -6,16 +6,16 @@ import javax.xml.bind.annotation.XmlRootElement;
 import java.util.Set;
 
 /**
- * Test request model.
+ * Suite request model.
  */
-@XmlRootElement(name = "test")
-public class TestModel {
+@XmlRootElement(name = "suite")
+public class SuiteModel {
 
     private String name;
 
     private String duration;
 
-    private Set<ClassModel> classes;
+    private Set<TestModel> tests;
 
     @XmlAttribute
     public String getName() {
@@ -35,12 +35,12 @@ public class TestModel {
         this.duration = duration;
     }
 
-    @XmlElement(name = "class")
-    public Set<ClassModel> getClasses() {
-        return classes;
+    @XmlElement(name = "test")
+    public Set<TestModel> getTests() {
+        return tests;
     }
 
-    public void setClasses(final Set<ClassModel> classes) {
-        this.classes = classes;
+    public void setTests(final Set<TestModel> tests) {
+        this.tests = tests;
     }
 }

@@ -1,15 +1,15 @@
 package com.mbi.api.models.response;
 
 /**
- * Method response model.
+ * Test case response model.
  */
-public class MethodResponse {
+public class TestCaseResponse {
 
-    private long id;
+    private int id;
 
     private String name;
 
-    private String duration;
+    private int duration;
 
     private String status;
 
@@ -17,11 +17,11 @@ public class MethodResponse {
 
     private String exception;
 
-    public long getId() {
+    public int getId() {
         return id;
     }
 
-    public void setId(final long id) {
+    public void setId(final int id) {
         this.id = id;
     }
 
@@ -33,11 +33,11 @@ public class MethodResponse {
         this.name = name;
     }
 
-    public String getDuration() {
+    public int getDuration() {
         return duration;
     }
 
-    public void setDuration(final String duration) {
+    public void setDuration(final int duration) {
         this.duration = duration;
     }
 

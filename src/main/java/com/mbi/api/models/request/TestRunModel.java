@@ -1,79 +1,67 @@
 package com.mbi.api.models.request;
 
-import javax.xml.bind.annotation.XmlAttribute;
-import javax.xml.bind.annotation.XmlElement;
-import javax.xml.bind.annotation.XmlRootElement;
-import java.util.Set;
-
 /**
  * Test run request model.
  */
-@XmlRootElement(name = "testng-results")
 public class TestRunModel {
 
-    private String total;
+    private int total;
 
-    private String passed;
+    private int passed;
 
-    private String failed;
+    private int failed;
 
-    private String skipped;
+    private int skipped;
 
-    private String ignored;
+    private int ignored;
 
-    private Set<SuiteModel> suites;
+    private int duration;
 
-    @XmlAttribute
-    public String getTotal() {
+    public int getTotal() {
         return total;
     }
 
-    public void setTotal(final String total) {
+    public void setTotal(final int total) {
         this.total = total;
     }
 
-    @XmlAttribute
-    public String getPassed() {
+    public int getPassed() {
         return passed;
     }
 
-    public void setPassed(final String passed) {
+    public void setPassed(final int passed) {
         this.passed = passed;
     }
 
-    @XmlAttribute
-    public String getFailed() {
+    public int getFailed() {
         return failed;
     }
 
-    public void setFailed(final String failed) {
+    public void setFailed(final int failed) {
         this.failed = failed;
     }
 
-    @XmlAttribute
-    public String getSkipped() {
+    public int getSkipped() {
         return skipped;
     }
 
-    public void setSkipped(final String skipped) {
+    public void setSkipped(final int skipped) {
         this.skipped = skipped;
     }
 
-    @XmlAttribute
-    public String getIgnored() {
+    public int getIgnored() {
         return ignored;
     }
 
-    public void setIgnored(final String ignored) {
+    public void setIgnored(final int ignored) {
         this.ignored = ignored;
     }
 
-    @XmlElement(name = "suite")
-    public Set<SuiteModel> getSuites() {
-        return suites;
+    public int getDuration() {
+        return duration;
     }
 
-    public void setSuites(final Set<SuiteModel> suites) {
-        this.suites = suites;
+    public void setDuration(final int duration) {
+        this.duration = duration;
     }
 }

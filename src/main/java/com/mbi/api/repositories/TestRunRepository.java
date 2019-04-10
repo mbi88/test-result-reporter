@@ -13,11 +13,14 @@ import java.util.Optional;
  * Test run repository.
  */
 @Repository
-public interface TestRunRepository extends CrudRepository<TestRunEntity, Long> {
+public interface TestRunRepository extends CrudRepository<TestRunEntity, Integer> {
 
     Optional<List<TestRunEntity>> findAllByProduct(ProductEntity product);
 
-    @Query(value = "select t.lag from (SELECT id, lag(id) OVER (ORDER BY Id) as lag FROM test_runs) t where id = ?1",
+    @Query(value = "\n"
+            + "SELECT t.lag\n"
+            + "FROM (SELECT id, lag(id) OVER (ORDER BY Id) as lag FROM test_runs WHERE product_id = ?2) t\n"
+            + "WHERE id = ?1",
             nativeQuery = true)
-    Optional<Long> findPreviousById(int id);
+    Optional<Integer> findPreviousById(int id, int productId);
 }
