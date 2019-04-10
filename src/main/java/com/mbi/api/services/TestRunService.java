@@ -53,7 +53,7 @@ public class TestRunService {
         // Set test run product
         testRunEntity.setProduct(productEntity);
         // Set test run status
-        final Predicate<String> zero = s -> s.equals("0");
+        final Predicate<String> zero = "0"::equals;
         final boolean successful = zero.test(testRunModel.getFailed()) && zero.test(testRunModel.getSkipped());
         testRunEntity.setSuccessful(successful);
         // Save
