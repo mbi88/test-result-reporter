@@ -21,6 +21,8 @@ public class TestRunResponse {
 
     private int duration;
 
+    private boolean successful;
+
     public long getId() {
         return id;
     }
@@ -83,5 +85,13 @@ public class TestRunResponse {
 
     public void setDuration(final int duration) {
         this.duration = duration;
+    }
+
+    public boolean isSuccessful() {
+        return successful;
+    }
+
+    public void setSuccessful(final boolean successful) {
+        this.successful = successful;
     }
 }

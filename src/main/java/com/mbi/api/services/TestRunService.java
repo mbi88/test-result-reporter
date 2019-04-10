@@ -23,6 +23,7 @@ import org.springframework.stereotype.Service;
 import java.util.List;
 import java.util.Objects;
 import java.util.function.Function;
+import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
 import static com.mbi.api.exceptions.ExceptionSupplier.NOT_FOUND_ERROR_MESSAGE;
@@ -49,7 +50,13 @@ public class TestRunService {
                 .orElseThrow(NOT_FOUND_SUPPLIER.apply(ProductEntity.class, NOT_FOUND_ERROR_MESSAGE));
 
         final var testRunEntity = new TestRunMapper().map(testRunModel);
+        // Set test run product
         testRunEntity.setProduct(productEntity);
+        // Set test run status
+        final Predicate<String> zero = s -> s.equals("0");
+        final boolean successful = zero.test(testRunModel.getFailed()) && zero.test(testRunModel.getSkipped());
+        testRunEntity.setSuccessful(successful);
+        // Save
         testRunRepository.save(testRunEntity);
 
         final var createdModel = new ModelMapper().map(testRunEntity, CreatedResponse.class);

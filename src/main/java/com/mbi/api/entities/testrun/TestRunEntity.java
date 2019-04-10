@@ -32,6 +32,8 @@ public class TestRunEntity {
 
     private int duration;
 
+    private boolean successful;
+
     @OneToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "product_id")
     private ProductEntity product;
@@ -134,5 +136,13 @@ public class TestRunEntity {
 
     public void setDuration(final int duration) {
         this.duration = duration;
+    }
+
+    public boolean isSuccessful() {
+        return successful;
+    }
+
+    public void setSuccessful(final boolean successful) {
+        this.successful = successful;
     }
 }
