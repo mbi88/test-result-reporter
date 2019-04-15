@@ -1,4 +1,4 @@
-package com.mbi.api.models.request;
+package com.mbi.api.models.request.report;
 
 import com.mbi.api.enums.MethodStatus;
 

@@ -1,4 +1,4 @@
-package com.mbi.api.models.request;
+package com.mbi.api.models.request.report;
 
 import org.hibernate.validator.constraints.Length;
 

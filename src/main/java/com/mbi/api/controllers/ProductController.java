@@ -3,7 +3,7 @@ package com.mbi.api.controllers;
 import com.mbi.api.exceptions.AlreadyExistsException;
 import com.mbi.api.exceptions.BadRequestException;
 import com.mbi.api.exceptions.NotFoundException;
-import com.mbi.api.models.request.ProductModel;
+import com.mbi.api.models.request.report.ProductModel;
 import com.mbi.api.models.response.CreatedResponse;
 import com.mbi.api.models.response.ProductResponse;
 import com.mbi.api.services.ProductService;

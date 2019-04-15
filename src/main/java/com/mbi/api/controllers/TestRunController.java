@@ -1,7 +1,7 @@
 package com.mbi.api.controllers;
 
 import com.mbi.api.exceptions.NotFoundException;
-import com.mbi.api.models.request.TestRunModel;
+import com.mbi.api.models.request.report.TestRunModel;
 import com.mbi.api.models.response.CreatedResponse;
 import com.mbi.api.models.response.TestRunDeltaResponse;
 import com.mbi.api.models.response.TestRunResponse;

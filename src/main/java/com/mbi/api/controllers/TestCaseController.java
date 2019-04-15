@@ -2,7 +2,7 @@ package com.mbi.api.controllers;
 
 import com.mbi.api.enums.MethodStatus;
 import com.mbi.api.exceptions.NotFoundException;
-import com.mbi.api.models.request.TestCaseModel;
+import com.mbi.api.models.request.report.TestCaseModel;
 import com.mbi.api.models.response.CreatedResponse;
 import com.mbi.api.models.response.TestCaseResponse;
 import com.mbi.api.services.TestCaseService;
