@@ -1,5 +1,7 @@
 package com.mbi.api.models.request.slack;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 import java.util.List;
 
 /**
@@ -11,12 +13,14 @@ public class Attachment {
 
     private String color;
 
+    @JsonProperty("author_name")
     private String authorName;
 
     private List<Field> fields;
 
     private String footer;
 
+    @JsonProperty("footer_icon")
     private String footerIcon;
 
     private int ts;

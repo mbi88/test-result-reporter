@@ -1,5 +1,7 @@
 package com.mbi.api.models.request.slack;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 /**
  * Field reqquest model.
  */
@@ -9,6 +11,7 @@ public class Field {
 
     private String value;
 
+    @JsonProperty("short")
     private boolean shortField;
 
     public String getTitle() {
