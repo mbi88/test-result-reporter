@@ -23,7 +23,7 @@ public class Attachment {
     @JsonProperty("footer_icon")
     private String footerIcon;
 
-    private int ts;
+    private long ts;
 
     public String getFallback() {
         return fallback;
@@ -73,11 +73,11 @@ public class Attachment {
         this.footerIcon = footerIcon;
     }
 
-    public int getTs() {
+    public long getTs() {
         return ts;
     }
 
-    public void setTs(final int ts) {
+    public void setTs(final long ts) {
         this.ts = ts;
     }
 }

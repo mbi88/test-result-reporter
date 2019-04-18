@@ -7,15 +7,15 @@ public class TestRunResponse {
 
     private long id;
 
-    private String total;
+    private int total;
 
-    private String passed;
+    private int passed;
 
-    private String failed;
+    private int failed;
 
-    private String skipped;
+    private int skipped;
 
-    private String ignored;
+    private int ignored;
 
     private String productName;
 
@@ -31,43 +31,43 @@ public class TestRunResponse {
         this.id = id;
     }
 
-    public String getTotal() {
+    public int getTotal() {
         return total;
     }
 
-    public void setTotal(final String total) {
+    public void setTotal(final int total) {
         this.total = total;
     }
 
-    public String getPassed() {
+    public int getPassed() {
         return passed;
     }
 
-    public void setPassed(final String passed) {
+    public void setPassed(final int passed) {
         this.passed = passed;
     }
 
-    public String getFailed() {
+    public int getFailed() {
         return failed;
     }
 
-    public void setFailed(final String failed) {
+    public void setFailed(final int failed) {
         this.failed = failed;
     }
 
-    public String getSkipped() {
+    public int getSkipped() {
         return skipped;
     }
 
-    public void setSkipped(final String skipped) {
+    public void setSkipped(final int skipped) {
         this.skipped = skipped;
     }
 
-    public String getIgnored() {
+    public int getIgnored() {
         return ignored;
     }
 
-    public void setIgnored(final String ignored) {
+    public void setIgnored(final int ignored) {
         this.ignored = ignored;
     }
 

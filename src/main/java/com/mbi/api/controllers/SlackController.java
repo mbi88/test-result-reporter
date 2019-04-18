@@ -1,6 +1,7 @@
 package com.mbi.api.controllers;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
+import com.mbi.api.exceptions.NotFoundException;
 import com.mbi.api.models.request.slack.Attachment;
 import com.mbi.api.services.SlackService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -30,5 +31,11 @@ public class SlackController {
             @RequestParam("channel") final String channel,
             @Valid @RequestBody final List<Attachment> attachments) throws JsonProcessingException {
         return slackService.createSlackMessage(token, channel, attachments);
+    }
+
+    @RequestMapping(method = POST, path = "/slack/messages2", produces = "application/json")
+    public ResponseEntity<Object> sendMessage2(@RequestParam("testRunId") final int testRunId)
+            throws JsonProcessingException, NotFoundException {
+        return slackService.createSlackMessage(testRunId);
     }
 }
