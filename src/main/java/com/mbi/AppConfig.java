@@ -10,6 +10,8 @@ class AppConfig {
     private final String url;
     private final String user;
     private final String password;
+    private final String slackChannel;
+    private final String slackBotToken;
 
     AppConfig() {
         this.user = System.getenv("POSTGRES_USER");
@@ -17,6 +19,8 @@ class AppConfig {
         final var dbHost = System.getenv("POSTGRES_HOST");
         final var database = System.getenv("POSTGRES_DB");
         this.url = String.format("jdbc:postgresql://%s:5432/%s?createDatabaseIfNotExist=true", dbHost, database);
+        this.slackChannel = System.getenv("SLACK_CHANNEL");
+        this.slackBotToken = System.getenv("SLACK_BOT_TOKEN");
     }
 
     public Properties getProperties() {
@@ -24,6 +28,8 @@ class AppConfig {
         props.put("spring.datasource.url", url);
         props.put("spring.datasource.username", user);
         props.put("spring.datasource.password", password);
+        props.put("slack.channel", slackChannel);
+        props.put("slack.token", slackBotToken);
 
         return props;
     }
