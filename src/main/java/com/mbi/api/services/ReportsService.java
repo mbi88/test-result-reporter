@@ -42,7 +42,7 @@ public class ReportsService {
     private ProductRepository productRepository;
 
     @Transactional
-    public ResponseEntity<CreatedResponse> parseTestNG(final ReportModel reportModel, final String productName)
+    public CreatedResponse parseTestNG(final ReportModel reportModel, final String productName)
             throws NotFoundException {
         productRepository.findByName(productName)
                 .orElseThrow(NOT_FOUND_SUPPLIER.apply(ProductEntity.class, NOT_FOUND_ERROR_MESSAGE));
@@ -61,7 +61,7 @@ public class ReportsService {
         // Create test cases
         for (var testClass : getClasses(reportModel.getSuites())) {
             for (var method : testClass.getMethods()) {
-                createTestCase(method, testClass.getName(), Objects.requireNonNull(response.getBody()).getId());
+                createTestCase(method, testClass.getName(), response.getId());
             }
         }
 

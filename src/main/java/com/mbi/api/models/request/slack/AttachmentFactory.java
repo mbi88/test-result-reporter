@@ -1,7 +1,5 @@
-package com.mbi.api.mappers;
+package com.mbi.api.models.request.slack;
 
-import com.mbi.api.models.request.slack.Attachment;
-import com.mbi.api.models.request.slack.Field;
 import com.mbi.api.models.response.TestRunDeltaResponse;
 import com.mbi.api.models.response.TestRunResponse;
 
@@ -10,9 +8,9 @@ import java.util.List;
 /**
  * Attachment mapper.
  */
-public class AttachmentMapper {
+public class AttachmentFactory {
 
-    public Attachment map(final TestRunResponse testRun, final TestRunDeltaResponse testRunDiff) {
+    public Attachment getMain(final TestRunResponse testRun, final TestRunDeltaResponse testRunDiff) {
         final var attachment = new Attachment();
         attachment.setAuthorName(testRun.getProductName().toUpperCase());
         attachment.setFallback("testRunId=" + testRun.getId());
@@ -38,6 +36,32 @@ public class AttachmentMapper {
         skipped.setTitle("Skipped");
         skipped.setValue(String.format(fieldFormat, testRun.getSkipped(), testRunDiff.getSkippedDiff()));
         attachment.setFields(List.of(total, passed, failed, skipped));
+
+        return attachment;
+    }
+
+    public Attachment getAction() {
+        final var attachment = new Attachment();
+        attachment.setFallback("Actions");
+        attachment.setColor("#c6c6c6");
+        attachment.setTitle("Actions");
+        attachment.setCallbackId("show_defects_actions");
+        attachment.setShortField(false);
+        attachment.setAttachmentType("default");
+        // Actions
+        final var show = new Action();
+        show.setName("show_defects");
+        show.setText("Show Failed Tests");
+        show.setType("button");
+        show.setValue("defects");
+        show.setFallback("show_defects");
+        final var hide = new Action();
+        hide.setName("hide_defects");
+        hide.setText("Hide Failed Tests");
+        hide.setType("button");
+        hide.setValue("defects");
+        hide.setFallback("hide_defects");
+        attachment.setActions(List.of(show, hide));
 
         return attachment;
     }

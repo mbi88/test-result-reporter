@@ -25,6 +25,19 @@ public class Attachment {
 
     private long ts;
 
+    private String title;
+
+    @JsonProperty("callback_id")
+    private String callbackId;
+
+    @JsonProperty("short")
+    private boolean shortField;
+
+    @JsonProperty("attachment_type")
+    private String attachmentType;
+
+    private List<Action> actions;
+
     public String getFallback() {
         return fallback;
     }
@@ -79,5 +92,45 @@ public class Attachment {
 
     public void setTs(final long ts) {
         this.ts = ts;
+    }
+
+    public String getTitle() {
+        return title;
+    }
+
+    public void setTitle(final String title) {
+        this.title = title;
+    }
+
+    public String getCallbackId() {
+        return callbackId;
+    }
+
+    public void setCallbackId(final String callbackId) {
+        this.callbackId = callbackId;
+    }
+
+    public boolean isShortField() {
+        return shortField;
+    }
+
+    public void setShortField(final boolean shortField) {
+        this.shortField = shortField;
+    }
+
+    public String getAttachmentType() {
+        return attachmentType;
+    }
+
+    public void setAttachmentType(final String attachmentType) {
+        this.attachmentType = attachmentType;
+    }
+
+    public List<Action> getActions() {
+        return actions;
+    }
+
+    public void setActions(final List<Action> actions) {
+        this.actions = actions;
     }
 }

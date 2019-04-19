@@ -9,6 +9,7 @@ import com.mbi.api.services.TestCaseService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -28,10 +29,11 @@ public class TestCaseController {
 
     @RequestMapping(method = POST, path = "/test-runs/{testRunId}/test-cases", produces = "application/json",
             consumes = "application/json")
-    public ResponseEntity<CreatedResponse> create(@PathVariable("testRunId") final int testRunId,
-                                                  @Valid @RequestBody final TestCaseModel testCaseModel)
+    public ResponseEntity<CreatedResponse> create(
+            @PathVariable("testRunId") final int testRunId,
+            @Valid @RequestBody final TestCaseModel testCaseModel)
             throws NotFoundException {
-        return testCaseService.createTestCase(testRunId, testCaseModel);
+        return new ResponseEntity<>(testCaseService.createTestCase(testRunId, testCaseModel), HttpStatus.CREATED);
     }
 
     @RequestMapping(method = GET, path = "/test-runs/{testRunId}/test-cases", produces = "application/json")
@@ -40,7 +42,8 @@ public class TestCaseController {
             @RequestParam(value = "page", required = false, defaultValue = "0") final Integer page,
             @RequestParam(value = "size", required = false, defaultValue = "10") final Integer size)
             throws NotFoundException {
-        return testCaseService.getAllTestCases(testRunId, PageRequest.of(page, size));
+        return new ResponseEntity<>(testCaseService.getAllTestCases(testRunId, PageRequest.of(page, size)),
+                HttpStatus.OK);
     }
 
     @RequestMapping(method = GET, path = "/test-runs/{testRunId}/test-cases/failed", produces = "application/json")
@@ -49,7 +52,9 @@ public class TestCaseController {
             @RequestParam(value = "page", required = false, defaultValue = "0") final Integer page,
             @RequestParam(value = "size", required = false, defaultValue = "10") final Integer size)
             throws NotFoundException {
-        return testCaseService.getMethodsByStatus(testRunId, MethodStatus.FAILED, PageRequest.of(page, size));
+        return new ResponseEntity<>(
+                testCaseService.getMethodsByStatus(testRunId, MethodStatus.FAILED, PageRequest.of(page, size)),
+                HttpStatus.OK);
     }
 
     @RequestMapping(method = GET, path = "/test-runs/{testRunId}/test-cases/passed", produces = "application/json")
@@ -58,6 +63,9 @@ public class TestCaseController {
             @RequestParam(value = "page", required = false, defaultValue = "0") final Integer page,
             @RequestParam(value = "size", required = false, defaultValue = "10") final Integer size)
             throws NotFoundException {
-        return testCaseService.getMethodsByStatus(testRunId, MethodStatus.PASSED, PageRequest.of(page, size));
+        return new ResponseEntity<>(
+                testCaseService.getMethodsByStatus(testRunId, MethodStatus.PASSED, PageRequest.of(page, size)),
+                HttpStatus.OK);
+
     }
 }

@@ -10,6 +10,7 @@ import com.mbi.api.services.ProductService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -29,20 +30,20 @@ public class ProductController {
     @RequestMapping(method = POST, path = "/products", produces = "application/json", consumes = "application/json")
     public ResponseEntity<CreatedResponse> create(@Valid @RequestBody final ProductModel productModel)
             throws AlreadyExistsException {
-        return productService.createProduct(productModel);
+        return new ResponseEntity<>(productService.createProduct(productModel), HttpStatus.CREATED);
     }
 
     @RequestMapping(method = GET, path = "/products/{name}", produces = "application/json")
     public ResponseEntity<ProductResponse> getByName(@PathVariable("name") final String name)
             throws NotFoundException {
-        return productService.getProductByName(name);
+        return new ResponseEntity<>(productService.getProductByName(name), HttpStatus.OK);
     }
 
     @RequestMapping(method = GET, path = "/products", produces = "application/json")
     public ResponseEntity<Page<ProductResponse>> getAll(
             @RequestParam(value = "page", required = false, defaultValue = "0") final Integer page,
             @RequestParam(value = "size", required = false, defaultValue = "10") final Integer size) {
-        return productService.getAllProducts(PageRequest.of(page, size));
+        return new ResponseEntity<>(productService.getAllProducts(PageRequest.of(page, size)), HttpStatus.OK);
     }
 
     @RequestMapping(method = DELETE, path = "/products/{name}", produces = "application/json")
@@ -51,6 +52,7 @@ public class ProductController {
             @RequestParam(value = "page", required = false, defaultValue = "0") final Integer page,
             @RequestParam(value = "size", required = false, defaultValue = "10") final Integer size)
             throws NotFoundException, BadRequestException {
-        return productService.deleteProductByName(name, PageRequest.of(page, size));
+        productService.deleteProductByName(name, PageRequest.of(page, size));
+        return new ResponseEntity(HttpStatus.NO_CONTENT);
     }
 }

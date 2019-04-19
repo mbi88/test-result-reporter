@@ -5,6 +5,7 @@ import com.mbi.api.models.request.testng.ReportModel;
 import com.mbi.api.models.response.CreatedResponse;
 import com.mbi.api.services.ReportsService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -29,6 +30,6 @@ public class ReportsController {
     public ResponseEntity<CreatedResponse> parseTestNG(
             @RequestParam("productName") final String productName,
             @Valid @RequestBody final ReportModel reportModel) throws NotFoundException {
-        return reportsService.parseTestNG(reportModel, productName);
+        return new ResponseEntity<>(reportsService.parseTestNG(reportModel, productName), HttpStatus.CREATED);
     }
 }

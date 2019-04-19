@@ -35,7 +35,7 @@ public class TestRunService {
     @Autowired
     private ProductRepository productRepository;
 
-    public ResponseEntity<CreatedResponse> createTestRun(final TestRunModel testRunModel,
+    public CreatedResponse createTestRun(final TestRunModel testRunModel,
                                                          final String productName) throws NotFoundException {
         final var productEntity = productRepository.findByName(productName)
                 .orElseThrow(NOT_FOUND_SUPPLIER.apply(ProductEntity.class, NOT_FOUND_ERROR_MESSAGE));
@@ -50,21 +50,17 @@ public class TestRunService {
         // Save
         testRunRepository.save(testRunEntity);
 
-        final var createdModel = new ModelMapper().map(testRunEntity, CreatedResponse.class);
-
-        return new ResponseEntity<>(createdModel, HttpStatus.CREATED);
+        return new ModelMapper().map(testRunEntity, CreatedResponse.class);
     }
 
-    public ResponseEntity<TestRunResponse> getTestRunById(final int id) throws NotFoundException {
+    public TestRunResponse getTestRunById(final int id) throws NotFoundException {
         final var testRunEntity = testRunRepository.findById(id)
                 .orElseThrow(NOT_FOUND_SUPPLIER.apply(TestRunEntity.class, NOT_FOUND_ERROR_MESSAGE));
 
-        final var testRunResponse = new ModelMapper().map(testRunEntity, TestRunResponse.class);
-
-        return new ResponseEntity<>(testRunResponse, HttpStatus.OK);
+        return new ModelMapper().map(testRunEntity, TestRunResponse.class);
     }
 
-    public ResponseEntity<Page<TestRunResponse>> getAllTestRuns(final String productName, final Pageable pageable)
+    public Page<TestRunResponse> getAllTestRuns(final String productName, final Pageable pageable)
             throws NotFoundException {
         final Page<TestRunResponse> testRuns;
 
@@ -80,10 +76,10 @@ public class TestRunService {
                     .map(testRun -> new ModelMapper().map(testRun, TestRunResponse.class));
         }
 
-        return new ResponseEntity<>(testRuns, HttpStatus.OK);
+        return testRuns;
     }
 
-    public ResponseEntity<TestRunDeltaResponse> getBuildDifference(final int id) throws NotFoundException {
+    public TestRunDeltaResponse getBuildDifference(final int id) throws NotFoundException {
         final var currentTestRun = testRunRepository
                 .findById(id)
                 .orElseThrow(NOT_FOUND_SUPPLIER.apply(TestRunEntity.class, NOT_FOUND_ERROR_MESSAGE));
@@ -101,6 +97,6 @@ public class TestRunService {
         deltaResponse.setFailedDiff(currentTestRun.getFailed() - prevTestRun.getFailed());
         deltaResponse.setSkippedDiff(currentTestRun.getSkipped() - prevTestRun.getSkipped());
 
-        return new ResponseEntity<>(deltaResponse, HttpStatus.OK);
+        return deltaResponse;
     }
 }
