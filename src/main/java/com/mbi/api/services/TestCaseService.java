@@ -11,12 +11,11 @@ import com.mbi.api.repositories.TestCaseRepository;
 import com.mbi.api.repositories.TestRunRepository;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
-
-import java.util.List;
-import java.util.stream.Collectors;
 
 import static com.mbi.api.exceptions.ExceptionSupplier.NOT_FOUND_ERROR_MESSAGE;
 import static com.mbi.api.exceptions.ExceptionSupplier.NOT_FOUND_SUPPLIER;
@@ -48,30 +47,28 @@ public class TestCaseService {
         return new ResponseEntity<>(createdModel, HttpStatus.CREATED);
     }
 
-    public ResponseEntity<List<TestCaseResponse>> getMethodsByStatus(final int testRunId, final MethodStatus status)
+    public ResponseEntity<Page<TestCaseResponse>> getMethodsByStatus(final int testRunId,
+                                                                     final MethodStatus status,
+                                                                     final Pageable pageable)
             throws NotFoundException {
         final var testRunEntity = testRunRepository.findById(testRunId)
                 .orElseThrow(NOT_FOUND_SUPPLIER.apply(TestRunEntity.class, NOT_FOUND_ERROR_MESSAGE));
 
-        final var testCases = testCaseRepository.findAllByStatusAndTestRunEntity(status.name(), testRunEntity)
+        final var testCases = testCaseRepository.findAllByStatusAndTestRunEntity(status.name(), testRunEntity, pageable)
                 .orElseThrow(NOT_FOUND_SUPPLIER.apply(TestCaseEntity.class, NOT_FOUND_ERROR_MESSAGE))
-                .stream()
-                .map(m -> new ModelMapper().map(m, TestCaseResponse.class))
-                .collect(Collectors.toList());
+                .map(m -> new ModelMapper().map(m, TestCaseResponse.class));
 
         return new ResponseEntity<>(testCases, HttpStatus.OK);
     }
 
-    public ResponseEntity<List<TestCaseResponse>> getAllTestCases(final int testRunId)
+    public ResponseEntity<Page<TestCaseResponse>> getAllTestCases(final int testRunId, final Pageable pageable)
             throws NotFoundException {
         final var testRunEntity = testRunRepository.findById(testRunId)
                 .orElseThrow(NOT_FOUND_SUPPLIER.apply(TestRunEntity.class, NOT_FOUND_ERROR_MESSAGE));
 
-        final var testCases = testCaseRepository.findAllByTestRunEntity(testRunEntity)
+        final var testCases = testCaseRepository.findAllByTestRunEntity(testRunEntity, pageable)
                 .orElseThrow(NOT_FOUND_SUPPLIER.apply(TestCaseEntity.class, NOT_FOUND_ERROR_MESSAGE))
-                .stream()
-                .map(m -> new ModelMapper().map(m, TestCaseResponse.class))
-                .collect(Collectors.toList());
+                .map(m -> new ModelMapper().map(m, TestCaseResponse.class));
 
         return new ResponseEntity<>(testCases, HttpStatus.OK);
     }
