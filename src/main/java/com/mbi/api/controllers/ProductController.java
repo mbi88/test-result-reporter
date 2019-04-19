@@ -8,14 +8,12 @@ import com.mbi.api.models.response.CreatedResponse;
 import com.mbi.api.models.response.ProductResponse;
 import com.mbi.api.services.ProductService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
-import java.util.List;
 
 import static org.springframework.web.bind.annotation.RequestMethod.*;
 
@@ -41,13 +39,18 @@ public class ProductController {
     }
 
     @RequestMapping(method = GET, path = "/products", produces = "application/json")
-    public ResponseEntity<List<ProductResponse>> getAll() {
-        return productService.getAllProducts();
+    public ResponseEntity<Page<ProductResponse>> getAll(
+            @RequestParam(value = "page", required = false, defaultValue = "0") final Integer page,
+            @RequestParam(value = "size", required = false, defaultValue = "10") final Integer size) {
+        return productService.getAllProducts(PageRequest.of(page, size));
     }
 
     @RequestMapping(method = DELETE, path = "/products/{name}", produces = "application/json")
-    public ResponseEntity deleteByName(@PathVariable("name") final String name)
+    public ResponseEntity deleteByName(
+            @PathVariable("name") final String name,
+            @RequestParam(value = "page", required = false, defaultValue = "0") final Integer page,
+            @RequestParam(value = "size", required = false, defaultValue = "10") final Integer size)
             throws NotFoundException, BadRequestException {
-        return productService.deleteProductByName(name);
+        return productService.deleteProductByName(name, PageRequest.of(page, size));
     }
 }

@@ -11,12 +11,11 @@ import com.mbi.api.repositories.ProductRepository;
 import com.mbi.api.repositories.TestRunRepository;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
-
-import java.util.List;
-import java.util.stream.Collectors;
 
 import static com.mbi.api.exceptions.ExceptionSupplier.*;
 
@@ -53,11 +52,12 @@ public class ProductService {
         return new ResponseEntity<>(productResponse, HttpStatus.OK);
     }
 
-    public ResponseEntity deleteProductByName(final String name) throws NotFoundException, BadRequestException {
+    public ResponseEntity deleteProductByName(final String name, final Pageable pageable)
+            throws NotFoundException, BadRequestException {
         final var productEntity = productRepository.findByName(name)
                 .orElseThrow(NOT_FOUND_SUPPLIER.apply(ProductEntity.class, NOT_FOUND_ERROR_MESSAGE));
 
-        if (testRunRepository.findAllByProduct(productEntity).isPresent()) {
+        if (testRunRepository.findAllByProduct(productEntity, pageable).isPresent()) {
             throw BAD_REQUEST_SUPPLIER.apply(ProductEntity.class,
                     "Can't remove product! Dependent test runs exist").get();
         }
@@ -67,11 +67,10 @@ public class ProductService {
         return new ResponseEntity(HttpStatus.NO_CONTENT);
     }
 
-    public ResponseEntity<List<ProductResponse>> getAllProducts() {
-        final var productsResponse = ((List<ProductEntity>) productRepository.findAll())
-                .stream()
-                .map(p -> new ModelMapper().map(p, ProductResponse.class))
-                .collect(Collectors.toList());
+    public ResponseEntity<Page<ProductResponse>> getAllProducts(final Pageable pageable) {
+        final var productsResponse = productRepository.findAll(pageable)
+                .get()
+                .map(p -> new ModelMapper().map(p, ProductResponse.class));
 
         return new ResponseEntity<>(productsResponse, HttpStatus.OK);
     }

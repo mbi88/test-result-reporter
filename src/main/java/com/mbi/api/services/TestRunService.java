@@ -11,14 +11,14 @@ import com.mbi.api.repositories.ProductRepository;
 import com.mbi.api.repositories.TestRunRepository;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
-import java.util.List;
 import java.util.Objects;
 import java.util.function.Predicate;
-import java.util.stream.Collectors;
 
 import static com.mbi.api.exceptions.ExceptionSupplier.NOT_FOUND_ERROR_MESSAGE;
 import static com.mbi.api.exceptions.ExceptionSupplier.NOT_FOUND_SUPPLIER;
@@ -64,22 +64,21 @@ public class TestRunService {
         return new ResponseEntity<>(testRunResponse, HttpStatus.OK);
     }
 
-    public ResponseEntity<List<TestRunResponse>> getAllTestRuns(final String productName) throws NotFoundException {
-        final List<TestRunEntity> testRunEntities;
+    public ResponseEntity<Page<TestRunResponse>> getAllTestRuns(final String productName, final Pageable pageable)
+            throws NotFoundException {
+        final Page<TestRunResponse> testRuns;
 
         if (Objects.isNull(productName) || productName.isBlank()) {
-            testRunEntities = (List<TestRunEntity>) testRunRepository.findAll();
+            testRuns = testRunRepository.findAll(pageable)
+                    .get()
+                    .map(testRun -> new ModelMapper().map(testRun, TestRunResponse.class));
         } else {
             final var product = productRepository.findByName(productName)
                     .orElseThrow(NOT_FOUND_SUPPLIER.apply(ProductEntity.class, NOT_FOUND_ERROR_MESSAGE));
-            testRunEntities = testRunRepository.findAllByProduct(product)
-                    .orElseThrow(NOT_FOUND_SUPPLIER.apply(TestRunEntity.class, "No test runs in this product"));
+            testRuns = testRunRepository.findAllByProduct(product, pageable)
+                    .orElseThrow(NOT_FOUND_SUPPLIER.apply(TestRunEntity.class, "No test runs in this product"))
+                    .map(testRun -> new ModelMapper().map(testRun, TestRunResponse.class));
         }
-
-        final var testRuns = testRunEntities
-                .stream()
-                .map(testRun -> new ModelMapper().map(testRun, TestRunResponse.class))
-                .collect(Collectors.toList());
 
         return new ResponseEntity<>(testRuns, HttpStatus.OK);
     }

@@ -2,11 +2,12 @@ package com.mbi.api.repositories;
 
 import com.mbi.api.entities.product.ProductEntity;
 import com.mbi.api.entities.testrun.TestRunEntity;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.stereotype.Repository;
 
-import java.util.List;
 import java.util.Optional;
 
 /**
@@ -15,7 +16,7 @@ import java.util.Optional;
 @Repository
 public interface TestRunRepository extends CrudRepository<TestRunEntity, Integer> {
 
-    Optional<List<TestRunEntity>> findAllByProduct(ProductEntity product);
+    Optional<Page<TestRunEntity>> findAllByProduct(ProductEntity product, Pageable pageable);
 
     @Query(value = "\n"
             + "SELECT t.lag\n"
@@ -23,4 +24,6 @@ public interface TestRunRepository extends CrudRepository<TestRunEntity, Integer
             + "WHERE id = ?1",
             nativeQuery = true)
     Optional<Integer> findPreviousById(int id, int productId);
+
+    Optional<Page<TestRunEntity>> findAll(Pageable pageable);
 }

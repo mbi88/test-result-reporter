@@ -7,11 +7,12 @@ import com.mbi.api.models.response.TestRunDeltaResponse;
 import com.mbi.api.models.response.TestRunResponse;
 import com.mbi.api.services.TestRunService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
-import java.util.List;
 
 import static org.springframework.web.bind.annotation.RequestMethod.GET;
 import static org.springframework.web.bind.annotation.RequestMethod.POST;
@@ -39,9 +40,12 @@ public class TestRunController {
     }
 
     @RequestMapping(method = GET, path = "/test-runs", produces = "application/json")
-    public ResponseEntity<List<TestRunResponse>> getAllTestRuns(
-            @RequestParam(value = "productName", required = false) final String productName) throws NotFoundException {
-        return testRunService.getAllTestRuns(productName);
+    public ResponseEntity<Page<TestRunResponse>> getAllTestRuns(
+            @RequestParam(value = "productName", required = false) final String productName,
+            @RequestParam(value = "page", required = false, defaultValue = "0") final Integer page,
+            @RequestParam(value = "size", required = false, defaultValue = "10") final Integer size)
+            throws NotFoundException {
+        return testRunService.getAllTestRuns(productName, PageRequest.of(page, size));
     }
 
     @RequestMapping(method = GET, path = "/test-runs/{id}/delta", produces = "application/json")
