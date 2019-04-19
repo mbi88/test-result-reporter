@@ -90,7 +90,7 @@ public class TestRunService {
                 .orElseThrow(NOT_FOUND_SUPPLIER.apply(TestRunEntity.class, NOT_FOUND_ERROR_MESSAGE));
         final int prevTestRinId = testRunRepository
                 .findPreviousById(currentTestRun.getId(), currentTestRun.getProduct().getId())
-                .orElseThrow(NOT_FOUND_SUPPLIER.apply(TestRunEntity.class, NOT_FOUND_ERROR_MESSAGE));
+                .orElse(currentTestRun.getId());
         final var prevTestRun = testRunRepository
                 .findById(prevTestRinId)
                 .orElseThrow(NOT_FOUND_SUPPLIER.apply(TestRunEntity.class, NOT_FOUND_ERROR_MESSAGE));
