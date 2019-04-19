@@ -40,6 +40,7 @@ public class AttachmentFactory {
         return attachment;
     }
 
+    @SuppressWarnings("MultipleStringLiterals")
     public Attachment getAction() {
         final var attachment = new Attachment();
         attachment.setFallback("Actions");

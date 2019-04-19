@@ -16,6 +16,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.util.UriComponentsBuilder;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -35,11 +36,11 @@ public class SlackService {
 
     private SlackResponse sendSlackMessage(final String token, final String channel,
                                            final List<Attachment> attachments) throws JsonProcessingException {
-        var writer = new ObjectMapper().writer().withDefaultPrettyPrinter();
-        var attachmentsAsString = writer.writeValueAsString(attachments);
+        final var writer = new ObjectMapper().writer().withDefaultPrettyPrinter();
+        final var attachmentsAsString = writer.writeValueAsString(attachments);
 
-        var restTemplate = new RestTemplate();
-        var builder = UriComponentsBuilder.fromUriString(config.getUrl() + "chat.postMessage")
+        final var restTemplate = new RestTemplate();
+        final var builder = UriComponentsBuilder.fromUriString(config.getUrl() + "chat.postMessage")
                 .queryParam("token", token)
                 .queryParam("channel", channel)
                 .queryParam("attachments", attachmentsAsString);
@@ -49,19 +50,23 @@ public class SlackService {
 
     public MessageEntity createSlackMessage(final int testRunId) throws NotFoundException, JsonProcessingException,
             BadRequestException {
-        var testRun = testRunService.getTestRunById(testRunId);
-        var testRunDiff = testRunService.getBuildDifference(testRunId);
+        final var testRun = testRunService.getTestRunById(testRunId);
+        final var testRunDiff = testRunService.getBuildDifference(testRunId);
 
-        var mainAttachment = new AttachmentFactory().getMain(testRun, testRunDiff);
-        var defectsAttachment = new AttachmentFactory().getAction();
-        var slackResponse = sendSlackMessage(config.getToken(), config.getChannel(),
-                List.of(mainAttachment, defectsAttachment));
+        final List<Attachment> attachments = new ArrayList<>();
+        final var mainAttachment = new AttachmentFactory().getMain(testRun, testRunDiff);
+        attachments.add(mainAttachment);
+        if (!testRun.isSuccessful()) {
+            final var defectsAttachment = new AttachmentFactory().getAction();
+            attachments.add(defectsAttachment);
+        }
+        final var slackResponse = sendSlackMessage(config.getToken(), config.getChannel(), attachments);
 
-        if (!slackResponse.getOk()) {
+        if (!slackResponse.isOk()) {
             throw new BadRequestException(MessageEntity.class, slackResponse.getError());
         }
 
-        var messageEntity = new ModelMapper().map(slackResponse, MessageEntity.class);
+        final var messageEntity = new ModelMapper().map(slackResponse, MessageEntity.class);
         slackRepository.save(messageEntity);
 
         return messageEntity;

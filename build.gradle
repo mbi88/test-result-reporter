@@ -8,7 +8,7 @@ buildscript {
 }
 
 plugins {
-    id 'ru.vyarus.quality' version '3.3.0'
+    id 'ru.vyarus.quality' version '3.4.0'
 }
 
 apply plugin: 'java'
@@ -65,11 +65,11 @@ artifacts {
 }
 
 quality {
-    checkstyle = false
-    pmd = false
-    findbugs = false
-    codenarc = false
-    spotbugs = false
+    checkstyle = true
+    pmd = true
+    findbugs = true
+    codenarc = true
+    spotbugs = true
 }
 
 check.dependsOn jacocoTestReport

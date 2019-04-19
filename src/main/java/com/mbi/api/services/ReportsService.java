@@ -13,7 +13,6 @@ import com.mbi.api.models.response.CreatedResponse;
 import com.mbi.api.repositories.ProductRepository;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
@@ -69,7 +68,7 @@ public class ReportsService {
     }
 
     private Set<ClassModel> getClasses(final Set<SuiteModel> suiteModels) {
-        final var classes = new HashSet<ClassModel>();
+        final Set<ClassModel> classes = new HashSet<>();
         for (var suite : suiteModels) {
             if (Objects.isNull(suite.getTests())) {
                 continue;

@@ -15,7 +15,7 @@ public class SlackResponse {
 
     private String error;
 
-    public boolean getOk() {
+    public boolean isOk() {
         return ok;
     }
 

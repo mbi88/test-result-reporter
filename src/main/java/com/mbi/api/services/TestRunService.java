@@ -13,8 +13,6 @@ import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import java.util.Objects;
@@ -36,7 +34,7 @@ public class TestRunService {
     private ProductRepository productRepository;
 
     public CreatedResponse createTestRun(final TestRunModel testRunModel,
-                                                         final String productName) throws NotFoundException {
+                                         final String productName) throws NotFoundException {
         final var productEntity = productRepository.findByName(productName)
                 .orElseThrow(NOT_FOUND_SUPPLIER.apply(ProductEntity.class, NOT_FOUND_ERROR_MESSAGE));
 
