@@ -29,7 +29,7 @@ public class SlackController {
         return new ResponseEntity<>(slackService.createSlackMessage(testRunId), HttpStatus.OK);
     }
 
-    @RequestMapping(method = POST, params = "/slack/interact", produces = "application/json")
+    @RequestMapping(method = POST, path = "/slack/interact", produces = "application/json")
     public ResponseEntity<Object> interact(@RequestParam("payload") final String payload) {
         return new ResponseEntity<>(payload, HttpStatus.OK);
     }
