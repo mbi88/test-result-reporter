@@ -1,9 +1,9 @@
-package com.mbi.api.entities.health;
+package com.mbi.api.models.response;
 
 /**
- * Health entity.
+ * Health response model.
  */
-public class HealthEntity {
+public class HealthResponse {
 
     private String status;
     private String version;

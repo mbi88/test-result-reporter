@@ -1,6 +1,6 @@
 package com.mbi.api.services;
 
-import com.mbi.api.entities.health.HealthEntity;
+import com.mbi.api.models.response.HealthResponse;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
@@ -11,8 +11,8 @@ import org.springframework.stereotype.Service;
 @Service
 public class HealthService {
 
-    public ResponseEntity<HealthEntity> checkHealth() {
-        final var healthEntity = new HealthEntity();
+    public ResponseEntity<HealthResponse> checkHealth() {
+        final var healthEntity = new HealthResponse();
         healthEntity.setStatus("ok");
         healthEntity.setVersion(System.getenv("APP__VERSION"));
 

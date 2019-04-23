@@ -1,6 +1,6 @@
 package com.mbi.api.controllers;
 
-import com.mbi.api.entities.health.HealthEntity;
+import com.mbi.api.models.response.HealthResponse;
 import com.mbi.api.services.HealthService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -19,7 +19,7 @@ public class HealthController {
     private HealthService service;
 
     @RequestMapping(method = GET, path = "/health/local", produces = "application/json")
-    public ResponseEntity<HealthEntity> health() {
+    public ResponseEntity<HealthResponse> health() {
         return service.checkHealth();
     }
 }
