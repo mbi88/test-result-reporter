@@ -8,7 +8,6 @@ import com.mbi.api.services.SlackService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
@@ -30,9 +29,8 @@ public class SlackController {
         return new ResponseEntity<>(slackService.createSlackMessage(testRunId), HttpStatus.OK);
     }
 
-    @RequestMapping(method = POST, params = "/slack/interact", produces = "application/json",
-            consumes = "application/json")
-    public ResponseEntity<Object> interact(@RequestBody final Object o) {
-        return new ResponseEntity<>(o, HttpStatus.OK);
+    @RequestMapping(method = POST, params = "/slack/interact", produces = "application/json")
+    public ResponseEntity<Object> interact(@RequestParam("payload") final String payload) {
+        return new ResponseEntity<>(payload, HttpStatus.OK);
     }
 }
