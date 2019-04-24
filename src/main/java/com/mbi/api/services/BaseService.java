@@ -2,6 +2,7 @@ package com.mbi.api.services;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.ObjectReader;
 import org.modelmapper.ModelMapper;
 
 import java.io.IOException;
@@ -19,6 +20,7 @@ public class BaseService {
     }
 
     protected <T> T stringToObject(final String string, final Class<T> clazz) throws IOException {
-        return new ObjectMapper().readValue(string, clazz);
+        ObjectReader reader = new ObjectMapper().readerFor(clazz);
+        return reader.readValue(string);
     }
 }

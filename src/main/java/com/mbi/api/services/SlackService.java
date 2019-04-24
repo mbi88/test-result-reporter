@@ -143,15 +143,13 @@ public class SlackService extends BaseService {
 
     private List<Attachment> getAttachmentsFromMessage(final MessageEntity messageEntity)
             throws IOException {
-        final List<Attachment> list = new ArrayList<>();
         final var attachments = new JSONObject(objectToString(messageEntity))
                 .getJSONObject("message")
                 .getJSONArray("attachments");
 
+        final List<Attachment> list = new ArrayList<>();
         for (var attach : attachments) {
-            final var attachment = stringToObject(objectToString(attach), Attachment.class);
-            System.out.println(attach.toString());
-            System.out.println(objectToString(attachment));
+            final var attachment = stringToObject(attach.toString(), Attachment.class);
             list.add(attachment);
         }
 
