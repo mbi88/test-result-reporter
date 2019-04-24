@@ -126,8 +126,7 @@ public class SlackService extends BaseService {
             final var attachment = attachmentFactory.getDefect(testCase);
             attachmentList.add(attachment);
         }
-        System.out.println("!!!!!");
-        System.out.println(objectToString(attachmentList));
+
         // Send
         updateSlackMessage(config.getToken(), config.getChannel(), attachmentList, messageTimeStamp);
     }
@@ -150,6 +149,8 @@ public class SlackService extends BaseService {
                 .getJSONArray("attachments");
 
         for (var attach : attachments) {
+            System.out.println(attach.toString());
+            System.out.println(objectToString(mapper.map(attach, Attachment.class)));
             list.add(mapper.map(attach, Attachment.class));
         }
 
