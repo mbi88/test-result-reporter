@@ -4,14 +4,17 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.mbi.SlackConfig;
 import com.mbi.api.entities.slack.MessageEntity;
+import com.mbi.api.enums.MethodStatus;
 import com.mbi.api.exceptions.BadRequestException;
 import com.mbi.api.exceptions.NotFoundException;
 import com.mbi.api.models.request.slack.Attachment;
 import com.mbi.api.models.request.slack.AttachmentFactory;
 import com.mbi.api.models.response.SlackResponse;
 import com.mbi.api.repositories.SlackRepository;
+import org.json.JSONObject;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.util.UriComponentsBuilder;
@@ -19,10 +22,14 @@ import org.springframework.web.util.UriComponentsBuilder;
 import java.util.ArrayList;
 import java.util.List;
 
+import static com.mbi.api.exceptions.ExceptionSupplier.NOT_FOUND_ERROR_MESSAGE;
+import static com.mbi.api.exceptions.ExceptionSupplier.NOT_FOUND_SUPPLIER;
+
 /**
  * Slack service.
  */
 @Service
+@SuppressWarnings("MultipleStringLiterals")
 public class SlackService {
 
     @Autowired
@@ -32,12 +39,14 @@ public class SlackService {
     private TestRunService testRunService;
 
     @Autowired
+    private TestCaseService testCaseService;
+
+    @Autowired
     private SlackRepository slackRepository;
 
     private SlackResponse sendSlackMessage(final String token, final String channel,
                                            final List<Attachment> attachments) throws JsonProcessingException {
-        final var writer = new ObjectMapper().writer().withDefaultPrettyPrinter();
-        final var attachmentsAsString = writer.writeValueAsString(attachments);
+        final var attachmentsAsString = objectToString(attachments);
 
         final var restTemplate = new RestTemplate();
         final var builder = UriComponentsBuilder.fromUriString(config.getUrl() + "chat.postMessage")
@@ -70,5 +79,74 @@ public class SlackService {
         slackRepository.save(messageEntity);
 
         return messageEntity;
+    }
+
+    public void update(final String payload) throws NotFoundException, JsonProcessingException {
+        final var json = new JSONObject(payload);
+        final var actionValue = json.getJSONArray("actions").getJSONObject(0).getString("value");
+
+        // Show/Hide defects button
+        if ("defects".equals(actionValue)) {
+            resend(json.getString("message_ts"));
+        }
+
+        // Show stacktrace button
+        if ("stacktrace".equals(actionValue)) {
+            resend(json.getString("aaaa"));
+        }
+    }
+
+    private void resend(final String messageTimeStamp) throws NotFoundException, JsonProcessingException {
+        // Get test run id
+        final var message = slackRepository.findByTs(messageTimeStamp)
+                .orElseThrow(NOT_FOUND_SUPPLIER.apply(MessageEntity.class, NOT_FOUND_ERROR_MESSAGE));
+        final var testRunId = getTestRunIdFromMessage(message);
+
+        // Get test cases
+        final var testCases = testCaseService.getMethodsByStatus(testRunId, MethodStatus.FAILED, PageRequest.of(0, 10));
+
+        // Add test cases
+        final var attachmentList = getAttachmentsFromMessage(message);
+        final var attachmentFactory = new AttachmentFactory();
+        for (var testCase : testCases.getContent()) {
+            final var attachment = attachmentFactory.getDefect(testCase);
+            attachmentList.add(attachment);
+        }
+
+        // Send
+        sendSlackMessage(config.getToken(), config.getChannel(), attachmentList);
+    }
+
+    @SuppressWarnings("PMD.SystemPrintln")
+    private int getTestRunIdFromMessage(final MessageEntity messageEntity) throws JsonProcessingException {
+        final var messageJson = new JSONObject(objectToString(messageEntity)).getJSONObject("message");
+
+        System.out.println("!!!!!");
+        System.out.println(messageJson.toString());
+        return Integer.parseInt(messageJson
+                .getJSONArray("attachments")
+                .getJSONObject(0)
+                .getString("fallback")
+                .split("=")[1]);
+    }
+
+    private List<Attachment> getAttachmentsFromMessage(final MessageEntity messageEntity)
+            throws JsonProcessingException {
+        final List<Attachment> list = new ArrayList<>();
+        final var attachments = new JSONObject(objectToString(messageEntity))
+                .getJSONObject("message")
+                .getJSONArray("attachments");
+
+        final var mapper = new ModelMapper();
+        for (var attach : attachments) {
+            list.add(mapper.map(attach, Attachment.class));
+        }
+
+        return list;
+    }
+
+    private String objectToString(final Object object) throws JsonProcessingException {
+        final var writer = new ObjectMapper().writer().withDefaultPrettyPrinter();
+        return writer.writeValueAsString(object);
     }
 }

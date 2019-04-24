@@ -30,7 +30,9 @@ public class SlackController {
     }
 
     @RequestMapping(method = POST, path = "/slack/interact", produces = "application/json")
-    public ResponseEntity<Object> interact(@RequestParam("payload") final String payload) {
+    public ResponseEntity<Object> interact(@RequestParam("payload") final String payload) throws NotFoundException,
+            JsonProcessingException {
+        slackService.update(payload);
         return new ResponseEntity<>(payload, HttpStatus.OK);
     }
 }

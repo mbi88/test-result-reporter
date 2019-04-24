@@ -1,5 +1,6 @@
 package com.mbi.api.models.request.slack;
 
+import com.mbi.api.models.response.TestCaseResponse;
 import com.mbi.api.models.response.TestRunDeltaResponse;
 import com.mbi.api.models.response.TestRunResponse;
 
@@ -8,6 +9,7 @@ import java.util.List;
 /**
  * Attachment mapper.
  */
+@SuppressWarnings("MultipleStringLiterals")
 public class AttachmentFactory {
 
     public Attachment getMain(final TestRunResponse testRun, final TestRunDeltaResponse testRunDiff) {
@@ -40,7 +42,6 @@ public class AttachmentFactory {
         return attachment;
     }
 
-    @SuppressWarnings("MultipleStringLiterals")
     public Attachment getAction() {
         final var attachment = new Attachment();
         attachment.setFallback("Actions");
@@ -63,6 +64,24 @@ public class AttachmentFactory {
         hide.setValue("defects");
         hide.setFallback("hide_defects");
         attachment.setActions(List.of(show, hide));
+
+        return attachment;
+    }
+
+    public Attachment getDefect(final TestCaseResponse testCase) {
+        final var attachment = new Attachment();
+        attachment.setFallback("defect");
+        attachment.setTitle(testCase.getName());
+        attachment.setShortField(true);
+        attachment.setCallbackId(String.valueOf(testCase.getId()));
+        // Actions
+        final var showStackTrace = new Action();
+        showStackTrace.setName("show_stacktrace");
+        showStackTrace.setText("Show Stacktrace");
+        showStackTrace.setType("button");
+        showStackTrace.setValue("stacktrace");
+        showStackTrace.setFallback("show_stacktrace");
+        attachment.setActions(List.of(showStackTrace));
 
         return attachment;
     }
