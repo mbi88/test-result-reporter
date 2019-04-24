@@ -1,5 +1,6 @@
 package com.mbi.api.models.request.slack;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import java.util.List;
@@ -7,6 +8,7 @@ import java.util.List;
 /**
  * Attachment request model.
  */
+@JsonIgnoreProperties(ignoreUnknown = true)
 public class Attachment {
 
     private String fallback;
