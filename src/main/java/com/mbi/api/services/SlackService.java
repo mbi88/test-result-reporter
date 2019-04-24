@@ -97,20 +97,24 @@ public class SlackService extends BaseService {
 
     public void update(final String payload) throws NotFoundException, IOException {
         final var json = new JSONObject(payload);
-        final var actionValue = json.getJSONArray("actions").getJSONObject(0).getString("value");
-
+        final var actionName = json.getJSONArray("actions").getJSONObject(0).getString("name");
+        final var messageTimeStamp = json.getString("message_ts");
+        System.out.println(json.toString(2));
         // Show/Hide defects button
-        if ("defects".equals(actionValue)) {
-            resend(json.getString("message_ts"));
+        if ("hide_defects".equals(actionName)) {
+            hideTestCases(messageTimeStamp);
+        }
+        if ("show_defects".equals(actionName)) {
+            showTestCases(messageTimeStamp);
         }
 
         // Show stacktrace button
-        if ("stacktrace".equals(actionValue)) {
-            resend(json.getString("aaaa"));
+        if ("stacktrace".equals(actionName)) {
+            showTestCases(messageTimeStamp);
         }
     }
 
-    private void resend(final String messageTimeStamp) throws NotFoundException, IOException {
+    private void showTestCases(final String messageTimeStamp) throws NotFoundException, IOException {
         // Get test run id
         final var message = slackRepository.findByTs(messageTimeStamp)
                 .orElseThrow(NOT_FOUND_SUPPLIER.apply(MessageEntity.class, NOT_FOUND_ERROR_MESSAGE));
@@ -129,6 +133,13 @@ public class SlackService extends BaseService {
 
         // Send
         updateSlackMessage(config.getToken(), config.getChannel(), attachmentList, messageTimeStamp);
+    }
+
+    private void hideTestCases(final String messageTimeStamp) throws NotFoundException, IOException {
+        // Remove test cases
+        final var message = slackRepository.findByTs(messageTimeStamp)
+                .orElseThrow(NOT_FOUND_SUPPLIER.apply(MessageEntity.class, NOT_FOUND_ERROR_MESSAGE));
+        getAttachmentsFromMessage(message);
     }
 
     private int getTestRunIdFromMessage(final MessageEntity messageEntity) throws JsonProcessingException {
