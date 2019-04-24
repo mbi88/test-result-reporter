@@ -1,7 +1,6 @@
 package com.mbi.api.services;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.mbi.SlackConfig;
 import com.mbi.api.entities.slack.MessageEntity;
 import com.mbi.api.enums.MethodStatus;
@@ -18,6 +17,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.util.UriComponentsBuilder;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -95,7 +95,7 @@ public class SlackService extends BaseService {
         return messageEntity;
     }
 
-    public void update(final String payload) throws NotFoundException, JsonProcessingException {
+    public void update(final String payload) throws NotFoundException, IOException {
         final var json = new JSONObject(payload);
         final var actionValue = json.getJSONArray("actions").getJSONObject(0).getString("value");
 
@@ -110,7 +110,7 @@ public class SlackService extends BaseService {
         }
     }
 
-    private void resend(final String messageTimeStamp) throws NotFoundException, JsonProcessingException {
+    private void resend(final String messageTimeStamp) throws NotFoundException, IOException {
         // Get test run id
         final var message = slackRepository.findByTs(messageTimeStamp)
                 .orElseThrow(NOT_FOUND_SUPPLIER.apply(MessageEntity.class, NOT_FOUND_ERROR_MESSAGE));
@@ -142,23 +142,19 @@ public class SlackService extends BaseService {
     }
 
     private List<Attachment> getAttachmentsFromMessage(final MessageEntity messageEntity)
-            throws JsonProcessingException {
+            throws IOException {
         final List<Attachment> list = new ArrayList<>();
         final var attachments = new JSONObject(objectToString(messageEntity))
                 .getJSONObject("message")
                 .getJSONArray("attachments");
 
         for (var attach : attachments) {
+            final var attachment = stringToObject(objectToString(attach), Attachment.class);
             System.out.println(attach.toString());
-            System.out.println(objectToString(mapper.map(attach, Attachment.class)));
-            list.add(mapper.map(attach, Attachment.class));
+            System.out.println(objectToString(attachment));
+            list.add(attachment);
         }
 
         return list;
-    }
-
-    private String objectToString(final Object object) throws JsonProcessingException {
-        final var writer = new ObjectMapper().writer().withDefaultPrettyPrinter();
-        return writer.writeValueAsString(object);
     }
 }

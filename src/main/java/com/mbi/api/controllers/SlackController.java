@@ -12,6 +12,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.io.IOException;
+
 import static org.springframework.web.bind.annotation.RequestMethod.POST;
 
 /**
@@ -31,7 +33,7 @@ public class SlackController {
 
     @RequestMapping(method = POST, path = "/slack/interact")
     public ResponseEntity interact(@RequestParam("payload") final String payload) throws NotFoundException,
-            JsonProcessingException {
+            IOException {
         slackService.update(payload);
         return new ResponseEntity(HttpStatus.OK);
     }
