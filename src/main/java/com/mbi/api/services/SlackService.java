@@ -43,28 +43,26 @@ public class SlackService extends BaseService {
     @Autowired
     private SlackRepository slackRepository;
 
-    private SlackResponse sendSlackMessage(final String token, final String channel,
-                                           final List<Attachment> attachments) throws JsonProcessingException {
+    private SlackResponse sendSlackMessage(final List<Attachment> attachments) throws JsonProcessingException {
         final var attachmentsAsString = objectToString(attachments);
 
         final var restTemplate = new RestTemplate();
         final var builder = UriComponentsBuilder.fromUriString(config.getUrl() + "chat.postMessage")
-                .queryParam("token", token)
-                .queryParam("channel", channel)
+                .queryParam("token", config.getToken())
+                .queryParam("channel", config.getChannel())
                 .queryParam("attachments", attachmentsAsString);
 
         return restTemplate.getForEntity(builder.build().toUri(), SlackResponse.class).getBody();
     }
 
-    private SlackResponse updateSlackMessage(final String token, final String channel,
-                                             final List<Attachment> attachments, final String ts)
+    private SlackResponse updateSlackMessage(final List<Attachment> attachments, final String ts)
             throws JsonProcessingException {
         final var attachmentsAsString = objectToString(attachments);
 
         final var restTemplate = new RestTemplate();
         final var builder = UriComponentsBuilder.fromUriString(config.getUrl() + "chat.update")
-                .queryParam("token", token)
-                .queryParam("channel", channel)
+                .queryParam("token", config.getToken())
+                .queryParam("channel", config.getChannel())
                 .queryParam("ts", ts)
                 .queryParam("attachments", attachmentsAsString);
 
@@ -83,7 +81,7 @@ public class SlackService extends BaseService {
             final var defectsAttachment = new AttachmentFactory().getAction();
             attachments.add(defectsAttachment);
         }
-        final var slackResponse = sendSlackMessage(config.getToken(), config.getChannel(), attachments);
+        final var slackResponse = sendSlackMessage(attachments);
 
         if (!slackResponse.isOk()) {
             throw new BadRequestException(MessageEntity.class, slackResponse.getError());
@@ -99,7 +97,7 @@ public class SlackService extends BaseService {
         final var json = new JSONObject(payload);
         final var actionName = json.getJSONArray("actions").getJSONObject(0).getString("name");
         final var messageTimeStamp = json.getString("message_ts");
-        System.out.println(json.toString(2));
+        System.out.println(json.toString());
         // Show/Hide defects button
         if ("hide_defects".equals(actionName)) {
             hideTestCases(messageTimeStamp);
@@ -132,14 +130,23 @@ public class SlackService extends BaseService {
         }
 
         // Send
-        updateSlackMessage(config.getToken(), config.getChannel(), attachmentList, messageTimeStamp);
+        updateSlackMessage(attachmentList, messageTimeStamp);
     }
 
     private void hideTestCases(final String messageTimeStamp) throws NotFoundException, IOException {
         // Remove test cases
         final var message = slackRepository.findByTs(messageTimeStamp)
                 .orElseThrow(NOT_FOUND_SUPPLIER.apply(MessageEntity.class, NOT_FOUND_ERROR_MESSAGE));
-        getAttachmentsFromMessage(message);
+        final var attachmentList = getAttachmentsFromMessage(message);
+
+        for (var attachment : attachmentList) {
+            if (attachment.getFallback().equals("defect")) {
+                attachmentList.remove(attachment);
+            }
+        }
+
+        // Send
+        updateSlackMessage(attachmentList, messageTimeStamp);
     }
 
     private int getTestRunIdFromMessage(final MessageEntity messageEntity) throws JsonProcessingException {
