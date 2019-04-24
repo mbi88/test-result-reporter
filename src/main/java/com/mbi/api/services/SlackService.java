@@ -28,7 +28,7 @@ import static com.mbi.api.exceptions.ExceptionSupplier.NOT_FOUND_SUPPLIER;
  * Slack service.
  */
 @Service
-@SuppressWarnings("MultipleStringLiterals")
+@SuppressWarnings({"MultipleStringLiterals", "PMD.SystemPrintln", "PMD.AvoidDuplicateLiterals"})
 public class SlackService extends BaseService {
 
     @Autowired
@@ -51,6 +51,21 @@ public class SlackService extends BaseService {
         final var builder = UriComponentsBuilder.fromUriString(config.getUrl() + "chat.postMessage")
                 .queryParam("token", token)
                 .queryParam("channel", channel)
+                .queryParam("attachments", attachmentsAsString);
+
+        return restTemplate.getForEntity(builder.build().toUri(), SlackResponse.class).getBody();
+    }
+
+    private SlackResponse updateSlackMessage(final String token, final String channel,
+                                             final List<Attachment> attachments, final String ts)
+            throws JsonProcessingException {
+        final var attachmentsAsString = objectToString(attachments);
+
+        final var restTemplate = new RestTemplate();
+        final var builder = UriComponentsBuilder.fromUriString(config.getUrl() + "chat.update")
+                .queryParam("token", token)
+                .queryParam("channel", channel)
+                .queryParam("ts", ts)
                 .queryParam("attachments", attachmentsAsString);
 
         return restTemplate.getForEntity(builder.build().toUri(), SlackResponse.class).getBody();
@@ -111,12 +126,11 @@ public class SlackService extends BaseService {
             final var attachment = attachmentFactory.getDefect(testCase);
             attachmentList.add(attachment);
         }
-
+        System.out.println(attachmentList.toString());
         // Send
-        sendSlackMessage(config.getToken(), config.getChannel(), attachmentList);
+        updateSlackMessage(config.getToken(), config.getChannel(), attachmentList, messageTimeStamp);
     }
 
-    @SuppressWarnings("PMD.SystemPrintln")
     private int getTestRunIdFromMessage(final MessageEntity messageEntity) throws JsonProcessingException {
         final var messageJson = new JSONObject(objectToString(messageEntity)).getJSONObject("message");
 
