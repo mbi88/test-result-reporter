@@ -126,7 +126,8 @@ public class SlackService extends BaseService {
             final var attachment = attachmentFactory.getDefect(testCase);
             attachmentList.add(attachment);
         }
-        System.out.println(attachmentList.toString());
+        System.out.println("!!!!!");
+        System.out.println(objectToString(attachmentList));
         // Send
         updateSlackMessage(config.getToken(), config.getChannel(), attachmentList, messageTimeStamp);
     }
@@ -134,8 +135,6 @@ public class SlackService extends BaseService {
     private int getTestRunIdFromMessage(final MessageEntity messageEntity) throws JsonProcessingException {
         final var messageJson = new JSONObject(objectToString(messageEntity)).getJSONObject("message");
 
-        System.out.println("!!!!!");
-        System.out.println(messageJson.toString());
         return Integer.parseInt(messageJson
                 .getJSONArray("attachments")
                 .getJSONObject(0)
