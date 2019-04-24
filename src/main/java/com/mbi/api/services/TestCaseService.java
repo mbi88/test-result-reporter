@@ -9,7 +9,6 @@ import com.mbi.api.models.response.CreatedResponse;
 import com.mbi.api.models.response.TestCaseResponse;
 import com.mbi.api.repositories.TestCaseRepository;
 import com.mbi.api.repositories.TestRunRepository;
-import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -23,7 +22,7 @@ import static com.mbi.api.exceptions.ExceptionSupplier.NOT_FOUND_SUPPLIER;
  */
 
 @Service
-public class TestCaseService {
+public class TestCaseService extends BaseService {
 
     @Autowired
     private TestCaseRepository testCaseRepository;
@@ -36,11 +35,11 @@ public class TestCaseService {
         final var testRunEntity = testRunRepository.findById(testRunId)
                 .orElseThrow(NOT_FOUND_SUPPLIER.apply(TestRunEntity.class, NOT_FOUND_ERROR_MESSAGE));
 
-        final var testCaseEntity = new ModelMapper().map(testCaseModel, TestCaseEntity.class);
+        final var testCaseEntity = mapper.map(testCaseModel, TestCaseEntity.class);
         testCaseEntity.setTestRunEntity(testRunEntity);
         testCaseRepository.save(testCaseEntity);
 
-        return new ModelMapper().map(testCaseEntity, CreatedResponse.class);
+        return mapper.map(testCaseEntity, CreatedResponse.class);
     }
 
     public Page<TestCaseResponse> getMethodsByStatus(final int testRunId,
@@ -51,7 +50,7 @@ public class TestCaseService {
 
         return testCaseRepository.findAllByStatusAndTestRunEntity(status.name(), testRunEntity, pageable)
                 .orElseThrow(NOT_FOUND_SUPPLIER.apply(TestCaseEntity.class, NOT_FOUND_ERROR_MESSAGE))
-                .map(m -> new ModelMapper().map(m, TestCaseResponse.class));
+                .map(m -> mapper.map(m, TestCaseResponse.class));
     }
 
     public Page<TestCaseResponse> getAllTestCases(final int testRunId, final Pageable pageable)
@@ -61,6 +60,6 @@ public class TestCaseService {
 
         return testCaseRepository.findAllByTestRunEntity(testRunEntity, pageable)
                 .orElseThrow(NOT_FOUND_SUPPLIER.apply(TestCaseEntity.class, NOT_FOUND_ERROR_MESSAGE))
-                .map(m -> new ModelMapper().map(m, TestCaseResponse.class));
+                .map(m -> mapper.map(m, TestCaseResponse.class));
     }
 }

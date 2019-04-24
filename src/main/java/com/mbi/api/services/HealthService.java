@@ -9,7 +9,7 @@ import org.springframework.stereotype.Service;
  * Health service.
  */
 @Service
-public class HealthService {
+public class HealthService extends BaseService {
 
     public ResponseEntity<HealthResponse> checkHealth() {
         final var healthEntity = new HealthResponse();

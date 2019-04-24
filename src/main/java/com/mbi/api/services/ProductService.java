@@ -9,7 +9,6 @@ import com.mbi.api.models.response.CreatedResponse;
 import com.mbi.api.models.response.ProductResponse;
 import com.mbi.api.repositories.ProductRepository;
 import com.mbi.api.repositories.TestRunRepository;
-import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -21,7 +20,7 @@ import static com.mbi.api.exceptions.ExceptionSupplier.*;
  * Product service.
  */
 @Service
-public class ProductService {
+public class ProductService extends BaseService {
 
     @Autowired
     private ProductRepository productRepository;
@@ -34,15 +33,15 @@ public class ProductService {
             throw EXISTS_SUPPLIER.apply(ProductEntity.class, ALREADY_EXISTS_ERROR_MESSAGE).get();
         }
 
-        final var productEntity = new ModelMapper().map(productModel, ProductEntity.class);
+        final var productEntity = mapper.map(productModel, ProductEntity.class);
         productRepository.save(productEntity);
-        return new ModelMapper().map(productEntity, CreatedResponse.class);
+        return mapper.map(productEntity, CreatedResponse.class);
     }
 
     public ProductResponse getProductByName(final String name) throws NotFoundException {
         final var productEntity = productRepository.findByName(name)
                 .orElseThrow(NOT_FOUND_SUPPLIER.apply(ProductEntity.class, NOT_FOUND_ERROR_MESSAGE));
-        return new ModelMapper().map(productEntity, ProductResponse.class);
+        return mapper.map(productEntity, ProductResponse.class);
     }
 
     public void deleteProductByName(final String name, final Pageable pageable) throws NotFoundException,
@@ -61,6 +60,6 @@ public class ProductService {
     public Page<ProductResponse> getAllProducts(final Pageable pageable) {
         return productRepository
                 .findAll(pageable).get()
-                .map(p -> new ModelMapper().map(p, ProductResponse.class));
+                .map(p -> mapper.map(p, ProductResponse.class));
     }
 }

@@ -11,7 +11,6 @@ import com.mbi.api.models.request.testng.ReportModel;
 import com.mbi.api.models.request.testng.SuiteModel;
 import com.mbi.api.models.response.CreatedResponse;
 import com.mbi.api.repositories.ProductRepository;
-import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -29,7 +28,7 @@ import static com.mbi.api.exceptions.ExceptionSupplier.NOT_FOUND_SUPPLIER;
  * Test run service.
  */
 @Service
-public class ReportsService {
+public class ReportsService extends BaseService {
 
     @Autowired
     private TestRunService testRunService;
@@ -46,7 +45,7 @@ public class ReportsService {
         productRepository.findByName(productName)
                 .orElseThrow(NOT_FOUND_SUPPLIER.apply(ProductEntity.class, NOT_FOUND_ERROR_MESSAGE));
 
-        final var testRunModel = new ModelMapper().map(reportModel, TestRunModel.class);
+        final var testRunModel = mapper.map(reportModel, TestRunModel.class);
 
         // Set duration
         int testsDuration = 0;

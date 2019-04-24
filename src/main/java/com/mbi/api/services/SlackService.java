@@ -12,7 +12,6 @@ import com.mbi.api.models.request.slack.AttachmentFactory;
 import com.mbi.api.models.response.SlackResponse;
 import com.mbi.api.repositories.SlackRepository;
 import org.json.JSONObject;
-import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
@@ -30,7 +29,7 @@ import static com.mbi.api.exceptions.ExceptionSupplier.NOT_FOUND_SUPPLIER;
  */
 @Service
 @SuppressWarnings("MultipleStringLiterals")
-public class SlackService {
+public class SlackService extends BaseService {
 
     @Autowired
     private SlackConfig config;
@@ -75,7 +74,7 @@ public class SlackService {
             throw new BadRequestException(MessageEntity.class, slackResponse.getError());
         }
 
-        final var messageEntity = new ModelMapper().map(slackResponse, MessageEntity.class);
+        final var messageEntity = mapper.map(slackResponse, MessageEntity.class);
         slackRepository.save(messageEntity);
 
         return messageEntity;
@@ -137,7 +136,6 @@ public class SlackService {
                 .getJSONObject("message")
                 .getJSONArray("attachments");
 
-        final var mapper = new ModelMapper();
         for (var attach : attachments) {
             list.add(mapper.map(attach, Attachment.class));
         }

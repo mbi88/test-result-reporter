@@ -9,7 +9,6 @@ import com.mbi.api.models.response.TestRunDeltaResponse;
 import com.mbi.api.models.response.TestRunResponse;
 import com.mbi.api.repositories.ProductRepository;
 import com.mbi.api.repositories.TestRunRepository;
-import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -25,7 +24,7 @@ import static com.mbi.api.exceptions.ExceptionSupplier.NOT_FOUND_SUPPLIER;
  * Test run service.
  */
 @Service
-public class TestRunService {
+public class TestRunService extends BaseService {
 
     @Autowired
     private TestRunRepository testRunRepository;
@@ -38,7 +37,7 @@ public class TestRunService {
         final var productEntity = productRepository.findByName(productName)
                 .orElseThrow(NOT_FOUND_SUPPLIER.apply(ProductEntity.class, NOT_FOUND_ERROR_MESSAGE));
 
-        final var testRunEntity = new ModelMapper().map(testRunModel, TestRunEntity.class);
+        final var testRunEntity = mapper.map(testRunModel, TestRunEntity.class);
         // Set test run product
         testRunEntity.setProduct(productEntity);
         // Set test run status
@@ -48,14 +47,14 @@ public class TestRunService {
         // Save
         testRunRepository.save(testRunEntity);
 
-        return new ModelMapper().map(testRunEntity, CreatedResponse.class);
+        return mapper.map(testRunEntity, CreatedResponse.class);
     }
 
     public TestRunResponse getTestRunById(final int id) throws NotFoundException {
         final var testRunEntity = testRunRepository.findById(id)
                 .orElseThrow(NOT_FOUND_SUPPLIER.apply(TestRunEntity.class, NOT_FOUND_ERROR_MESSAGE));
 
-        return new ModelMapper().map(testRunEntity, TestRunResponse.class);
+        return mapper.map(testRunEntity, TestRunResponse.class);
     }
 
     public Page<TestRunResponse> getAllTestRuns(final String productName, final Pageable pageable)
@@ -65,13 +64,13 @@ public class TestRunService {
         if (Objects.isNull(productName) || productName.isBlank()) {
             testRuns = testRunRepository.findAll(pageable)
                     .get()
-                    .map(testRun -> new ModelMapper().map(testRun, TestRunResponse.class));
+                    .map(testRun -> mapper.map(testRun, TestRunResponse.class));
         } else {
             final var product = productRepository.findByName(productName)
                     .orElseThrow(NOT_FOUND_SUPPLIER.apply(ProductEntity.class, NOT_FOUND_ERROR_MESSAGE));
             testRuns = testRunRepository.findAllByProduct(product, pageable)
                     .orElseThrow(NOT_FOUND_SUPPLIER.apply(TestRunEntity.class, "No test runs in this product"))
-                    .map(testRun -> new ModelMapper().map(testRun, TestRunResponse.class));
+                    .map(testRun -> mapper.map(testRun, TestRunResponse.class));
         }
 
         return testRuns;
