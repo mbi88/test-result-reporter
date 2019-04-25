@@ -48,6 +48,27 @@ public class SlackService extends BaseService {
     @Autowired
     private TestCaseRepository testCaseRepository;
 
+    public void update(final String payload) throws NotFoundException, IOException {
+        final var json = new JSONObject(payload);
+        final var actionName = json.getJSONArray("actions").getJSONObject(0).getString("name");
+        final var messageTimeStamp = json.getString("message_ts");
+        System.out.println(json.toString());
+        // Show/Hide defects button
+        if ("hide_defects".equals(actionName)) {
+            hideTestCases(messageTimeStamp);
+        }
+        if ("show_defects".equals(actionName)) {
+            showTestCases(messageTimeStamp);
+        }
+
+        // Show stacktrace button
+        if ("show_stacktrace".equals(actionName)) {
+            final int callbackId = Integer.parseInt(json.getString("callback_id"));
+            final String channelId = json.getJSONObject("user").getString("id");
+            sendStackTrace(callbackId, channelId);
+        }
+    }
+
     private SlackResponse sendSlackMessage(final String token, final String channel, final List<Attachment> attachments)
             throws JsonProcessingException {
         final var attachmentsAsString = objectToString(attachments);
@@ -106,27 +127,6 @@ public class SlackService extends BaseService {
         slackRepository.save(messageEntity);
 
         return messageEntity;
-    }
-
-    public void update(final String payload) throws NotFoundException, IOException {
-        final var json = new JSONObject(payload);
-        final var actionName = json.getJSONArray("actions").getJSONObject(0).getString("name");
-        final var messageTimeStamp = json.getString("message_ts");
-        System.out.println(json.toString());
-        // Show/Hide defects button
-        if ("hide_defects".equals(actionName)) {
-            hideTestCases(messageTimeStamp);
-        }
-        if ("show_defects".equals(actionName)) {
-            showTestCases(messageTimeStamp);
-        }
-
-        // Show stacktrace button
-        if ("stacktrace".equals(actionName)) {
-            final int callbackId = Integer.parseInt(json.getString("callback_id"));
-            final String channelId = json.getJSONObject("user").getString("id");
-            sendStackTrace(callbackId, channelId);
-        }
     }
 
     private void showTestCases(final String messageTimeStamp) throws NotFoundException, IOException {
