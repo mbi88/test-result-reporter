@@ -75,8 +75,8 @@ public class SlackService extends BaseService {
 
         final var restTemplate = new RestTemplate();
         final var builder = UriComponentsBuilder.fromUriString(config.getUrl() + "chat.postMessage")
-                .queryParam("token", config.getToken())
-                .queryParam("channel", config.getChannel())
+                .queryParam("token", token)
+                .queryParam("channel", channel)
                 .queryParam("attachments", attachmentsAsString);
 
         return restTemplate.getForEntity(builder.build().toUri(), SlackResponse.class).getBody();
