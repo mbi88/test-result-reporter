@@ -3,6 +3,7 @@ package com.mbi.api.services;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.mbi.SlackConfig;
 import com.mbi.api.entities.slack.MessageEntity;
+import com.mbi.api.entities.testrun.TestCaseEntity;
 import com.mbi.api.enums.MethodStatus;
 import com.mbi.api.exceptions.BadRequestException;
 import com.mbi.api.exceptions.NotFoundException;
@@ -10,6 +11,7 @@ import com.mbi.api.models.request.slack.Attachment;
 import com.mbi.api.models.request.slack.AttachmentFactory;
 import com.mbi.api.models.response.SlackResponse;
 import com.mbi.api.repositories.SlackRepository;
+import com.mbi.api.repositories.TestCaseRepository;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
@@ -43,7 +45,11 @@ public class SlackService extends BaseService {
     @Autowired
     private SlackRepository slackRepository;
 
-    private SlackResponse sendSlackMessage(final List<Attachment> attachments) throws JsonProcessingException {
+    @Autowired
+    private TestCaseRepository testCaseRepository;
+
+    private SlackResponse sendSlackMessage(final String token, final String channel, final List<Attachment> attachments)
+            throws JsonProcessingException {
         final var attachmentsAsString = objectToString(attachments);
 
         final var restTemplate = new RestTemplate();
@@ -53,6 +59,10 @@ public class SlackService extends BaseService {
                 .queryParam("attachments", attachmentsAsString);
 
         return restTemplate.getForEntity(builder.build().toUri(), SlackResponse.class).getBody();
+    }
+
+    private SlackResponse sendSlackMessage(final List<Attachment> attachments) throws JsonProcessingException {
+        return sendSlackMessage(config.getToken(), config.getChannel(), attachments);
     }
 
     private SlackResponse updateSlackMessage(final List<Attachment> attachments, final String ts)
@@ -74,19 +84,24 @@ public class SlackService extends BaseService {
         final var testRun = testRunService.getTestRunById(testRunId);
         final var testRunDiff = testRunService.getBuildDifference(testRunId);
 
+        // Add attachments
         final List<Attachment> attachments = new ArrayList<>();
+        // Main attachment
         final var mainAttachment = new AttachmentFactory().getMain(testRun, testRunDiff);
         attachments.add(mainAttachment);
+        // Actions attachment
         if (!testRun.isSuccessful()) {
-            final var defectsAttachment = new AttachmentFactory().getAction();
-            attachments.add(defectsAttachment);
+            final var actionsAttachment = new AttachmentFactory().getAction();
+            attachments.add(actionsAttachment);
         }
+
+        // Send message
         final var slackResponse = sendSlackMessage(attachments);
 
+        // Save message if no errors
         if (!slackResponse.isOk()) {
             throw new BadRequestException(MessageEntity.class, slackResponse.getError());
         }
-
         final var messageEntity = mapper.map(slackResponse, MessageEntity.class);
         slackRepository.save(messageEntity);
 
@@ -108,7 +123,9 @@ public class SlackService extends BaseService {
 
         // Show stacktrace button
         if ("stacktrace".equals(actionName)) {
-            showTestCases(messageTimeStamp);
+            final int callbackId = Integer.parseInt(json.getString("callback_id"));
+            final String channelId = json.getJSONObject("user").getString("id");
+            sendStackTrace(callbackId, channelId);
         }
     }
 
@@ -121,9 +138,9 @@ public class SlackService extends BaseService {
         // Get test cases
         final var testCases = testCaseService.getMethodsByStatus(testRunId, MethodStatus.FAILED, PageRequest.of(0, 10));
 
-        // Add test cases
         final var attachmentList = getAttachmentsFromMessage(message);
         final var attachmentFactory = new AttachmentFactory();
+        // Add test cases
         for (var testCase : testCases.getContent()) {
             final var attachment = attachmentFactory.getDefect(testCase);
             attachmentList.add(attachment);
@@ -147,6 +164,15 @@ public class SlackService extends BaseService {
 
         // Send
         updateSlackMessage(attachmentList, messageTimeStamp);
+    }
+
+    private void sendStackTrace(final int callbackId, final String channelId) throws NotFoundException,
+            JsonProcessingException {
+        final var testCase = testCaseRepository.findById(callbackId)
+                .orElseThrow(NOT_FOUND_SUPPLIER.apply(TestCaseEntity.class, NOT_FOUND_ERROR_MESSAGE));
+        final var attachment = new AttachmentFactory().getStackTrace(testCase.getException());
+
+        sendSlackMessage(config.getToken(), channelId, List.of(attachment));
     }
 
     private int getTestRunIdFromMessage(final MessageEntity messageEntity) throws JsonProcessingException {

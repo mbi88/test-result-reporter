@@ -40,6 +40,8 @@ public class Attachment {
 
     private List<Action> actions;
 
+    private String text;
+
     public String getFallback() {
         return fallback;
     }
@@ -134,5 +136,13 @@ public class Attachment {
 
     public void setActions(final List<Action> actions) {
         this.actions = actions;
+    }
+
+    public String getText() {
+        return text;
+    }
+
+    public void setText(final String text) {
+        this.text = text;
     }
 }

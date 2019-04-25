@@ -86,6 +86,14 @@ public class AttachmentFactory {
         return attachment;
     }
 
+    public Attachment getStackTrace(final String message) {
+        final var attachment = new Attachment();
+        attachment.setTitle("StackTrace");
+        attachment.setText(message.substring(0, 2000));
+
+        return attachment;
+    }
+
     private String getDuration(final int testRunDuration, final int durationDiff) {
         final var testRunDurationString = formatDateTime(testRunDuration);
         final var durationDiffString = formatDateTime(durationDiff);
