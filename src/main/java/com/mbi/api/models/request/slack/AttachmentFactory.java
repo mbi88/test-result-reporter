@@ -89,7 +89,7 @@ public class AttachmentFactory {
     public Attachment getStackTrace(final String message) {
         final var attachment = new Attachment();
         attachment.setTitle("StackTrace");
-        attachment.setText(message.substring(0, 2000));
+        attachment.setText(message.substring(0, Math.min(2000, message.length())));
 
         return attachment;
     }
