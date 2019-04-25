@@ -170,7 +170,7 @@ public class SlackService extends BaseService {
             JsonProcessingException {
         final var testCase = testCaseRepository.findById(callbackId)
                 .orElseThrow(NOT_FOUND_SUPPLIER.apply(TestCaseEntity.class, NOT_FOUND_ERROR_MESSAGE));
-        final var attachment = new AttachmentFactory().getStackTrace(testCase.getException());
+        final var attachment = new AttachmentFactory().getStackTrace(testCase.getName(), testCase.getException());
 
         sendSlackMessage(config.getToken(), channelId, List.of(attachment));
     }
