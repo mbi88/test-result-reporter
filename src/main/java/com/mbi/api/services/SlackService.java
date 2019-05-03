@@ -46,7 +46,7 @@ public class SlackService extends BaseService {
     public SlackResponse updateSlackMessage(final List<Attachment> attachments, final String ts)
             throws JsonProcessingException {
         final var attachmentsAsString = objectToString(attachments);
-
+        System.out.println(attachmentsAsString);
         final var restTemplate = new RestTemplate();
         final var builder = UriComponentsBuilder.fromUriString(config.getUrl() + "chat.update")
                 .queryParam("token", config.getToken())

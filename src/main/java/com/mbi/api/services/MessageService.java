@@ -114,7 +114,7 @@ public class MessageService extends BaseService {
         // Add test cases pagination
         var pagination = attachmentFactory.getPagination();
         attachmentList.add(pagination);
-        System.out.println(Arrays.toString(attachmentList.toArray()));
+
         // Send
         slackService.updateSlackMessage(attachmentList, messageTimeStamp);
     }
