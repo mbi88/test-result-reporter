@@ -112,7 +112,7 @@ public class MessageService extends BaseService {
 
         // Get test cases
         final var testCases = testCaseService
-                .getMethodsByStatus(testRunId, MethodStatus.FAILED, PageRequest.of(page, 10));
+                .getMethodsByStatus(testRunId, MethodStatus.FAILED, PageRequest.of(page, 2));
 
         final var attachmentList = getAttachmentsFromMessage(message);
         final var attachmentFactory = new AttachmentFactory();
