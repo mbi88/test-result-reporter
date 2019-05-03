@@ -80,7 +80,7 @@ public class AttachmentFactory {
         final var previous = new Action();
         previous.setName("show_prev_defects");
         previous.setText("Show Previous Defects");
-        previous.setText("button");
+        previous.setType("button");
         previous.setValue("defect");
         previous.setFallback("defect");
         final var next = new Action();
