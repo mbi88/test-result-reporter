@@ -65,12 +65,16 @@ public class MessageService extends BaseService {
         }
         // Show next defects
         if ("show_next_defects".equals(actionName)) {
-            final int previousPage = Integer.parseInt(json.getString("callback_id"));
+            final int previousPage = Integer.parseInt(json.getString("title")
+                    .split("Page ")[1]
+                    .split(" of")[0]);
             showTestCases(messageTimeStamp, previousPage + 1);
         }
         // Show previous defects
         if ("show_prev_defects".equals(actionName)) {
-            final int previousPage = Integer.parseInt(json.getString("callback_id"));
+            final int previousPage = Integer.parseInt(json.getString("title")
+                    .split("Page ")[1]
+                    .split(" of")[0]);
             showTestCases(messageTimeStamp, previousPage - 1);
         }
     }
