@@ -17,7 +17,6 @@ import org.springframework.stereotype.Service;
 
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 import static com.mbi.api.exceptions.ExceptionSupplier.NOT_FOUND_ERROR_MESSAGE;
@@ -50,19 +49,29 @@ public class MessageService extends BaseService {
         final var actionName = json.getJSONArray("actions").getJSONObject(0).getString("name");
         final var messageTimeStamp = json.getString("message_ts");
         System.out.println(json.toString());
-        // Show defects button
+        //  Hide defects button
         if ("hide_defects".equals(actionName)) {
             hideTestCases(messageTimeStamp);
         }
-        // Hide defects button
+        // Show defects button
         if ("show_defects".equals(actionName)) {
-            showTestCases(messageTimeStamp);
+            showTestCases(messageTimeStamp, 0);
         }
         // Show stacktrace button
         if ("show_stacktrace".equals(actionName)) {
             final int callbackId = Integer.parseInt(json.getString("callback_id"));
             final String channelId = json.getJSONObject("user").getString("id");
             sendStackTrace(callbackId, channelId);
+        }
+        // Show next defects
+        if ("show_next_defects".equals(actionName)) {
+            final int previousPage = Integer.parseInt(json.getString("callback_id"));
+            showTestCases(messageTimeStamp, previousPage + 1);
+        }
+        // Show previous defects
+        if ("show_prev_defects".equals(actionName)) {
+            final int previousPage = Integer.parseInt(json.getString("callback_id"));
+            showTestCases(messageTimeStamp, previousPage - 1);
         }
     }
 
@@ -95,14 +104,15 @@ public class MessageService extends BaseService {
         return messageEntity;
     }
 
-    private void showTestCases(final String messageTimeStamp) throws NotFoundException, IOException {
+    private void showTestCases(final String messageTimeStamp, final int page) throws NotFoundException, IOException {
         // Get test run id
         final var message = slackRepository.findByTs(messageTimeStamp)
                 .orElseThrow(NOT_FOUND_SUPPLIER.apply(MessageEntity.class, NOT_FOUND_ERROR_MESSAGE));
         final var testRunId = getTestRunIdFromMessage(message);
 
         // Get test cases
-        final var testCases = testCaseService.getMethodsByStatus(testRunId, MethodStatus.FAILED, PageRequest.of(0, 10));
+        final var testCases = testCaseService
+                .getMethodsByStatus(testRunId, MethodStatus.FAILED, PageRequest.of(page, 10));
 
         final var attachmentList = getAttachmentsFromMessage(message);
         final var attachmentFactory = new AttachmentFactory();
@@ -112,7 +122,8 @@ public class MessageService extends BaseService {
             attachmentList.add(attachment);
         }
         // Add test cases pagination
-        var pagination = attachmentFactory.getPagination();
+        var pagination = attachmentFactory
+                .getPagination(testCases.getPageable().getPageNumber(), testCases.getTotalPages());
         attachmentList.add(pagination);
 
         // Send

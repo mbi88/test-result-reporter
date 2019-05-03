@@ -68,9 +68,9 @@ public class AttachmentFactory {
         return attachment;
     }
 
-    public Attachment getPagination() {
+    public Attachment getPagination(final int currentPage, final int totalPages) {
         final var attachment = new Attachment();
-        attachment.setTitle("Page 1 of 2");
+        attachment.setTitle(String.format("Page %d of %d", currentPage, totalPages));
         attachment.setShortField(true);
         attachment.setColor("c6c6c6");
         attachment.setFallback("defect");
