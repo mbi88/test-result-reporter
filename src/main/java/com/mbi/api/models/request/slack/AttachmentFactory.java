@@ -86,7 +86,7 @@ public class AttachmentFactory {
         final var next = new Action();
         next.setName("show_next_defects");
         next.setText("Show Next Defects");
-        next.setText("button");
+        next.setType("button");
         next.setValue("defect");
         next.setFallback("defect");
         attachment.setActions(List.of(previous, next));
