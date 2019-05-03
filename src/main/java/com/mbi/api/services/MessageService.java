@@ -110,6 +110,9 @@ public class MessageService extends BaseService {
             final var attachment = attachmentFactory.getDefect(testCase);
             attachmentList.add(attachment);
         }
+        // Add test cases pagination
+        var pagination = attachmentFactory.getPagination();
+        attachmentList.add(pagination);
 
         // Send
         slackService.updateSlackMessage(attachmentList, messageTimeStamp);

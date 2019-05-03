@@ -94,6 +94,31 @@ public class AttachmentFactory {
         return attachment;
     }
 
+    public Attachment getPagination() {
+        final var attachment = new Attachment();
+        attachment.setTitle("Page 1 of 2");
+        attachment.setShortField(true);
+        attachment.setColor("c6c6c6");
+        attachment.setFallback("defect");
+        attachment.setCallbackId("paging");
+        // Actions
+        final var previous = new Action();
+        previous.setName("show_prev_defects");
+        previous.setText("Show Previous Defects");
+        previous.setText("button");
+        previous.setValue("defect");
+        previous.setFallback("defect");
+        final var next = new Action();
+        next.setName("show_next_defects");
+        next.setText("Show Next Defects");
+        next.setText("button");
+        next.setValue("defect");
+        next.setFallback("defect");
+        attachment.setActions(List.of(previous, next));
+
+        return attachment;
+    }
+
     private String getDuration(final int testRunDuration, final int durationDiff) {
         final var testRunDurationString = formatDateTime(testRunDuration);
         final var durationDiffString = formatDateTime(durationDiff);
