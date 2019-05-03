@@ -17,6 +17,7 @@ import org.springframework.stereotype.Service;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import static com.mbi.api.exceptions.ExceptionSupplier.NOT_FOUND_ERROR_MESSAGE;
@@ -113,7 +114,7 @@ public class MessageService extends BaseService {
         // Add test cases pagination
         var pagination = attachmentFactory.getPagination();
         attachmentList.add(pagination);
-
+        System.out.println(Arrays.toString(attachmentList.toArray()));
         // Send
         slackService.updateSlackMessage(attachmentList, messageTimeStamp);
     }
