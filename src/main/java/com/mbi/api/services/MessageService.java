@@ -3,6 +3,7 @@ package com.mbi.api.services;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.mbi.api.entities.slack.MessageEntity;
 import com.mbi.api.entities.testrun.TestCaseEntity;
+import com.mbi.api.enums.DefectsPage;
 import com.mbi.api.enums.MethodStatus;
 import com.mbi.api.exceptions.BadRequestException;
 import com.mbi.api.exceptions.NotFoundException;
@@ -58,7 +59,7 @@ public class MessageService extends BaseService {
 
         // Show defects button
         if ("show_defects".equals(actionName)) {
-            showTestCases(message, 0);
+            showTestCases(message, DefectsPage.DEFAULT);
         }
 
         // Show stacktrace button
@@ -70,12 +71,12 @@ public class MessageService extends BaseService {
 
         // Show next defects
         if ("show_next_defects".equals(actionName)) {
-            showTestCases(message, message.getCurrentPage() + 1);
+            showTestCases(message, DefectsPage.NEXT);
         }
 
         // Show previous defects
         if ("show_prev_defects".equals(actionName)) {
-            showTestCases(message, message.getCurrentPage() - 1);
+            showTestCases(message, DefectsPage.PREVIOUS);
         }
     }
 
@@ -110,12 +111,32 @@ public class MessageService extends BaseService {
         return messageEntity;
     }
 
-    private void showTestCases(final MessageEntity message, final int page) throws NotFoundException, IOException {
-        final int testRunId = message.getTestRunId();
+    private void showTestCases(final MessageEntity message, final DefectsPage defectsPage) throws NotFoundException,
+            IOException {
+        int page = 0;
+        final int currentPage = message.getCurrentPage();
+        switch (defectsPage) {
+            case NEXT: {
+                page = currentPage + 1;
+                break;
+            }
+            case PREVIOUS: {
+                if (currentPage > 0) {
+                    page = currentPage - 1;
+                }
+                break;
+            }
+            case DEFAULT: {
+                page = 0;
+                break;
+            }
+            default:
+                throw new IllegalStateException("Unexpected value: " + defectsPage);
+        }
 
         // Get test cases
         final var testCases = testCaseService
-                .getMethodsByStatus(testRunId, MethodStatus.FAILED, PageRequest.of(page, 2));
+                .getMethodsByStatus(message.getTestRunId(), MethodStatus.FAILED, PageRequest.of(page, 2));
 
         final var attachmentList = getAttachmentsFromMessage(message);
         final var attachmentFactory = new AttachmentFactory();
