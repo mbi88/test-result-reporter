@@ -14,6 +14,7 @@ import com.mbi.api.repositories.TestCaseRepository;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
@@ -135,8 +136,10 @@ public class MessageService extends BaseService {
         }
 
         // Get test cases
-        final var testCases = testCaseService
-                .getMethodsByStatus(message.getTestRunId(), MethodStatus.FAILED, PageRequest.of(page, 2));
+        final var testCases = testCaseService.getMethodsByStatus(
+                message.getTestRunId(),
+                MethodStatus.FAILED,
+                PageRequest.of(page, 2, Sort.by("id")));
 
         final var attachmentList = getAttachmentsFromMessage(message);
         final var attachmentFactory = new AttachmentFactory();
