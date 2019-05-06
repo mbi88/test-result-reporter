@@ -30,6 +30,10 @@ public class MessageEntity {
 
     private String error;
 
+    private int currentPage;
+
+    private int testRunId;
+
     public Integer getId() {
         return id;
     }
@@ -68,5 +72,21 @@ public class MessageEntity {
 
     public void setError(final String error) {
         this.error = error;
+    }
+
+    public int getCurrentPage() {
+        return currentPage;
+    }
+
+    public void setCurrentPage(final int currentPage) {
+        this.currentPage = currentPage;
+    }
+
+    public int getTestRunId() {
+        return testRunId;
+    }
+
+    public void setTestRunId(final int testRunId) {
+        this.testRunId = testRunId;
     }
 }

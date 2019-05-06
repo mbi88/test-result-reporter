@@ -48,14 +48,16 @@ public class MessageService extends BaseService {
         final var json = new JSONObject(payload);
         final var actionName = json.getJSONArray("actions").getJSONObject(0).getString("name");
         final var messageTimeStamp = json.getString("message_ts");
-        System.out.println(json.toString());
+        final var message = slackRepository.findByTs(messageTimeStamp)
+                .orElseThrow(NOT_FOUND_SUPPLIER.apply(MessageEntity.class, NOT_FOUND_ERROR_MESSAGE));
+
         //  Hide defects button
         if ("hide_defects".equals(actionName)) {
             hideTestCases(messageTimeStamp);
         }
         // Show defects button
         if ("show_defects".equals(actionName)) {
-            showTestCases(messageTimeStamp, 0);
+            showTestCases(message, 0);
         }
         // Show stacktrace button
         if ("show_stacktrace".equals(actionName)) {
@@ -65,17 +67,11 @@ public class MessageService extends BaseService {
         }
         // Show next defects
         if ("show_next_defects".equals(actionName)) {
-            final int previousPage = Integer.parseInt(json.getString("title")
-                    .split("Page ")[1]
-                    .split(" of")[0]);
-            showTestCases(messageTimeStamp, previousPage + 1);
+            showTestCases(message, message.getCurrentPage() + 1);
         }
         // Show previous defects
         if ("show_prev_defects".equals(actionName)) {
-            final int previousPage = Integer.parseInt(json.getString("title")
-                    .split("Page ")[1]
-                    .split(" of")[0]);
-            showTestCases(messageTimeStamp, previousPage - 1);
+            showTestCases(message, message.getCurrentPage() - 1);
         }
     }
 
@@ -103,16 +99,15 @@ public class MessageService extends BaseService {
             throw new BadRequestException(MessageEntity.class, slackResponse.getError());
         }
         final var messageEntity = mapper.map(slackResponse, MessageEntity.class);
+        messageEntity.setCurrentPage(0);
+        messageEntity.setTestRunId(testRunId);
         slackRepository.save(messageEntity);
 
         return messageEntity;
     }
 
-    private void showTestCases(final String messageTimeStamp, final int page) throws NotFoundException, IOException {
-        // Get test run id
-        final var message = slackRepository.findByTs(messageTimeStamp)
-                .orElseThrow(NOT_FOUND_SUPPLIER.apply(MessageEntity.class, NOT_FOUND_ERROR_MESSAGE));
-        final var testRunId = getTestRunIdFromMessage(message);
+    private void showTestCases(final MessageEntity message, final int page) throws NotFoundException, IOException {
+        final int testRunId = message.getTestRunId();
 
         // Get test cases
         final var testCases = testCaseService
@@ -126,12 +121,15 @@ public class MessageService extends BaseService {
             attachmentList.add(attachment);
         }
         // Add test cases pagination
-        var pagination = attachmentFactory
-                .getPagination(testCases.getPageable().getPageNumber(), testCases.getTotalPages());
+        var pagination = attachmentFactory.getPagination(page, testCases.getTotalPages());
         attachmentList.add(pagination);
 
         // Send
-        slackService.updateSlackMessage(attachmentList, messageTimeStamp);
+        slackService.updateSlackMessage(attachmentList, message.getTs());
+
+        // Save current page
+        message.setCurrentPage(page);
+        slackRepository.save(message);
     }
 
     private void hideTestCases(final String messageTimeStamp) throws NotFoundException, IOException {
@@ -156,16 +154,6 @@ public class MessageService extends BaseService {
         final var attachment = new AttachmentFactory().getStackTrace(testCase.getName(), testCase.getException());
 
         slackService.sendSlackMessage(channelId, List.of(attachment));
-    }
-
-    private int getTestRunIdFromMessage(final MessageEntity messageEntity) throws JsonProcessingException {
-        final var messageJson = new JSONObject(objectToString(messageEntity)).getJSONObject("message");
-
-        return Integer.parseInt(messageJson
-                .getJSONArray("attachments")
-                .getJSONObject(0)
-                .getString("fallback")
-                .split("=")[1]);
     }
 
     private List<Attachment> getAttachmentsFromMessage(final MessageEntity messageEntity) throws IOException {
