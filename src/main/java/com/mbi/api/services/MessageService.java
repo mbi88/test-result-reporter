@@ -55,20 +55,24 @@ public class MessageService extends BaseService {
         if ("hide_defects".equals(actionName)) {
             hideTestCases(messageTimeStamp);
         }
+
         // Show defects button
         if ("show_defects".equals(actionName)) {
             showTestCases(message, 0);
         }
+
         // Show stacktrace button
         if ("show_stacktrace".equals(actionName)) {
             final int callbackId = Integer.parseInt(json.getString("callback_id"));
             final String channelId = json.getJSONObject("user").getString("id");
             sendStackTrace(callbackId, channelId);
         }
+
         // Show next defects
         if ("show_next_defects".equals(actionName)) {
             showTestCases(message, message.getCurrentPage() + 1);
         }
+
         // Show previous defects
         if ("show_prev_defects".equals(actionName)) {
             showTestCases(message, message.getCurrentPage() - 1);
