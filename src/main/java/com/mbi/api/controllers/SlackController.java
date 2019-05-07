@@ -2,7 +2,6 @@ package com.mbi.api.controllers;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.mbi.api.entities.slack.MessageEntity;
-import com.mbi.api.exceptions.BadRequestException;
 import com.mbi.api.exceptions.NotFoundException;
 import com.mbi.api.services.MessageService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,8 +26,8 @@ public class SlackController {
 
     @RequestMapping(method = POST, path = "/slack/messages", produces = "application/json")
     public ResponseEntity<MessageEntity> sendMessage(@RequestParam("testRunId") final int testRunId)
-            throws JsonProcessingException, NotFoundException, BadRequestException {
-        return new ResponseEntity<>(messageService.createSlackMessage(testRunId), HttpStatus.OK);
+            throws JsonProcessingException, NotFoundException {
+        return new ResponseEntity<>(messageService.createSlackMessage2(testRunId), HttpStatus.OK);
     }
 
     @RequestMapping(method = POST, path = "/slack/interact")

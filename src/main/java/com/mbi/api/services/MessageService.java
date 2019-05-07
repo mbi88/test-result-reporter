@@ -7,8 +7,7 @@ import com.mbi.api.enums.DefectsPage;
 import com.mbi.api.enums.MethodStatus;
 import com.mbi.api.exceptions.BadRequestException;
 import com.mbi.api.exceptions.NotFoundException;
-import com.mbi.api.models.request.slack.Attachment;
-import com.mbi.api.models.request.slack.AttachmentFactory;
+import com.mbi.api.models.request.slack.*;
 import com.mbi.api.repositories.SlackRepository;
 import com.mbi.api.repositories.TestCaseRepository;
 import org.json.JSONObject;
@@ -110,6 +109,30 @@ public class MessageService extends BaseService {
         slackRepository.save(messageEntity);
 
         return messageEntity;
+    }
+
+    public MessageEntity createSlackMessage2(final int testRunId) throws NotFoundException, JsonProcessingException {
+        final var testRun = testRunService.getTestRunById(testRunId);
+        final var testRunDiff = testRunService.getBuildDifference(testRunId);
+
+        // Add blocks
+        final List<Block> blocks = new ArrayList<>();
+        final var blockFactory = new BlocksFactory();
+        // Tested product name
+        final var testedProductName = blockFactory.getProductNameBlock(testRun);
+        blocks.add(testedProductName);
+        // Statistics
+        final var statsBlock = blockFactory.getStatsBlock(testRun, testRunDiff);
+        blocks.add(statsBlock);
+        // Context
+        final var context = blockFactory.getContext(testRun, testRunDiff);
+        blocks.add(context);
+
+        // Send message
+        final var slackResponse = slackService.sendSlackMessage2(blocks);
+        System.out.println(objectToString(blocks));
+        System.out.println(objectToString(slackResponse));
+        return null;
     }
 
     private void showTestCases(final MessageEntity message, final DefectsPage defectsPage) throws NotFoundException,
