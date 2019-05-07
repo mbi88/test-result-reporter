@@ -1,18 +1,20 @@
 package com.mbi.api.models.request.slack;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonInclude;
 
 /**
  * Text request model.
  */
 @JsonIgnoreProperties(ignoreUnknown = true)
+@JsonInclude(JsonInclude.Include.NON_NULL)
 public class Text {
 
     private String type;
 
     private String text;
 
-    private boolean emoji;
+    private Boolean emoji;
 
     public String getType() {
         return type;
@@ -30,11 +32,11 @@ public class Text {
         this.text = text;
     }
 
-    public boolean isEmoji() {
+    public Boolean isEmoji() {
         return emoji;
     }
 
-    public void setEmoji(final boolean emoji) {
+    public void setEmoji(final Boolean emoji) {
         this.emoji = emoji;
     }
 }
