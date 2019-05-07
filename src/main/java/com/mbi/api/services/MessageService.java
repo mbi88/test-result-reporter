@@ -114,6 +114,7 @@ public class MessageService extends BaseService {
 
     private void showTestCases(final MessageEntity message, final DefectsPage defectsPage) throws NotFoundException,
             IOException {
+        // Find what page to show
         int page = 0;
         final int currentPage = message.getCurrentPage();
         switch (defectsPage) {
