@@ -13,7 +13,7 @@ public class BlocksFactory {
     public Block getProductNameBlock(final TestRunResponse testRun) {
         final var text = new Text();
         text.setType("mrkdwn");
-        text.setText(String.format("*%s*", testRun.getProductName()));
+        text.setText(String.format("*%s*", testRun.getProductName().toUpperCase()));
 
         final var block = new SectionBlock();
         block.setType("section");

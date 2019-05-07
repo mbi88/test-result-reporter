@@ -9,10 +9,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.util.LinkedMultiValueMap;
-import org.springframework.util.MultiValueMap;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.util.UriComponentsBuilder;
 
@@ -41,18 +39,19 @@ public class SlackService extends BaseService {
         return restTemplate.getForEntity(builder.build().toUri(), SlackResponse.class).getBody();
     }
 
-    public SlackResponse sendSlackMessage2(final String token, final String channel, final List<Block> blocks) {
-        HttpHeaders headers = new HttpHeaders();
+    public SlackResponse sendSlackMessage2(final String token, final String channel, final List<Block> blocks)
+            throws JsonProcessingException {
+        final var headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_FORM_URLENCODED);
 
-        MultiValueMap<String, Object> map = new LinkedMultiValueMap<>();
-        map.add("channel", channel);
-        map.add("token", token);
-        map.add("blocks", blocks);
+        final var formData = new LinkedMultiValueMap<String, String>();
+        formData.add("channel", channel);
+        formData.add("token", token);
+        formData.add("blocks", objectToString(blocks));
 
-        HttpEntity<MultiValueMap<String, Object>> request = new HttpEntity<>(map, headers);
-
+        final var request = new HttpEntity<>(formData, headers);
         final var restTemplate = new RestTemplate();
+
         return restTemplate.postForEntity(config.getUrl() + "chat.postMessage",
                 request, SlackResponse.class).getBody();
     }
@@ -61,7 +60,7 @@ public class SlackService extends BaseService {
         return sendSlackMessage(config.getToken(), config.getChannel(), attachments);
     }
 
-    public SlackResponse sendSlackMessage2(final List<Block> blocks) {
+    public SlackResponse sendSlackMessage2(final List<Block> blocks) throws JsonProcessingException {
         return sendSlackMessage2(config.getToken(), config.getChannel(), blocks);
     }
 
