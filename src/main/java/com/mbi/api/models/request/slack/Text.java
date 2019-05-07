@@ -1,8 +1,11 @@
 package com.mbi.api.models.request.slack;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+
 /**
  * Text request model.
  */
+@JsonIgnoreProperties(ignoreUnknown = true)
 public class Text {
 
     private String type;

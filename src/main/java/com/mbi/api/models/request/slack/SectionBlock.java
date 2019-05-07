@@ -1,10 +1,13 @@
 package com.mbi.api.models.request.slack;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+
 import java.util.List;
 
 /**
  * Block request model.
  */
+@JsonIgnoreProperties(ignoreUnknown = true)
 public class SectionBlock extends Block {
 
     private String type;
