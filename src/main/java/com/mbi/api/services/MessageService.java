@@ -54,7 +54,7 @@ public class MessageService extends BaseService {
         final var messageTimeStamp = json.getJSONArray("actions").getJSONObject(0).getString("action_ts");
         final var message = slackRepository.findByTs(messageTimeStamp)
                 .orElseThrow(NOT_FOUND_SUPPLIER.apply(MessageEntity.class, NOT_FOUND_ERROR_MESSAGE));
-
+        System.out.println(payload);
         //  Hide defects button
         if ("hide_failed_tests".equals(actionName)) {
             hideTestCases(messageTimeStamp);
