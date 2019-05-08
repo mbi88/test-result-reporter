@@ -8,10 +8,8 @@ import com.mbi.api.enums.MethodStatus;
 import com.mbi.api.exceptions.BadRequestException;
 import com.mbi.api.exceptions.NotFoundException;
 import com.mbi.api.models.request.slack.BlocksFactory;
-import com.mbi.api.models.request.slack.SectionBlock;
 import com.mbi.api.repositories.SlackRepository;
 import com.mbi.api.repositories.TestCaseRepository;
-import org.json.JSONArray;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
@@ -56,7 +54,7 @@ public class MessageService extends BaseService {
 
         //  Hide defects button
         if ("hide_failed_tests".equals(actionName)) {
-            hideTestCases(messageTimeStamp);
+            hideTestCases(message);
         }
 
         // Show defects button
@@ -67,7 +65,7 @@ public class MessageService extends BaseService {
         // Show stacktrace button
         if ("show_stack_trace".equals(actionName)) {
             final int defectId = Integer.parseInt(json.getJSONArray("actions").getJSONObject(0)
-                    .getString("defect_test_"));
+                    .getString("block_id").split("defect_test_")[1]);
             final String channelId = json.getJSONObject("user").getString("id");
             sendStackTrace(defectId, channelId);
         }
@@ -165,22 +163,15 @@ public class MessageService extends BaseService {
         slackRepository.save(message);
     }
 
-    private void hideTestCases(final String messageTimeStamp) throws NotFoundException, IOException {
-        final var message = slackRepository.findByTs(messageTimeStamp)
-                .orElseThrow(NOT_FOUND_SUPPLIER.apply(MessageEntity.class, NOT_FOUND_ERROR_MESSAGE));
-        final var actualBlocks = new JSONObject(objectToString(message))
-                .getJSONObject("message")
-                .getJSONArray("blocks");
-        final var expectedBlocks = new JSONArray();
-        // Remove test cases
-        for (var block : actualBlocks) {
-            if (!((JSONObject) block).getString("block_id").startsWith("defect_")) {
-                expectedBlocks.put(block);
-            }
-        }
+    private void hideTestCases(final MessageEntity message) throws NotFoundException, IOException {
+        final var testRun = testRunService.getTestRunById(message.getTestRunId());
+        final var testRunDiff = testRunService.getBuildDifference(message.getTestRunId());
+
+        // Add main part of message
+        final List<Object> blocksList = new BlocksFactory().getMainMessage(testRun, testRunDiff);
 
         // Send
-        slackService.updateSlackMessage(expectedBlocks.toList(), messageTimeStamp);
+        slackService.updateSlackMessage(blocksList, message.getTs());
     }
 
     private void sendStackTrace(final int defectId, final String channelId) throws NotFoundException,
@@ -190,13 +181,5 @@ public class MessageService extends BaseService {
         final var block = new BlocksFactory().getStackTrace(testCase.getName(), testCase.getException());
 
         slackService.sendSlackMessage(channelId, List.of(block));
-    }
-
-    private List<Object> getBlocksFromMessage(final MessageEntity messageEntity) throws IOException {
-        final var blocks = new JSONObject(objectToString(messageEntity))
-                .getJSONObject("message")
-                .getJSONArray("blocks");
-
-        return blocks.toList();
     }
 }
