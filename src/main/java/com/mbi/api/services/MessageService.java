@@ -163,7 +163,8 @@ public class MessageService extends BaseService {
         // Add test cases pagination
         var pagination = blockFactory.getPagination(page, testCases.getTotalPages());
         blocksList.add(pagination);
-
+        System.out.println(objectToString(blocksList));
+        System.out.println(message.getTs());
         // Send
         slackService.updateSlackMessage(blocksList, message.getTs());
 
