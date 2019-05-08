@@ -50,7 +50,7 @@ public class SlackService extends BaseService {
         return sendSlackMessage(config.getToken(), channel, blocks);
     }
 
-    public SlackResponse updateSlackMessage(final List<Block> blocks, final String ts) throws JsonProcessingException {
+    public SlackResponse updateSlackMessage(final List<Object> blocks, final String ts) throws JsonProcessingException {
         final var headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_FORM_URLENCODED);
 

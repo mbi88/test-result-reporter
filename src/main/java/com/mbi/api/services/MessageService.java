@@ -153,7 +153,7 @@ public class MessageService extends BaseService {
                 MethodStatus.FAILED,
                 PageRequest.of(page, 2, Sort.by("id")));
 
-        final var blocksList = getBlocksFromMessage(message);
+        final List<Object> blocksList = getBlocksFromMessage(message);
         final var blockFactory = new BlocksFactory();
         // Add test cases
         for (var testCase : testCases.getContent()) {
@@ -196,17 +196,11 @@ public class MessageService extends BaseService {
         slackService.sendSlackMessage(channelId, List.of(block));
     }
 
-    private List<Block> getBlocksFromMessage(final MessageEntity messageEntity) throws IOException {
+    private List<Object> getBlocksFromMessage(final MessageEntity messageEntity) throws IOException {
         final var blocks = new JSONObject(objectToString(messageEntity))
                 .getJSONObject("message")
                 .getJSONArray("blocks");
 
-        final var list = new ArrayList<Block>();
-        for (var b : blocks) {
-            final var block = stringToObject(b.toString(), Block.class);
-            list.add(block);
-        }
-
-        return list;
+        return blocks.toList();
     }
 }
