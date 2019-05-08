@@ -148,8 +148,11 @@ public class MessageService extends BaseService {
             blocksList.add(defectBlock);
         }
         // Add test cases pagination
-        var pagination = blockFactory.getPagination(page, testCases.getTotalPages());
-        blocksList.add(pagination);
+        var paginationLabel = blockFactory.getPaginationLabel(page, testCases.getTotalPages());
+        blocksList.add(paginationLabel);
+        var paginationButtons = blockFactory.getPaginationButtons();
+        blocksList.add(paginationButtons);
+
         System.out.println(objectToString(blocksList));
         System.out.println(message.getTs());
         // Send
@@ -166,7 +169,7 @@ public class MessageService extends BaseService {
         final var blocks = getBlocksFromMessage(message);
         // Remove test cases
         for (var block : blocks) {
-            if (((SectionBlock) block).getBlockId().equals("defect")) {
+            if (((SectionBlock) block).getBlockId().startsWith("defect_")) {
                 blocks.remove(block);
             }
         }

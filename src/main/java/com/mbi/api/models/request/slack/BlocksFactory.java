@@ -126,12 +126,24 @@ public class BlocksFactory {
         block.setType("section");
         block.setText(text);
         block.setAccessory(accessory);
-        block.setBlockId("defect");
+        block.setBlockId("defect_test");
 
         return block;
     }
 
-    public ActionsBlock getPagination(final int currentPage, final int totalPages) {
+    public SectionBlock getPaginationLabel(final int currentPage, final int totalPages) {
+        final var text = new Text();
+        text.setType("mrkdwn");
+        text.setType(String.format("*Page %d of %d", currentPage, totalPages));
+
+        final var block = new SectionBlock();
+        block.setType("section");
+        block.setText(text);
+
+        return block;
+    }
+
+    public ActionsBlock getPaginationButtons() {
         final var nextButtonText = new Text();
         nextButtonText.setType("plain_text");
         nextButtonText.setText(":arrow_forward:");
@@ -153,7 +165,7 @@ public class BlocksFactory {
         final var block = new ActionsBlock();
         block.setType("actions");
         block.setElements(List.of(nextButton, prevButton));
-        block.setBlockId("defect");
+        block.setBlockId("defect_pagination_buttons");
 
         return block;
     }
