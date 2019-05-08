@@ -2,6 +2,7 @@ package com.mbi.api.models.request.slack;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.annotation.JsonProperty;
 
 import java.util.List;
 
@@ -19,6 +20,9 @@ public class SectionBlock extends Block {
     private List<Text> fields;
 
     private Accessory accessory;
+
+    @JsonProperty("block_id")
+    private String blockId;
 
     public String getType() {
         return type;
@@ -50,5 +54,13 @@ public class SectionBlock extends Block {
 
     public void setAccessory(Accessory accessory) {
         this.accessory = accessory;
+    }
+
+    public String getBlockId() {
+        return blockId;
+    }
+
+    public void setBlockId(final String blockId) {
+        this.blockId = blockId;
     }
 }

@@ -1,5 +1,6 @@
 package com.mbi.api.models.request.slack;
 
+import com.mbi.api.models.response.TestCaseResponse;
 import com.mbi.api.models.response.TestRunDeltaResponse;
 import com.mbi.api.models.response.TestRunResponse;
 
@@ -86,6 +87,68 @@ public class BlocksFactory {
         final var block = new ActionsBlock();
         block.setType("actions");
         block.setElements(List.of(showButton, hideButton));
+
+        return block;
+    }
+
+    public Block getDefect(final TestCaseResponse testCase) {
+        final var text = new Text();
+        text.setType("mrkdwn");
+        text.setType(String.format("_%s.%s_", testCase.getClassName(), testCase.getName()));
+
+        final var stackTraceText = new Text();
+        stackTraceText.setType("plain_text");
+        stackTraceText.setText("Stack Trace");
+
+        final var accessory = new ButtonAccessory();
+        accessory.setType("button");
+        accessory.setActionId("show_stack_trace");
+        accessory.setText(stackTraceText);
+
+        final var block = new SectionBlock();
+        block.setType("section");
+        block.setText(text);
+        block.setAccessory(accessory);
+        block.setBlockId("defect");
+
+        return block;
+    }
+
+    public Block getPagination(final int currentPage, final int totalPages) {
+        final var nextButtonText = new Text();
+        nextButtonText.setType("plain_text");
+        nextButtonText.setType(":arrow_forward:");
+        nextButtonText.setEmoji(true);
+        final var nextButton = new ButtonElement();
+        nextButton.setType("button");
+        nextButton.setText(nextButtonText);
+        nextButton.setActionId("next_tests");
+
+        final var prevButtonText = new Text();
+        prevButtonText.setType("plain_text");
+        prevButtonText.setType(":arrow_backward:");
+        prevButtonText.setEmoji(true);
+        final var prevButton = new ButtonElement();
+        prevButton.setType("button");
+        prevButton.setText(prevButtonText);
+        prevButton.setActionId("prev_tests");
+
+        final var block = new ActionsBlock();
+        block.setType("actions");
+        block.setElements(List.of(nextButton, prevButton));
+        block.setBlockId("defect");
+
+        return block;
+    }
+
+    public Block getStackTrace(final String testCaseName, final String message) {
+        final var text = new Text();
+        text.setType("mrkdwn");
+        text.setType(String.format("*%s*%n%s", testCaseName, message.substring(0, Math.min(2000, message.length()))));
+
+        final var block = new SectionBlock();
+        block.setType("section");
+        block.setText(text);
 
         return block;
     }

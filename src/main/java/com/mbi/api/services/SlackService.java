@@ -2,7 +2,6 @@ package com.mbi.api.services;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.mbi.SlackConfig;
-import com.mbi.api.models.request.slack.Attachment;
 import com.mbi.api.models.request.slack.Block;
 import com.mbi.api.models.response.SlackResponse;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,7 +11,6 @@ import org.springframework.http.MediaType;
 import org.springframework.stereotype.Service;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.web.client.RestTemplate;
-import org.springframework.web.util.UriComponentsBuilder;
 
 import java.util.List;
 
@@ -26,20 +24,7 @@ public class SlackService extends BaseService {
     @Autowired
     private SlackConfig config;
 
-    public SlackResponse sendSlackMessage(final String token, final String channel, final List<Attachment> attachments)
-            throws JsonProcessingException {
-        final var attachmentsAsString = objectToString(attachments);
-
-        final var restTemplate = new RestTemplate();
-        final var builder = UriComponentsBuilder.fromUriString(config.getUrl() + "chat.postMessage")
-                .queryParam("token", token)
-                .queryParam("channel", channel)
-                .queryParam("attachments", attachmentsAsString);
-
-        return restTemplate.getForEntity(builder.build().toUri(), SlackResponse.class).getBody();
-    }
-
-    public SlackResponse sendSlackMessage2(final String token, final String channel, final List<Block> blocks)
+    public SlackResponse sendSlackMessage(final String token, final String channel, final List<Block> blocks)
             throws JsonProcessingException {
         final var headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_FORM_URLENCODED);
@@ -56,30 +41,29 @@ public class SlackService extends BaseService {
                 request, SlackResponse.class).getBody();
     }
 
-    public SlackResponse sendSlackMessage(final List<Attachment> attachments) throws JsonProcessingException {
-        return sendSlackMessage(config.getToken(), config.getChannel(), attachments);
+    public SlackResponse sendSlackMessage(final List<Block> blocks) throws JsonProcessingException {
+        return sendSlackMessage(config.getToken(), config.getChannel(), blocks);
     }
 
-    public SlackResponse sendSlackMessage2(final List<Block> blocks) throws JsonProcessingException {
-        return sendSlackMessage2(config.getToken(), config.getChannel(), blocks);
-    }
-
-    public SlackResponse sendSlackMessage(final String channel, final List<Attachment> attachments)
+    public SlackResponse sendSlackMessage(final String channel, final List<Block> blocks)
             throws JsonProcessingException {
-        return sendSlackMessage(config.getToken(), channel, attachments);
+        return sendSlackMessage(config.getToken(), channel, blocks);
     }
 
-    public SlackResponse updateSlackMessage(final List<Attachment> attachments, final String ts)
-            throws JsonProcessingException {
-        final var attachmentsAsString = objectToString(attachments);
-        System.out.println(attachmentsAsString);
+    public SlackResponse updateSlackMessage(final List<Block> blocks, final String ts) throws JsonProcessingException {
+        final var headers = new HttpHeaders();
+        headers.setContentType(MediaType.APPLICATION_FORM_URLENCODED);
+
+        final var formData = new LinkedMultiValueMap<String, String>();
+        formData.add("channel", config.getChannel());
+        formData.add("token", config.getToken());
+        formData.add("ts", ts);
+        formData.add("blocks", objectToString(blocks));
+
+        final var request = new HttpEntity<>(formData, headers);
         final var restTemplate = new RestTemplate();
-        final var builder = UriComponentsBuilder.fromUriString(config.getUrl() + "chat.update")
-                .queryParam("token", config.getToken())
-                .queryParam("channel", config.getChannel())
-                .queryParam("ts", ts)
-                .queryParam("attachments", attachmentsAsString);
 
-        return restTemplate.getForEntity(builder.build().toUri(), SlackResponse.class).getBody();
+        return restTemplate.postForEntity(config.getUrl() + "chat.update",
+                request, SlackResponse.class).getBody();
     }
 }

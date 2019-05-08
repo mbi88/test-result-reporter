@@ -7,10 +7,9 @@ import com.mbi.api.enums.DefectsPage;
 import com.mbi.api.enums.MethodStatus;
 import com.mbi.api.exceptions.BadRequestException;
 import com.mbi.api.exceptions.NotFoundException;
-import com.mbi.api.models.request.slack.Attachment;
-import com.mbi.api.models.request.slack.AttachmentFactory;
 import com.mbi.api.models.request.slack.Block;
 import com.mbi.api.models.request.slack.BlocksFactory;
+import com.mbi.api.models.request.slack.SectionBlock;
 import com.mbi.api.repositories.SlackRepository;
 import com.mbi.api.repositories.TestCaseRepository;
 import org.json.JSONObject;
@@ -108,7 +107,7 @@ public class MessageService extends BaseService {
         }
 
         // Send message
-        final var slackResponse = slackService.sendSlackMessage2(blocks);
+        final var slackResponse = slackService.sendSlackMessage(blocks);
         System.out.println(objectToString(blocks));
         System.out.println(objectToString(slackResponse));
 
@@ -154,19 +153,19 @@ public class MessageService extends BaseService {
                 MethodStatus.FAILED,
                 PageRequest.of(page, 2, Sort.by("id")));
 
-        final var attachmentList = getAttachmentsFromMessage(message);
-        final var attachmentFactory = new AttachmentFactory();
+        final var blocksList = getBlocksFromMessage(message);
+        final var blockFactory = new BlocksFactory();
         // Add test cases
         for (var testCase : testCases.getContent()) {
-            final var attachment = attachmentFactory.getDefect(testCase);
-            attachmentList.add(attachment);
+            final var defectBlock = blockFactory.getDefect(testCase);
+            blocksList.add(defectBlock);
         }
         // Add test cases pagination
-        var pagination = attachmentFactory.getPagination(page, testCases.getTotalPages());
-        attachmentList.add(pagination);
+        var pagination = blockFactory.getPagination(page, testCases.getTotalPages());
+        blocksList.add(pagination);
 
         // Send
-        slackService.updateSlackMessage(attachmentList, message.getTs());
+        slackService.updateSlackMessage(blocksList, message.getTs());
 
         // Save current page
         message.setCurrentPage(page);
@@ -176,36 +175,36 @@ public class MessageService extends BaseService {
     private void hideTestCases(final String messageTimeStamp) throws NotFoundException, IOException {
         final var message = slackRepository.findByTs(messageTimeStamp)
                 .orElseThrow(NOT_FOUND_SUPPLIER.apply(MessageEntity.class, NOT_FOUND_ERROR_MESSAGE));
-        final var attachmentList = getAttachmentsFromMessage(message);
+        final var blocks = getBlocksFromMessage(message);
         // Remove test cases
-        for (var attachment : attachmentList) {
-            if (attachment.getFallback().equals("defect")) {
-                attachmentList.remove(attachment);
+        for (var block : blocks) {
+            if (((SectionBlock) block).getBlockId().equals("defect")) {
+                blocks.remove(block);
             }
         }
 
         // Send
-        slackService.updateSlackMessage(attachmentList, messageTimeStamp);
+        slackService.updateSlackMessage(blocks, messageTimeStamp);
     }
 
     private void sendStackTrace(final int callbackId, final String channelId) throws NotFoundException,
             JsonProcessingException {
         final var testCase = testCaseRepository.findById(callbackId)
                 .orElseThrow(NOT_FOUND_SUPPLIER.apply(TestCaseEntity.class, NOT_FOUND_ERROR_MESSAGE));
-        final var attachment = new AttachmentFactory().getStackTrace(testCase.getName(), testCase.getException());
+        final var block = new BlocksFactory().getStackTrace(testCase.getName(), testCase.getException());
 
-        slackService.sendSlackMessage(channelId, List.of(attachment));
+        slackService.sendSlackMessage(channelId, List.of(block));
     }
 
-    private List<Attachment> getAttachmentsFromMessage(final MessageEntity messageEntity) throws IOException {
-        final var attachments = new JSONObject(objectToString(messageEntity))
+    private List<Block> getBlocksFromMessage(final MessageEntity messageEntity) throws IOException {
+        final var blocks = new JSONObject(objectToString(messageEntity))
                 .getJSONObject("message")
-                .getJSONArray("attachments");
+                .getJSONArray("blocks");
 
-        final List<Attachment> list = new ArrayList<>();
-        for (var attach : attachments) {
-            final var attachment = stringToObject(attach.toString(), Attachment.class);
-            list.add(attachment);
+        final var list = new ArrayList<Block>();
+        for (var b : blocks) {
+            final var block = stringToObject(b.toString(), Block.class);
+            list.add(block);
         }
 
         return list;
