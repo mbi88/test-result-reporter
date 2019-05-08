@@ -134,7 +134,7 @@ public class MessageService extends BaseService {
         final var testCases = testCaseService.getMethodsByStatus(
                 message.getTestRunId(),
                 MethodStatus.FAILED,
-                PageRequest.of(page, 2, Sort.by("id")));
+                PageRequest.of(page, 10, Sort.by("id")));
 
         final var testRun = testRunService.getTestRunById(message.getTestRunId());
         final var testRunDiff = testRunService.getBuildDifference(message.getTestRunId());
@@ -178,7 +178,9 @@ public class MessageService extends BaseService {
             JsonProcessingException {
         final var testCase = testCaseRepository.findById(defectId)
                 .orElseThrow(NOT_FOUND_SUPPLIER.apply(TestCaseEntity.class, NOT_FOUND_ERROR_MESSAGE));
-        final var block = new BlocksFactory().getStackTrace(testCase.getName(), testCase.getException());
+        final var block = new BlocksFactory().getStackTrace(
+                String.format("%s.%s", testCase.getClassName(), testCase.getName()),
+                testCase.getException());
 
         slackService.sendSlackMessage(channelId, List.of(block));
     }

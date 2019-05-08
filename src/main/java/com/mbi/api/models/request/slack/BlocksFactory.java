@@ -28,7 +28,7 @@ public class BlocksFactory {
         return blocks;
     }
 
-    public SectionBlock getProductNameBlock(final TestRunResponse testRun) {
+    private SectionBlock getProductNameBlock(final TestRunResponse testRun) {
         final var text = new Text();
         text.setType("mrkdwn");
         text.setText(String.format("*%s*", testRun.getProductName().toUpperCase()));
@@ -40,7 +40,7 @@ public class BlocksFactory {
         return block;
     }
 
-    public SectionBlock getStatsBlock(final TestRunResponse testRun, final TestRunDeltaResponse testRunDiff) {
+    private SectionBlock getStatsBlock(final TestRunResponse testRun, final TestRunDeltaResponse testRunDiff) {
         final var totalField = new Text();
         totalField.setType("mrkdwn");
         totalField.setText(String.format("*Total*%n%d (%d)", testRun.getTotal(), testRunDiff.getTotalDiff()));
@@ -54,9 +54,10 @@ public class BlocksFactory {
         skippedField.setType("mrkdwn");
         skippedField.setText(String.format("*Skipped*%n%d (%d)", testRun.getSkipped(), testRunDiff.getSkippedDiff()));
 
-        final var failedColor = "https://upload.wikimedia.org/wikipedia/commons/thumb/2/25/Red.svg/240px-Red.svg.png";
-        final var successColor = "https://upload.wikimedia.org/wikipedia/commons/thumb/b/b2/Green_square.svg/"
-                + "240px-Green_square.svg.png";
+        final var failedColor = "https://upload.wikimedia.org/wikipedia/commons/thumb/f/fd/Color_icon_red.svg/"
+                + "240px-Color_icon_red.svg.png";
+        final var successColor = "https://upload.wikimedia.org/wikipedia/commons/thumb/7/7d/Color_icon_green.svg/"
+                + "240px-Color_icon_green.svg.png";
 
         final var accessory = new ImageAccessory();
         accessory.setType("image");
@@ -71,7 +72,7 @@ public class BlocksFactory {
         return block;
     }
 
-    public ContextBlock getContext(final TestRunResponse testRun, final TestRunDeltaResponse testRunDiff) {
+    private ContextBlock getContext(final TestRunResponse testRun, final TestRunDeltaResponse testRunDiff) {
         final var text = new TextElement();
         text.setType("mrkdwn");
         text.setText(String.format("%s | %s",
@@ -85,7 +86,7 @@ public class BlocksFactory {
         return block;
     }
 
-    public ActionsBlock getActions() {
+    private ActionsBlock getActions() {
         final var showButtonText = new Text();
         showButtonText.setType("plain_text");
         showButtonText.setText("Show Failed Tests");
