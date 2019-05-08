@@ -134,7 +134,7 @@ public class BlocksFactory {
     public SectionBlock getPaginationLabel(final int currentPage, final int totalPages) {
         final var text = new Text();
         text.setType("mrkdwn");
-        text.setType(String.format("*Page %d of %d", currentPage, totalPages));
+        text.setText(String.format("*Page %d of %d", currentPage, totalPages));
 
         final var block = new SectionBlock();
         block.setType("section");
@@ -173,7 +173,7 @@ public class BlocksFactory {
     public SectionBlock getStackTrace(final String testCaseName, final String message) {
         final var text = new Text();
         text.setType("mrkdwn");
-        text.setType(String.format("*%s*%n%s", testCaseName, message.substring(0, Math.min(2000, message.length()))));
+        text.setText(String.format("*%s*%n%s", testCaseName, message.substring(0, Math.min(2000, message.length()))));
 
         final var block = new SectionBlock();
         block.setType("section");
