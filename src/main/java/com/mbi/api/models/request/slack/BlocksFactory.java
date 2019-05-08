@@ -111,7 +111,7 @@ public class BlocksFactory {
     public SectionBlock getDefect(final TestCaseResponse testCase) {
         final var text = new Text();
         text.setType("mrkdwn");
-        text.setType(String.format("_%s.%s_", testCase.getClassName(), testCase.getName()));
+        text.setText(String.format("_%s.%s_", testCase.getClassName(), testCase.getName()));
 
         final var stackTraceText = new Text();
         stackTraceText.setType("plain_text");
@@ -134,7 +134,7 @@ public class BlocksFactory {
     public ActionsBlock getPagination(final int currentPage, final int totalPages) {
         final var nextButtonText = new Text();
         nextButtonText.setType("plain_text");
-        nextButtonText.setType(":arrow_forward:");
+        nextButtonText.setText(":arrow_forward:");
         nextButtonText.setEmoji(true);
         final var nextButton = new ButtonElement();
         nextButton.setType("button");
@@ -143,7 +143,7 @@ public class BlocksFactory {
 
         final var prevButtonText = new Text();
         prevButtonText.setType("plain_text");
-        prevButtonText.setType(":arrow_backward:");
+        prevButtonText.setText(":arrow_backward:");
         prevButtonText.setEmoji(true);
         final var prevButton = new ButtonElement();
         prevButton.setType("button");
