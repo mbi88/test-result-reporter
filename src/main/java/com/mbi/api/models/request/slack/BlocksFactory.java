@@ -126,7 +126,7 @@ public class BlocksFactory {
         block.setType("section");
         block.setText(text);
         block.setAccessory(accessory);
-        block.setBlockId("defect_test");
+        block.setBlockId("defect_test_" + testCase.getId());
 
         return block;
     }
@@ -134,7 +134,7 @@ public class BlocksFactory {
     public SectionBlock getPaginationLabel(final int currentPage, final int totalPages) {
         final var text = new Text();
         text.setType("mrkdwn");
-        text.setText(String.format("*Page %d of %d", currentPage, totalPages));
+        text.setText(String.format("*Page %d of %d*", currentPage, totalPages));
 
         final var block = new SectionBlock();
         block.setType("section");
