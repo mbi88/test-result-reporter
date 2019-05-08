@@ -5,13 +5,30 @@ import com.mbi.api.models.response.TestRunDeltaResponse;
 import com.mbi.api.models.response.TestRunResponse;
 
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
 
 public class BlocksFactory {
 
-    public Block getProductNameBlock(final TestRunResponse testRun) {
+    public List<Object> getMainMessage(final TestRunResponse testRun, final TestRunDeltaResponse testRunDiff) {
+        final List<Object> blocks = new ArrayList<>();
+
+        // Tested product name
+        blocks.add(getProductNameBlock(testRun));
+        // Statistics
+        blocks.add(getStatsBlock(testRun, testRunDiff));
+        // Context
+        blocks.add(getContext(testRun, testRunDiff));
+        // Actions
+        if (!testRun.isSuccessful()) {
+            blocks.add(getActions());
+        }
+        return blocks;
+    }
+
+    public SectionBlock getProductNameBlock(final TestRunResponse testRun) {
         final var text = new Text();
         text.setType("mrkdwn");
         text.setText(String.format("*%s*", testRun.getProductName().toUpperCase()));
@@ -23,7 +40,7 @@ public class BlocksFactory {
         return block;
     }
 
-    public Block getStatsBlock(final TestRunResponse testRun, final TestRunDeltaResponse testRunDiff) {
+    public SectionBlock getStatsBlock(final TestRunResponse testRun, final TestRunDeltaResponse testRunDiff) {
         final var totalField = new Text();
         totalField.setType("mrkdwn");
         totalField.setText(String.format("*Total*%n%d (%d)", testRun.getTotal(), testRunDiff.getTotalDiff()));
@@ -54,7 +71,7 @@ public class BlocksFactory {
         return block;
     }
 
-    public Block getContext(final TestRunResponse testRun, final TestRunDeltaResponse testRunDiff) {
+    public ContextBlock getContext(final TestRunResponse testRun, final TestRunDeltaResponse testRunDiff) {
         final var text = new TextElement();
         text.setType("mrkdwn");
         text.setText(String.format("%s | %s",
@@ -68,7 +85,7 @@ public class BlocksFactory {
         return block;
     }
 
-    public Block getActions() {
+    public ActionsBlock getActions() {
         final var showButtonText = new Text();
         showButtonText.setType("plain_text");
         showButtonText.setText("Show Failed Tests");
@@ -91,7 +108,7 @@ public class BlocksFactory {
         return block;
     }
 
-    public Block getDefect(final TestCaseResponse testCase) {
+    public SectionBlock getDefect(final TestCaseResponse testCase) {
         final var text = new Text();
         text.setType("mrkdwn");
         text.setType(String.format("_%s.%s_", testCase.getClassName(), testCase.getName()));
@@ -114,7 +131,7 @@ public class BlocksFactory {
         return block;
     }
 
-    public Block getPagination(final int currentPage, final int totalPages) {
+    public ActionsBlock getPagination(final int currentPage, final int totalPages) {
         final var nextButtonText = new Text();
         nextButtonText.setType("plain_text");
         nextButtonText.setType(":arrow_forward:");
@@ -141,7 +158,7 @@ public class BlocksFactory {
         return block;
     }
 
-    public Block getStackTrace(final String testCaseName, final String message) {
+    public SectionBlock getStackTrace(final String testCaseName, final String message) {
         final var text = new Text();
         text.setType("mrkdwn");
         text.setType(String.format("*%s*%n%s", testCaseName, message.substring(0, Math.min(2000, message.length()))));

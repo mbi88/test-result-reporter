@@ -7,7 +7,6 @@ import com.mbi.api.enums.DefectsPage;
 import com.mbi.api.enums.MethodStatus;
 import com.mbi.api.exceptions.BadRequestException;
 import com.mbi.api.exceptions.NotFoundException;
-import com.mbi.api.models.request.slack.Block;
 import com.mbi.api.models.request.slack.BlocksFactory;
 import com.mbi.api.models.request.slack.SectionBlock;
 import com.mbi.api.repositories.SlackRepository;
@@ -19,7 +18,6 @@ import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.List;
 
 import static com.mbi.api.exceptions.ExceptionSupplier.NOT_FOUND_ERROR_MESSAGE;
@@ -89,22 +87,7 @@ public class MessageService extends BaseService {
         final var testRunDiff = testRunService.getBuildDifference(testRunId);
 
         // Add blocks
-        final List<Block> blocks = new ArrayList<>();
-        final var blockFactory = new BlocksFactory();
-        // Tested product name
-        final var testedProductName = blockFactory.getProductNameBlock(testRun);
-        blocks.add(testedProductName);
-        // Statistics
-        final var statsBlock = blockFactory.getStatsBlock(testRun, testRunDiff);
-        blocks.add(statsBlock);
-        // Context
-        final var context = blockFactory.getContext(testRun, testRunDiff);
-        blocks.add(context);
-        // Actions
-        if (!testRun.isSuccessful()) {
-            final var actions = blockFactory.getActions();
-            blocks.add(actions);
-        }
+        final List<Object> blocks = new BlocksFactory().getMainMessage(testRun, testRunDiff);
 
         // Send message
         final var slackResponse = slackService.sendSlackMessage(blocks);
@@ -153,8 +136,12 @@ public class MessageService extends BaseService {
                 MethodStatus.FAILED,
                 PageRequest.of(page, 2, Sort.by("id")));
 
-        final List<Object> blocksList = getBlocksFromMessage(message);
+        final var testRun = testRunService.getTestRunById(message.getTestRunId());
+        final var testRunDiff = testRunService.getBuildDifference(message.getTestRunId());
+
+        // Add main part of message
         final var blockFactory = new BlocksFactory();
+        final List<Object> blocksList = blockFactory.getMainMessage(testRun, testRunDiff);
         // Add test cases
         for (var testCase : testCases.getContent()) {
             final var defectBlock = blockFactory.getDefect(testCase);
