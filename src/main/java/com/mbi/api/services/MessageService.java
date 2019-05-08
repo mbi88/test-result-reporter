@@ -11,6 +11,7 @@ import com.mbi.api.models.request.slack.BlocksFactory;
 import com.mbi.api.models.request.slack.SectionBlock;
 import com.mbi.api.repositories.SlackRepository;
 import com.mbi.api.repositories.TestCaseRepository;
+import org.json.JSONArray;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
@@ -65,9 +66,10 @@ public class MessageService extends BaseService {
 
         // Show stacktrace button
         if ("show_stack_trace".equals(actionName)) {
-            final int callbackId = Integer.parseInt(json.getString("callback_id"));
+            final int defectId = Integer.parseInt(json.getJSONArray("actions").getJSONObject(0)
+                    .getString("defect_test_"));
             final String channelId = json.getJSONObject("user").getString("id");
-            sendStackTrace(callbackId, channelId);
+            sendStackTrace(defectId, channelId);
         }
 
         // Show next defects
@@ -166,21 +168,24 @@ public class MessageService extends BaseService {
     private void hideTestCases(final String messageTimeStamp) throws NotFoundException, IOException {
         final var message = slackRepository.findByTs(messageTimeStamp)
                 .orElseThrow(NOT_FOUND_SUPPLIER.apply(MessageEntity.class, NOT_FOUND_ERROR_MESSAGE));
-        final var blocks = getBlocksFromMessage(message);
+        final var actualBlocks = new JSONObject(objectToString(message))
+                .getJSONObject("message")
+                .getJSONArray("blocks");
+        final var expectedBlocks = new JSONArray();
         // Remove test cases
-        for (var block : blocks) {
-            if (((SectionBlock) block).getBlockId().startsWith("defect_")) {
-                blocks.remove(block);
+        for (var block : actualBlocks) {
+            if (!((JSONObject) block).getString("block_id").startsWith("defect_")) {
+                expectedBlocks.put(block);
             }
         }
 
         // Send
-        slackService.updateSlackMessage(blocks, messageTimeStamp);
+        slackService.updateSlackMessage(expectedBlocks.toList(), messageTimeStamp);
     }
 
-    private void sendStackTrace(final int callbackId, final String channelId) throws NotFoundException,
+    private void sendStackTrace(final int defectId, final String channelId) throws NotFoundException,
             JsonProcessingException {
-        final var testCase = testCaseRepository.findById(callbackId)
+        final var testCase = testCaseRepository.findById(defectId)
                 .orElseThrow(NOT_FOUND_SUPPLIER.apply(TestCaseEntity.class, NOT_FOUND_ERROR_MESSAGE));
         final var block = new BlocksFactory().getStackTrace(testCase.getName(), testCase.getException());
 

@@ -164,7 +164,7 @@ public class BlocksFactory {
 
         final var block = new ActionsBlock();
         block.setType("actions");
-        block.setElements(List.of(nextButton, prevButton));
+        block.setElements(List.of(prevButton, nextButton));
         block.setBlockId("defect_pagination_buttons");
 
         return block;
