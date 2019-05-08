@@ -52,7 +52,7 @@ public class MessageService extends BaseService {
         System.out.println(payload);
         final var json = new JSONObject(payload);
         final var actionName = json.getJSONArray("actions").getJSONObject(0).getString("action_id");
-        final var messageTimeStamp = json.getJSONArray("actions").getJSONObject(0).getString("action_ts");
+        final var messageTimeStamp = json.getJSONObject("message").getString("ts");
         final var message = slackRepository.findByTs(messageTimeStamp)
                 .orElseThrow(NOT_FOUND_SUPPLIER.apply(MessageEntity.class, NOT_FOUND_ERROR_MESSAGE));
 
