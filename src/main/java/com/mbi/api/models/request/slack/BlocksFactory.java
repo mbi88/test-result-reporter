@@ -67,6 +67,29 @@ public class BlocksFactory {
         return block;
     }
 
+    public Block getActions() {
+        final var showButtonText = new Text();
+        showButtonText.setType("plain_text");
+        showButtonText.setText("Show Failed Tests");
+        final var showButton = new ButtonElement();
+        showButton.setType("button");
+        showButton.setText(showButtonText);
+        showButton.setActionId("show_failed_tests");
+        final var hideButtonText = new Text();
+        hideButtonText.setType("plain_text");
+        hideButtonText.setText("Hide Failed Tests");
+        final var hideButton = new ButtonElement();
+        hideButton.setType("button");
+        hideButton.setText(hideButtonText);
+        hideButton.setActionId("hide_failed_tests");
+
+        final var block = new ActionsBlock();
+        block.setType("actions");
+        block.setElements(List.of(showButton, hideButton));
+
+        return block;
+    }
+
     private String getCurrentDateTime() {
         final var dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
         return dateFormat.format(new Date());

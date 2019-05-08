@@ -7,7 +7,10 @@ import com.mbi.api.enums.DefectsPage;
 import com.mbi.api.enums.MethodStatus;
 import com.mbi.api.exceptions.BadRequestException;
 import com.mbi.api.exceptions.NotFoundException;
-import com.mbi.api.models.request.slack.*;
+import com.mbi.api.models.request.slack.Attachment;
+import com.mbi.api.models.request.slack.AttachmentFactory;
+import com.mbi.api.models.request.slack.Block;
+import com.mbi.api.models.request.slack.BlocksFactory;
 import com.mbi.api.repositories.SlackRepository;
 import com.mbi.api.repositories.TestCaseRepository;
 import org.json.JSONObject;
@@ -47,71 +50,41 @@ public class MessageService extends BaseService {
 
     public void interactWithSlack(final String payload) throws NotFoundException, IOException {
         final var json = new JSONObject(payload);
-        final var actionName = json.getJSONArray("actions").getJSONObject(0).getString("name");
-        final var messageTimeStamp = json.getString("message_ts");
+        final var actionName = json.getJSONArray("actions").getJSONObject(0).getString("action_id");
+        final var messageTimeStamp = json.getJSONArray("actions").getJSONObject(0).getString("action_ts");
         final var message = slackRepository.findByTs(messageTimeStamp)
                 .orElseThrow(NOT_FOUND_SUPPLIER.apply(MessageEntity.class, NOT_FOUND_ERROR_MESSAGE));
 
         //  Hide defects button
-        if ("hide_defects".equals(actionName)) {
+        if ("hide_failed_tests".equals(actionName)) {
             hideTestCases(messageTimeStamp);
         }
 
         // Show defects button
-        if ("show_defects".equals(actionName)) {
+        if ("show_failed_tests".equals(actionName)) {
             showTestCases(message, DefectsPage.DEFAULT);
         }
 
         // Show stacktrace button
-        if ("show_stacktrace".equals(actionName)) {
+        if ("show_stack_trace".equals(actionName)) {
             final int callbackId = Integer.parseInt(json.getString("callback_id"));
             final String channelId = json.getJSONObject("user").getString("id");
             sendStackTrace(callbackId, channelId);
         }
 
         // Show next defects
-        if ("show_next_defects".equals(actionName)) {
+        if ("next_tests".equals(actionName)) {
             showTestCases(message, DefectsPage.NEXT);
         }
 
         // Show previous defects
-        if ("show_prev_defects".equals(actionName)) {
+        if ("prev_tests".equals(actionName)) {
             showTestCases(message, DefectsPage.PREVIOUS);
         }
     }
 
-    public MessageEntity createSlackMessage(final int testRunId) throws NotFoundException, JsonProcessingException,
+    public MessageEntity createSlackMessage2(final int testRunId) throws NotFoundException, JsonProcessingException,
             BadRequestException {
-        final var testRun = testRunService.getTestRunById(testRunId);
-        final var testRunDiff = testRunService.getBuildDifference(testRunId);
-
-        // Add attachments
-        final List<Attachment> attachments = new ArrayList<>();
-        // Main attachment
-        final var mainAttachment = new AttachmentFactory().getMain(testRun, testRunDiff);
-        attachments.add(mainAttachment);
-        // Actions attachment
-        if (!testRun.isSuccessful()) {
-            final var actionsAttachment = new AttachmentFactory().getAction();
-            attachments.add(actionsAttachment);
-        }
-
-        // Send message
-        final var slackResponse = slackService.sendSlackMessage(attachments);
-
-        // Save message if no errors
-        if (!slackResponse.isOk()) {
-            throw new BadRequestException(MessageEntity.class, slackResponse.getError());
-        }
-        final var messageEntity = mapper.map(slackResponse, MessageEntity.class);
-        messageEntity.setCurrentPage(0);
-        messageEntity.setTestRunId(testRunId);
-        slackRepository.save(messageEntity);
-
-        return messageEntity;
-    }
-
-    public MessageEntity createSlackMessage2(final int testRunId) throws NotFoundException, JsonProcessingException {
         final var testRun = testRunService.getTestRunById(testRunId);
         final var testRunDiff = testRunService.getBuildDifference(testRunId);
 
@@ -127,12 +100,27 @@ public class MessageService extends BaseService {
         // Context
         final var context = blockFactory.getContext(testRun, testRunDiff);
         blocks.add(context);
+        // Actions
+        if (!testRun.isSuccessful()) {
+            final var actions = blockFactory.getActions();
+            blocks.add(actions);
+        }
 
         // Send message
         final var slackResponse = slackService.sendSlackMessage2(blocks);
         System.out.println(objectToString(blocks));
         System.out.println(objectToString(slackResponse));
-        return null;
+
+        // Save message if no errors
+        if (!slackResponse.isOk()) {
+            throw new BadRequestException(MessageEntity.class, slackResponse.getError());
+        }
+        final var messageEntity = mapper.map(slackResponse, MessageEntity.class);
+        messageEntity.setCurrentPage(0);
+        messageEntity.setTestRunId(testRunId);
+        slackRepository.save(messageEntity);
+
+        return messageEntity;
     }
 
     private void showTestCases(final MessageEntity message, final DefectsPage defectsPage) throws NotFoundException,
