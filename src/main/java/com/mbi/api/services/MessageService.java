@@ -123,6 +123,8 @@ public class MessageService extends BaseService {
             case PREVIOUS: {
                 if (currentPage > 0) {
                     page = currentPage - 1;
+                } else {
+                    page = currentPage;
                 }
                 break;
             }
