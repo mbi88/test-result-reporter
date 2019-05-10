@@ -117,14 +117,14 @@ public class MessageService extends BaseService {
             case NEXT: {
                 if ((currentPage + 1) < totalPages) {
                     page = currentPage + 1;
+                } else {
+                    page = currentPage;
                 }
                 break;
             }
             case PREVIOUS: {
                 if (currentPage > 0) {
                     page = currentPage - 1;
-                } else {
-                    page = currentPage;
                 }
                 break;
             }
