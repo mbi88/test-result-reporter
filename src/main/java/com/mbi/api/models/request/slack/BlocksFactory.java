@@ -135,7 +135,7 @@ public class BlocksFactory {
     public SectionBlock getPaginationLabel(final int currentPage, final int totalPages) {
         final var text = new Text();
         text.setType("mrkdwn");
-        text.setText(String.format("*Page %d of %d*", currentPage, totalPages));
+        text.setText(String.format("*Page %d of %d*", currentPage + 1, totalPages));
 
         final var block = new SectionBlock();
         block.setType("section");

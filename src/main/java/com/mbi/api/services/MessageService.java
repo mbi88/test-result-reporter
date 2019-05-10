@@ -132,7 +132,7 @@ public class MessageService extends BaseService {
                 message.getTestRunId(),
                 MethodStatus.FAILED,
                 PageRequest.of(page, 10, Sort.by("id")));
-        System.out.println(objectToString(testCases));
+
         final var testRun = testRunService.getTestRunById(message.getTestRunId());
         final var testRunDiff = testRunService.getBuildDifference(message.getTestRunId());
 
