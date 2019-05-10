@@ -20,7 +20,6 @@ import static com.mbi.api.exceptions.ExceptionSupplier.NOT_FOUND_SUPPLIER;
 /**
  * Test case service.
  */
-
 @Service
 public class TestCaseService extends BaseService {
 

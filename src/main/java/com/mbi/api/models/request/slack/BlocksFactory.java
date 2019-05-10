@@ -4,12 +4,12 @@ import com.mbi.api.models.response.TestCaseResponse;
 import com.mbi.api.models.response.TestRunDeltaResponse;
 import com.mbi.api.models.response.TestRunResponse;
 
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
-
+/**
+ * Slack blocks factory.
+ */
 public class BlocksFactory {
 
     public List<Object> getMainMessage(final TestRunResponse testRun, final TestRunDeltaResponse testRunDiff) {
@@ -25,6 +25,7 @@ public class BlocksFactory {
         if (!testRun.isSuccessful()) {
             blocks.add(getActions());
         }
+
         return blocks;
     }
 

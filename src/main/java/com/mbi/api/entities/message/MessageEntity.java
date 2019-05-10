@@ -1,4 +1,4 @@
-package com.mbi.api.entities.slack;
+package com.mbi.api.entities.message;
 
 import com.vladmihalcea.hibernate.type.json.JsonBinaryType;
 import org.hibernate.annotations.Type;

@@ -1,15 +1,15 @@
 package com.mbi.api.services;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
+import com.mbi.api.entities.message.MessageEntity;
 import com.mbi.api.entities.product.ProductEntity;
-import com.mbi.api.entities.slack.MessageEntity;
 import com.mbi.api.entities.testrun.TestCaseEntity;
 import com.mbi.api.enums.DefectsPage;
 import com.mbi.api.enums.MethodStatus;
 import com.mbi.api.exceptions.BadRequestException;
 import com.mbi.api.exceptions.NotFoundException;
 import com.mbi.api.models.request.slack.BlocksFactory;
-import com.mbi.api.repositories.SlackRepository;
+import com.mbi.api.repositories.MessageRepository;
 import com.mbi.api.repositories.TestCaseRepository;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,7 +26,6 @@ import static com.mbi.api.exceptions.ExceptionSupplier.*;
  * Slack message service.
  */
 @Service
-@SuppressWarnings({"MultipleStringLiterals", "PMD.SystemPrintln", "PMD.AvoidDuplicateLiterals"})
 public class MessageService extends BaseService {
 
     @Autowired
@@ -36,19 +35,19 @@ public class MessageService extends BaseService {
     private TestCaseService testCaseService;
 
     @Autowired
-    private SlackRepository slackRepository;
+    private SlackService slackService;
+
+    @Autowired
+    private MessageRepository messageRepository;
 
     @Autowired
     private TestCaseRepository testCaseRepository;
 
-    @Autowired
-    private SlackService slackService;
-
-    public void interactWithSlack(final String payload) throws NotFoundException, IOException {
-        final var json = new JSONObject(payload);
-        final var actionName = json.getJSONArray("actions").getJSONObject(0).getString("action_id");
-        final var messageTimeStamp = json.getJSONObject("message").getString("ts");
-        final var message = slackRepository.findByTs(messageTimeStamp)
+    public void interactWithSlack(final String payloadString) throws NotFoundException, IOException {
+        final var payload = new JSONObject(payloadString);
+        final var actionName = payload.getJSONArray("actions").getJSONObject(0).getString("action_id");
+        final var messageTimeStamp = payload.getJSONObject("message").getString("ts");
+        final var message = messageRepository.findByTs(messageTimeStamp)
                 .orElseThrow(NOT_FOUND_SUPPLIER.apply(MessageEntity.class, NOT_FOUND_ERROR_MESSAGE));
 
         //  Hide defects button
@@ -63,9 +62,9 @@ public class MessageService extends BaseService {
 
         // Show stacktrace button
         if ("show_stack_trace".equals(actionName)) {
-            final int defectId = Integer.parseInt(json.getJSONArray("actions").getJSONObject(0)
+            final int defectId = Integer.parseInt(payload.getJSONArray("actions").getJSONObject(0)
                     .getString("block_id").split("defect_test_")[1]);
-            final String channelId = json.getJSONObject("user").getString("id");
+            final String channelId = payload.getJSONObject("user").getString("id");
             sendStackTrace(defectId, channelId);
         }
 
@@ -98,7 +97,7 @@ public class MessageService extends BaseService {
         final var messageEntity = mapper.map(slackResponse, MessageEntity.class);
         messageEntity.setCurrentPage(0);
         messageEntity.setTestRunId(testRunId);
-        slackRepository.save(messageEntity);
+        messageRepository.save(messageEntity);
 
         return messageEntity;
     }
@@ -164,7 +163,7 @@ public class MessageService extends BaseService {
 
         // Save current page
         message.setCurrentPage(page);
-        slackRepository.save(message);
+        messageRepository.save(message);
     }
 
     private void hideTestCases(final MessageEntity message) throws NotFoundException, IOException {

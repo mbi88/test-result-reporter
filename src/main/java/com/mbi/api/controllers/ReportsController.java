@@ -17,7 +17,7 @@ import javax.validation.Valid;
 import static org.springframework.web.bind.annotation.RequestMethod.POST;
 
 /**
- * A.
+ * Reports controller.
  */
 @RestController
 public class ReportsController {

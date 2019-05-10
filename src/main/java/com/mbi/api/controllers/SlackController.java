@@ -1,7 +1,7 @@
 package com.mbi.api.controllers;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
-import com.mbi.api.entities.slack.MessageEntity;
+import com.mbi.api.entities.message.MessageEntity;
 import com.mbi.api.exceptions.BadRequestException;
 import com.mbi.api.exceptions.NotFoundException;
 import com.mbi.api.services.MessageService;

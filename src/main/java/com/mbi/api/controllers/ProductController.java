@@ -34,8 +34,7 @@ public class ProductController {
     }
 
     @RequestMapping(method = GET, path = "/products/{name}", produces = "application/json")
-    public ResponseEntity<ProductResponse> getByName(@PathVariable("name") final String name)
-            throws NotFoundException {
+    public ResponseEntity<ProductResponse> getByName(@PathVariable("name") final String name) throws NotFoundException {
         return new ResponseEntity<>(productService.getProductByName(name), HttpStatus.OK);
     }
 

@@ -66,6 +66,5 @@ public class TestCaseController {
         return new ResponseEntity<>(
                 testCaseService.getMethodsByStatus(testRunId, MethodStatus.PASSED, PageRequest.of(page, size)),
                 HttpStatus.OK);
-
     }
 }

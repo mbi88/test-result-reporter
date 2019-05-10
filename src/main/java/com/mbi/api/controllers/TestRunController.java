@@ -35,8 +35,7 @@ public class TestRunController {
     }
 
     @RequestMapping(method = GET, path = "/test-runs/{id}", produces = "application/json")
-    public ResponseEntity<TestRunResponse> getTestRun(@PathVariable("id") final int id)
-            throws NotFoundException {
+    public ResponseEntity<TestRunResponse> getTestRun(@PathVariable("id") final int id) throws NotFoundException {
         return new ResponseEntity<>(testRunService.getTestRunById(id), HttpStatus.OK);
     }
 

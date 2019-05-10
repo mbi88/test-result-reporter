@@ -17,7 +17,6 @@ import java.util.List;
  * Slack service.
  */
 @Service
-@SuppressWarnings({"MultipleStringLiterals", "PMD.SystemPrintln", "PMD.AvoidDuplicateLiterals"})
 public class SlackService extends BaseService {
 
     @Autowired
@@ -36,8 +35,9 @@ public class SlackService extends BaseService {
         final var request = new HttpEntity<>(formData, headers);
         final var restTemplate = new RestTemplate();
 
-        return restTemplate.postForEntity(config.getUrl() + "chat.postMessage",
-                request, SlackResponse.class).getBody();
+        return restTemplate
+                .postForEntity(config.getUrl() + "chat.postMessage", request, SlackResponse.class)
+                .getBody();
     }
 
     public SlackResponse sendSlackMessage(final List<Object> blocks) throws JsonProcessingException {
@@ -62,7 +62,6 @@ public class SlackService extends BaseService {
         final var request = new HttpEntity<>(formData, headers);
         final var restTemplate = new RestTemplate();
 
-        return restTemplate.postForEntity(config.getUrl() + "chat.update",
-                request, SlackResponse.class).getBody();
+        return restTemplate.postForEntity(config.getUrl() + "chat.update", request, SlackResponse.class).getBody();
     }
 }

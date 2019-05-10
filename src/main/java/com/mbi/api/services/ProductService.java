@@ -35,12 +35,14 @@ public class ProductService extends BaseService {
 
         final var productEntity = mapper.map(productModel, ProductEntity.class);
         productRepository.save(productEntity);
+
         return mapper.map(productEntity, CreatedResponse.class);
     }
 
     public ProductResponse getProductByName(final String name) throws NotFoundException {
         final var productEntity = productRepository.findByName(name)
                 .orElseThrow(NOT_FOUND_SUPPLIER.apply(ProductEntity.class, NOT_FOUND_ERROR_MESSAGE));
+
         return mapper.map(productEntity, ProductResponse.class);
     }
 
@@ -51,7 +53,7 @@ public class ProductService extends BaseService {
 
         if (testRunRepository.findAllByProduct(productEntity, pageable).isPresent()) {
             throw BAD_REQUEST_SUPPLIER.apply(ProductEntity.class,
-                    "Can't remove product! Dependent test runs exist").get();
+                    "Can't remove product! Dependent test-runs exist").get();
         }
 
         productRepository.delete(productEntity);
