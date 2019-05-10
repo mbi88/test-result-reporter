@@ -45,7 +45,6 @@ public class MessageService extends BaseService {
     private SlackService slackService;
 
     public void interactWithSlack(final String payload) throws NotFoundException, IOException {
-        System.out.println(payload);
         final var json = new JSONObject(payload);
         final var actionName = json.getJSONArray("actions").getJSONObject(0).getString("action_id");
         final var messageTimeStamp = json.getJSONObject("message").getString("ts");
@@ -91,8 +90,6 @@ public class MessageService extends BaseService {
 
         // Send message
         final var slackResponse = slackService.sendSlackMessage(blocks);
-        System.out.println(objectToString(blocks));
-        System.out.println(objectToString(slackResponse));
 
         // Save message if no errors
         if (!slackResponse.isOk()) {
@@ -135,7 +132,7 @@ public class MessageService extends BaseService {
                 message.getTestRunId(),
                 MethodStatus.FAILED,
                 PageRequest.of(page, 10, Sort.by("id")));
-
+        System.out.println(objectToString(testCases));
         final var testRun = testRunService.getTestRunById(message.getTestRunId());
         final var testRunDiff = testRunService.getBuildDifference(message.getTestRunId());
 
@@ -153,8 +150,6 @@ public class MessageService extends BaseService {
         var paginationButtons = blockFactory.getPaginationButtons();
         blocksList.add(paginationButtons);
 
-        System.out.println(objectToString(blocksList));
-        System.out.println(message.getTs());
         // Send
         slackService.updateSlackMessage(blocksList, message.getTs());
 
