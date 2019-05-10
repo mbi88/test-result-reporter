@@ -80,7 +80,7 @@ public class MessageService extends BaseService {
         }
     }
 
-    public MessageEntity createSlackMessage2(final int testRunId) throws NotFoundException, JsonProcessingException,
+    public MessageEntity createSlackMessage(final int testRunId) throws NotFoundException, JsonProcessingException,
             BadRequestException {
         final var testRun = testRunService.getTestRunById(testRunId);
         final var testRunDiff = testRunService.getBuildDifference(testRunId);
@@ -107,10 +107,17 @@ public class MessageService extends BaseService {
             IOException {
         // Find what page to show
         int page = 0;
+        var testCases = testCaseService.getMethodsByStatus(
+                message.getTestRunId(),
+                MethodStatus.FAILED,
+                PageRequest.of(page, 10, Sort.by("id")));
         final int currentPage = message.getCurrentPage();
+        final int totalPages = testCases.getTotalPages();
         switch (defectsPage) {
             case NEXT: {
-                page = currentPage + 1;
+                if ((currentPage + 1) < totalPages) {
+                    page = currentPage + 1;
+                }
                 break;
             }
             case PREVIOUS: {
@@ -128,7 +135,7 @@ public class MessageService extends BaseService {
         }
 
         // Get test cases
-        final var testCases = testCaseService.getMethodsByStatus(
+        testCases = testCaseService.getMethodsByStatus(
                 message.getTestRunId(),
                 MethodStatus.FAILED,
                 PageRequest.of(page, 10, Sort.by("id")));
@@ -145,7 +152,7 @@ public class MessageService extends BaseService {
             blocksList.add(defectBlock);
         }
         // Add test cases pagination
-        var paginationLabel = blockFactory.getPaginationLabel(page, testCases.getTotalPages());
+        var paginationLabel = blockFactory.getPaginationLabel(page, totalPages);
         blocksList.add(paginationLabel);
         var paginationButtons = blockFactory.getPaginationButtons();
         blocksList.add(paginationButtons);
