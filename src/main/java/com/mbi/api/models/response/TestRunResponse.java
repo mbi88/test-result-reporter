@@ -23,6 +23,8 @@ public class TestRunResponse {
 
     private boolean successful;
 
+    private String createdAt;
+
     public long getId() {
         return id;
     }
@@ -93,5 +95,13 @@ public class TestRunResponse {
 
     public void setSuccessful(final boolean successful) {
         this.successful = successful;
+    }
+
+    public String getCreatedAt() {
+        return createdAt;
+    }
+
+    public void setCreatedAt(final String createdAt) {
+        this.createdAt = createdAt;
     }
 }

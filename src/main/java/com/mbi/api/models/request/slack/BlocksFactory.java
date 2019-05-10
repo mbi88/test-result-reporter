@@ -77,7 +77,7 @@ public class BlocksFactory {
         text.setType("mrkdwn");
         text.setText(String.format("%s | %s",
                 getDuration(testRun.getDuration(), testRunDiff.getDurationDiff()),
-                getCurrentDateTime()));
+                testRun.getCreatedAt()));
 
         final var block = new ContextBlock();
         block.setType("context");
@@ -181,11 +181,6 @@ public class BlocksFactory {
         block.setText(text);
 
         return block;
-    }
-
-    private String getCurrentDateTime() {
-        final var dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-        return dateFormat.format(new Date());
     }
 
     private String getDuration(final int testRunDuration, final int durationDiff) {
