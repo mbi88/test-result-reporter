@@ -9,11 +9,14 @@ import com.mbi.api.enums.MethodStatus;
 import com.mbi.api.exceptions.BadRequestException;
 import com.mbi.api.exceptions.NotFoundException;
 import com.mbi.api.models.request.slack.BlocksFactory;
+import com.mbi.api.models.response.TestCaseResponse;
 import com.mbi.api.repositories.MessageRepository;
 import com.mbi.api.repositories.TestCaseRepository;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
@@ -104,12 +107,93 @@ public class MessageService extends BaseService {
 
     private void showTestCases(final MessageEntity message, final DefectsPage defectsPage) throws NotFoundException,
             IOException {
-        // Find what page to show
+//        // Find what page to show
+//        int page = getNextDefectsPage(message, defectsPage);
+
+        // Get test cases
+        final var testCases = getTestCases(message, defectsPage);
+
+        final var testRun = testRunService.getTestRunById(message.getTestRunId());
+        final var testRunDiff = testRunService.getBuildDifference(message.getTestRunId());
+
+        // Add main part of message
+        final var blockFactory = new BlocksFactory();
+        final List<Object> blocksList = blockFactory.getMainMessage(testRun, testRunDiff);
+        // Add test cases
+        for (var testCase : testCases.getContent()) {
+            final var defectBlock = blockFactory.getDefect(testCase);
+            blocksList.add(defectBlock);
+        }
+        // Add test cases pagination
+        var paginationLabel = blockFactory
+                .getPaginationLabel(testCases.getPageable().getPageNumber(), testCases.getTotalPages());
+        blocksList.add(paginationLabel);
+        var paginationButtons = blockFactory.getPaginationButtons();
+        blocksList.add(paginationButtons);
+
+        // Send
+        slackService.updateSlackMessage(blocksList, message.getTs());
+
+        // Save current page
+        message.setCurrentPage(testCases.getPageable().getPageNumber());
+        messageRepository.save(message);
+    }
+
+    private void hideTestCases(final MessageEntity message) throws NotFoundException, IOException {
+        final var testRun = testRunService.getTestRunById(message.getTestRunId());
+        final var testRunDiff = testRunService.getBuildDifference(message.getTestRunId());
+
+        // Add main part of message
+        final List<Object> blocksList = new BlocksFactory().getMainMessage(testRun, testRunDiff);
+
+        // Send
+        slackService.updateSlackMessage(blocksList, message.getTs());
+    }
+
+    private void sendStackTrace(final int defectId, final String channelId) throws NotFoundException,
+            JsonProcessingException {
+        final var testCase = testCaseRepository.findById(defectId)
+                .orElseThrow(NOT_FOUND_SUPPLIER.apply(TestCaseEntity.class, NOT_FOUND_ERROR_MESSAGE));
+        final var block = new BlocksFactory().getStackTrace(
+                String.format("%s.%s", testCase.getClassName(), testCase.getName()),
+                testCase.getException());
+
+        slackService.sendSlackMessage(channelId, List.of(block));
+    }
+
+    private Page<TestCaseResponse> getTestCases(final MessageEntity message, final DefectsPage defectsPage)
+            throws NotFoundException {
+        Pageable pageable = PageRequest.of(message.getCurrentPage(), 10, Sort.by("id"));
+        switch (defectsPage) {
+            case NEXT: {
+                pageable = pageable.next();
+                break;
+            }
+            case PREVIOUS: {
+                pageable = pageable.previousOrFirst();
+                break;
+            }
+            case DEFAULT: {
+                pageable = PageRequest.of(0, 10, Sort.by("id"));
+                break;
+            }
+            default:
+                throw new IllegalStateException("Unexpected value: " + defectsPage);
+        }
+
+        return testCaseService.getMethodsByStatus(message.getTestRunId(), MethodStatus.FAILED, pageable);
+    }
+
+    private int getNextDefectsPage(final MessageEntity message, final DefectsPage defectsPage)
+            throws NotFoundException {
         int page = 0;
-        var testCases = testCaseService.getMethodsByStatus(
+        final var testCases = testCaseService.getMethodsByStatus(
                 message.getTestRunId(),
                 MethodStatus.FAILED,
                 PageRequest.of(page, 10, Sort.by("id")));
+
+        testCases.getPageable().next();
+        testCases.getPageable().previousOrFirst();
         final int currentPage = message.getCurrentPage();
         final int totalPages = testCases.getTotalPages();
         switch (defectsPage) {
@@ -135,56 +219,6 @@ public class MessageService extends BaseService {
                 throw new IllegalStateException("Unexpected value: " + defectsPage);
         }
 
-        // Get test cases
-        testCases = testCaseService.getMethodsByStatus(
-                message.getTestRunId(),
-                MethodStatus.FAILED,
-                PageRequest.of(page, 10, Sort.by("id")));
-
-        final var testRun = testRunService.getTestRunById(message.getTestRunId());
-        final var testRunDiff = testRunService.getBuildDifference(message.getTestRunId());
-
-        // Add main part of message
-        final var blockFactory = new BlocksFactory();
-        final List<Object> blocksList = blockFactory.getMainMessage(testRun, testRunDiff);
-        // Add test cases
-        for (var testCase : testCases.getContent()) {
-            final var defectBlock = blockFactory.getDefect(testCase);
-            blocksList.add(defectBlock);
-        }
-        // Add test cases pagination
-        var paginationLabel = blockFactory.getPaginationLabel(page, totalPages);
-        blocksList.add(paginationLabel);
-        var paginationButtons = blockFactory.getPaginationButtons();
-        blocksList.add(paginationButtons);
-
-        // Send
-        slackService.updateSlackMessage(blocksList, message.getTs());
-
-        // Save current page
-        message.setCurrentPage(page);
-        messageRepository.save(message);
-    }
-
-    private void hideTestCases(final MessageEntity message) throws NotFoundException, IOException {
-        final var testRun = testRunService.getTestRunById(message.getTestRunId());
-        final var testRunDiff = testRunService.getBuildDifference(message.getTestRunId());
-
-        // Add main part of message
-        final List<Object> blocksList = new BlocksFactory().getMainMessage(testRun, testRunDiff);
-
-        // Send
-        slackService.updateSlackMessage(blocksList, message.getTs());
-    }
-
-    private void sendStackTrace(final int defectId, final String channelId) throws NotFoundException,
-            JsonProcessingException {
-        final var testCase = testCaseRepository.findById(defectId)
-                .orElseThrow(NOT_FOUND_SUPPLIER.apply(TestCaseEntity.class, NOT_FOUND_ERROR_MESSAGE));
-        final var block = new BlocksFactory().getStackTrace(
-                String.format("%s.%s", testCase.getClassName(), testCase.getName()),
-                testCase.getException());
-
-        slackService.sendSlackMessage(channelId, List.of(block));
+        return page;
     }
 }
