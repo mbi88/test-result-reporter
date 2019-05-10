@@ -9,7 +9,7 @@ import java.util.Arrays;
  * Not found exception.
  */
 @ResponseStatus(HttpStatus.NOT_FOUND)
-public class NotFoundException extends Exception {
+public class NotFoundException extends AbstractException {
 
     private final Class entityClassName;
     private final String message;

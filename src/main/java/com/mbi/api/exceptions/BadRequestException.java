@@ -9,7 +9,7 @@ import java.util.Arrays;
  * Bad request exception.
  */
 @ResponseStatus(HttpStatus.BAD_REQUEST)
-public class BadRequestException extends Exception {
+public class BadRequestException extends AbstractException {
 
     private final Class entityClassName;
     private final String message;

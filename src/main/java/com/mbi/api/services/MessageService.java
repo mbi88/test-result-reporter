@@ -1,6 +1,7 @@
 package com.mbi.api.services;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
+import com.mbi.api.entities.product.ProductEntity;
 import com.mbi.api.entities.slack.MessageEntity;
 import com.mbi.api.entities.testrun.TestCaseEntity;
 import com.mbi.api.enums.DefectsPage;
@@ -19,8 +20,7 @@ import org.springframework.stereotype.Service;
 import java.io.IOException;
 import java.util.List;
 
-import static com.mbi.api.exceptions.ExceptionSupplier.NOT_FOUND_ERROR_MESSAGE;
-import static com.mbi.api.exceptions.ExceptionSupplier.NOT_FOUND_SUPPLIER;
+import static com.mbi.api.exceptions.ExceptionSupplier.*;
 
 /**
  * Slack message service.
@@ -93,7 +93,7 @@ public class MessageService extends BaseService {
 
         // Save message if no errors
         if (!slackResponse.isOk()) {
-            throw new BadRequestException(MessageEntity.class, slackResponse.getError());
+            throw BAD_REQUEST_SUPPLIER.apply(ProductEntity.class, slackResponse.getError()).get();
         }
         final var messageEntity = mapper.map(slackResponse, MessageEntity.class);
         messageEntity.setCurrentPage(0);

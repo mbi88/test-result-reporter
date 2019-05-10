@@ -1,5 +1,6 @@
 package com.mbi.api.controllers;
 
+import com.mbi.api.exceptions.AbstractException;
 import com.mbi.api.exceptions.AlreadyExistsException;
 import com.mbi.api.exceptions.BadRequestException;
 import com.mbi.api.exceptions.NotFoundException;
@@ -20,38 +21,28 @@ public class ExceptionControllerAdvice {
     @ExceptionHandler(NotFoundException.class)
     @ResponseBody
     public ResponseEntity<ErrorResponse> handleNotFoundException(final NotFoundException ex) {
-        return new ResponseEntity<>(
-                new ErrorResponse(HttpStatus.NOT_FOUND.value(),
-                        ex.getMessage(), ex.getError(),
-                        new Timestamp(System.currentTimeMillis()), ex.getException()
-                ),
-                HttpStatus.NOT_FOUND);
+        return new ResponseEntity<>(getErrorResponse(HttpStatus.NOT_FOUND, ex), HttpStatus.NOT_FOUND);
     }
 
     @ExceptionHandler(AlreadyExistsException.class)
     @ResponseBody
     public ResponseEntity<ErrorResponse> handleAlreadyExistsException(final AlreadyExistsException ex) {
-        return new ResponseEntity<>(
-                new ErrorResponse(HttpStatus.CONFLICT.value(),
-                        ex.getMessage(), ex.getError(),
-                        new Timestamp(System.currentTimeMillis()), ex.getException()
-                ),
-                HttpStatus.CONFLICT);
+        return new ResponseEntity<>(getErrorResponse(HttpStatus.CONFLICT, ex), HttpStatus.CONFLICT);
     }
 
     @ExceptionHandler(BadRequestException.class)
     @ResponseBody
     public ResponseEntity<ErrorResponse> handleBadRequestException(final BadRequestException ex) {
-        return new ResponseEntity<>(
-                new ErrorResponse(HttpStatus.BAD_REQUEST.value(),
-                        ex.getMessage(), ex.getError(),
-                        new Timestamp(System.currentTimeMillis()), ex.getException()
-                ),
-                HttpStatus.BAD_REQUEST);
+        return new ResponseEntity<>(getErrorResponse(HttpStatus.BAD_REQUEST, ex), HttpStatus.BAD_REQUEST);
+    }
+
+    private ErrorResponse getErrorResponse(final HttpStatus httpStatus, final AbstractException ex) {
+        return new ErrorResponse(httpStatus.value(), ex.getMessage(), ex.getError(),
+                new Timestamp(System.currentTimeMillis()), ex.getException());
     }
 
     /**
-     * Error response pojo.
+     * Error response model.
      */
     private static final class ErrorResponse {
         private final int status;

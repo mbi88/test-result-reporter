@@ -9,7 +9,7 @@ import java.util.Arrays;
  * Already exists exception.
  */
 @ResponseStatus(HttpStatus.CONFLICT)
-public class AlreadyExistsException extends Exception {
+public class AlreadyExistsException extends AbstractException {
 
     private final Class entityClassName;
     private final String message;
