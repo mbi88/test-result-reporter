@@ -3,6 +3,7 @@ package com.mbi.api.models.request.slack;
 import com.mbi.api.models.response.TestCaseResponse;
 import com.mbi.api.models.response.TestRunDeltaResponse;
 import com.mbi.api.models.response.TestRunResponse;
+import org.springframework.data.domain.Page;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -25,6 +26,23 @@ public class BlocksFactory {
         if (!testRun.isSuccessful()) {
             blocks.add(getActions());
         }
+
+        return blocks;
+    }
+
+    public List<Object> getDefectsMessage(final Page<TestCaseResponse> testCases) {
+        final List<Object> blocks = new ArrayList<>();
+
+        // Add test cases
+        for (var testCase : testCases) {
+            final var defectBlock = getDefect(testCase);
+            blocks.add(defectBlock);
+        }
+        // Add test cases pagination
+        var paginationLabel = getPaginationLabel(testCases.getPageable().getPageNumber(), testCases.getTotalPages());
+        blocks.add(paginationLabel);
+        var paginationButtons = getPaginationButtons();
+        blocks.add(paginationButtons);
 
         return blocks;
     }
@@ -110,7 +128,7 @@ public class BlocksFactory {
         return block;
     }
 
-    public SectionBlock getDefect(final TestCaseResponse testCase) {
+    private SectionBlock getDefect(final TestCaseResponse testCase) {
         final var text = new Text();
         text.setType("mrkdwn");
         text.setText(String.format("_%s.%s_", testCase.getClassName(), testCase.getName()));
@@ -133,7 +151,7 @@ public class BlocksFactory {
         return block;
     }
 
-    public SectionBlock getPaginationLabel(final int currentPage, final int totalPages) {
+    private SectionBlock getPaginationLabel(final int currentPage, final int totalPages) {
         final var text = new Text();
         text.setType("mrkdwn");
         text.setText(String.format("*Page %d of %d*", currentPage + 1, totalPages));
@@ -145,7 +163,7 @@ public class BlocksFactory {
         return block;
     }
 
-    public ActionsBlock getPaginationButtons() {
+    private ActionsBlock getPaginationButtons() {
         final var nextButtonText = new Text();
         nextButtonText.setType("plain_text");
         nextButtonText.setText(":arrow_forward:");

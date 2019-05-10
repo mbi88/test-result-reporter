@@ -107,9 +107,6 @@ public class MessageService extends BaseService {
 
     private void showTestCases(final MessageEntity message, final DefectsPage defectsPage) throws NotFoundException,
             IOException {
-//        // Find what page to show
-//        int page = getNextDefectsPage(message, defectsPage);
-
         // Get test cases
         final var testCases = getTestCases(message, defectsPage);
 
@@ -118,18 +115,9 @@ public class MessageService extends BaseService {
 
         // Add main part of message
         final var blockFactory = new BlocksFactory();
-        final List<Object> blocksList = blockFactory.getMainMessage(testRun, testRunDiff);
-        // Add test cases
-        for (var testCase : testCases.getContent()) {
-            final var defectBlock = blockFactory.getDefect(testCase);
-            blocksList.add(defectBlock);
-        }
-        // Add test cases pagination
-        var paginationLabel = blockFactory
-                .getPaginationLabel(testCases.getPageable().getPageNumber(), testCases.getTotalPages());
-        blocksList.add(paginationLabel);
-        var paginationButtons = blockFactory.getPaginationButtons();
-        blocksList.add(paginationButtons);
+        final var blocksList = blockFactory.getMainMessage(testRun, testRunDiff);
+        // Add defects part of message
+        blocksList.addAll(blockFactory.getDefectsMessage(testCases));
 
         // Send
         slackService.updateSlackMessage(blocksList, message.getTs());
@@ -182,43 +170,5 @@ public class MessageService extends BaseService {
         }
 
         return testCaseService.getMethodsByStatus(message.getTestRunId(), MethodStatus.FAILED, pageable);
-    }
-
-    private int getNextDefectsPage(final MessageEntity message, final DefectsPage defectsPage)
-            throws NotFoundException {
-        int page = 0;
-        final var testCases = testCaseService.getMethodsByStatus(
-                message.getTestRunId(),
-                MethodStatus.FAILED,
-                PageRequest.of(page, 10, Sort.by("id")));
-
-        testCases.getPageable().next();
-        testCases.getPageable().previousOrFirst();
-        final int currentPage = message.getCurrentPage();
-        final int totalPages = testCases.getTotalPages();
-        switch (defectsPage) {
-            case NEXT: {
-                if ((currentPage + 1) < totalPages) {
-                    page = currentPage + 1;
-                } else {
-                    page = currentPage;
-                }
-                break;
-            }
-            case PREVIOUS: {
-                if (currentPage > 0) {
-                    page = currentPage - 1;
-                }
-                break;
-            }
-            case DEFAULT: {
-                page = 0;
-                break;
-            }
-            default:
-                throw new IllegalStateException("Unexpected value: " + defectsPage);
-        }
-
-        return page;
     }
 }
