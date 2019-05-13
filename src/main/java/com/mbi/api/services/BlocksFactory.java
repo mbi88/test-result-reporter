@@ -132,7 +132,7 @@ public class BlocksFactory {
     private SectionBlock getDefect(final TestCaseResponse testCase) {
         final var text = new Text();
         text.setType("mrkdwn");
-        text.setText(String.format("_%s.%s_", testCase.getClassName(), testCase.getName()));
+        text.setText(String.format("%s.%s", testCase.getClassName(), testCase.getName()));
 
         final var stackTraceText = new Text();
         stackTraceText.setType("plain_text");
