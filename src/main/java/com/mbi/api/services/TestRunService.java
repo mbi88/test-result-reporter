@@ -32,8 +32,8 @@ public class TestRunService extends BaseService {
     @Autowired
     private ProductRepository productRepository;
 
-    public CreatedResponse createTestRun(final TestRunModel testRunModel,
-                                         final String productName) throws NotFoundException {
+    public CreatedResponse createTestRun(final TestRunModel testRunModel, final String productName)
+            throws NotFoundException {
         final var productEntity = productRepository.findByName(productName)
                 .orElseThrow(NOT_FOUND_SUPPLIER.apply(ProductEntity.class, NOT_FOUND_ERROR_MESSAGE));
 
