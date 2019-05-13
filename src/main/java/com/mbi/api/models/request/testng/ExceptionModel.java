@@ -9,14 +9,14 @@ import javax.xml.bind.annotation.XmlRootElement;
 @XmlRootElement(name = "exception")
 public class ExceptionModel {
 
-    private String exception;
+    private String stacktrace;
 
     @XmlElement(name = "full-stacktrace")
-    public String getException() {
-        return exception;
+    public String getStacktrace() {
+        return stacktrace;
     }
 
-    public void setException(final String exception) {
-        this.exception = exception;
+    public void setStacktrace(final String stacktrace) {
+        this.stacktrace = stacktrace;
     }
 }
