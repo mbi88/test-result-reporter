@@ -73,6 +73,9 @@ public class ReportsService extends BaseService {
                 continue;
             }
             for (var test : suite.getTests()) {
+                if (Objects.isNull(test.getClasses())) {
+                    continue;
+                }
                 classes.addAll(test.getClasses());
             }
         }
