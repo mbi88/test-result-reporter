@@ -195,7 +195,8 @@ public class BlocksFactory {
         final var text = new Text();
         text.setType("mrkdwn");
         text.setText(String.format("*%s*%n%s", testCaseName, message.substring(0, Math.min(2000, message.length()))));
-
+        System.out.println(String.format("*%s*%n%s", testCaseName, message.substring(0, Math.min(2000, message.length()))));
+        System.out.println(message.substring(0, Math.min(2000, message.length())));
         final var block = new SectionBlock();
         block.setType("section");
         block.setText(text);
