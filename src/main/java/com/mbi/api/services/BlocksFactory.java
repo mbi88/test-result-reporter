@@ -1,5 +1,6 @@
-package com.mbi.api.models.request.slack;
+package com.mbi.api.services;
 
+import com.mbi.api.models.request.slack.*;
 import com.mbi.api.models.response.TestCaseResponse;
 import com.mbi.api.models.response.TestRunDeltaResponse;
 import com.mbi.api.models.response.TestRunResponse;
@@ -73,10 +74,10 @@ public class BlocksFactory {
         skippedField.setType("mrkdwn");
         skippedField.setText(String.format("*Skipped*%n%d (%d)", testRun.getSkipped(), testRunDiff.getSkippedDiff()));
 
-        final var failedColor = "https://upload.wikimedia.org/wikipedia/commons/thumb/f/fd/Color_icon_red.svg/"
-                + "240px-Color_icon_red.svg.png";
-        final var successColor = "https://upload.wikimedia.org/wikipedia/commons/thumb/7/7d/Color_icon_green.svg/"
-                + "240px-Color_icon_green.svg.png";
+        final var failedColor = "https://raw.githubusercontent.com/mbi88/test-result-reporter/master/src/main/"
+                + "resources/img/fail.png";
+        final var successColor = "https://raw.githubusercontent.com/mbi88/test-result-reporter/master/src/main/"
+                + "resources/img/success.png";
 
         final var accessory = new ImageAccessory();
         accessory.setType("image");

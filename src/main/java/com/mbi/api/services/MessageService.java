@@ -8,7 +8,6 @@ import com.mbi.api.enums.DefectsPage;
 import com.mbi.api.enums.MethodStatus;
 import com.mbi.api.exceptions.BadRequestException;
 import com.mbi.api.exceptions.NotFoundException;
-import com.mbi.api.models.request.slack.BlocksFactory;
 import com.mbi.api.models.response.TestCaseResponse;
 import com.mbi.api.repositories.MessageRepository;
 import com.mbi.api.repositories.TestCaseRepository;
