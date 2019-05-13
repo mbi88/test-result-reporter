@@ -29,7 +29,7 @@ public class ReportsController {
             consumes = "application/xml")
     public ResponseEntity<CreatedResponse> parseTestNG(
             @RequestParam("productName") final String productName,
-            @Valid @RequestBody final ReportModel reportModel) throws NotFoundException {
+            @Valid @RequestBody(required = false) final ReportModel reportModel) throws NotFoundException {
         return new ResponseEntity<>(reportsService.parseTestNG(reportModel, productName), HttpStatus.CREATED);
     }
 }

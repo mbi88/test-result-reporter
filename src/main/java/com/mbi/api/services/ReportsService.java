@@ -45,6 +45,11 @@ public class ReportsService extends BaseService {
         productRepository.findByName(productName)
                 .orElseThrow(NOT_FOUND_SUPPLIER.apply(ProductEntity.class, NOT_FOUND_ERROR_MESSAGE));
 
+        // Create test run with default values if report model is missing
+        if (Objects.isNull(reportModel)) {
+            return createDefaultTestRun(productName);
+        }
+
         final var testRunModel = mapper.map(reportModel, TestRunModel.class);
 
         // Set duration
@@ -64,6 +69,18 @@ public class ReportsService extends BaseService {
         }
 
         return response;
+    }
+
+    private CreatedResponse createDefaultTestRun(final String productName) throws NotFoundException {
+        final var testRunModel = new TestRunModel();
+        testRunModel.setTotal(0);
+        testRunModel.setPassed(0);
+        testRunModel.setFailed(0);
+        testRunModel.setIgnored(0);
+        testRunModel.setSkipped(0);
+        testRunModel.setDuration(0);
+
+        return testRunService.createTestRun(testRunModel, productName);
     }
 
     private Set<ClassModel> getClasses(final Set<SuiteModel> suiteModels) {

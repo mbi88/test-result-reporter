@@ -42,7 +42,9 @@ public class TestRunService extends BaseService {
         testRunEntity.setProduct(productEntity);
         // Set test run status
         final Predicate<Integer> zero = i -> i == 0;
-        final boolean successful = zero.test(testRunModel.getFailed()) && zero.test(testRunModel.getSkipped());
+        final boolean successful = zero.test(testRunModel.getFailed())
+                && zero.test(testRunModel.getSkipped())
+                && zero.negate().test(testRunModel.getTotal());
         testRunEntity.setSuccessful(successful);
         // Save
         testRunRepository.save(testRunEntity);
