@@ -1,5 +1,6 @@
 package com.mbi.api.services;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.mbi.api.entities.product.ProductEntity;
 import com.mbi.api.enums.MethodStatus;
 import com.mbi.api.exceptions.NotFoundException;
@@ -42,6 +43,11 @@ public class ReportsService extends BaseService {
     @Transactional
     public CreatedResponse parseTestNG(final ReportModel reportModel, final String productName)
             throws NotFoundException {
+        try {
+            System.out.println(objectToString(reportModel));
+        } catch (JsonProcessingException e) {
+            e.printStackTrace();
+        }
         productRepository.findByName(productName)
                 .orElseThrow(NOT_FOUND_SUPPLIER.apply(ProductEntity.class, NOT_FOUND_ERROR_MESSAGE));
 
