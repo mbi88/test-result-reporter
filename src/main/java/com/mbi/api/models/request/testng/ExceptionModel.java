@@ -16,6 +16,7 @@ public class ExceptionModel {
 
     @XmlElement(name = "full-stacktrace")
     @XmlCDATA
+    @XmlJavaTypeAdapter(AdapterXmlCDATA.class)
     public String getStacktrace() {
         return stacktrace;
     }
