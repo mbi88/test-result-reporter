@@ -151,9 +151,12 @@ public class MessageService extends BaseService {
     private Page<TestCaseResponse> getTestCases(final MessageEntity message, final DefectsPage defectsPage)
             throws NotFoundException {
         Pageable pageable = PageRequest.of(message.getCurrentPage(), 10, Sort.by("id"));
+        final var page = testCaseService.getMethodsByStatus(message.getTestRunId(), MethodStatus.FAILED, pageable);
         switch (defectsPage) {
             case NEXT: {
-                pageable = pageable.next();
+                if (page.hasNext()) {
+                    pageable = pageable.next();
+                }
                 break;
             }
             case PREVIOUS: {
