@@ -1,5 +1,7 @@
 package com.mbi.api.models.request.testng;
 
+import com.sun.xml.txw2.annotation.XmlCDATA;
+
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
@@ -13,7 +15,7 @@ public class ExceptionModel {
     private String stacktrace;
 
     @XmlElement(name = "full-stacktrace")
-    @XmlJavaTypeAdapter(AdapterXmlCDATA.class)
+    @XmlCDATA
     public String getStacktrace() {
         return stacktrace;
     }
