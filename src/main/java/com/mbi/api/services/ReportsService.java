@@ -43,11 +43,6 @@ public class ReportsService extends BaseService {
     @Transactional
     public CreatedResponse parseTestNG(final ReportModel reportModel, final String productName)
             throws NotFoundException {
-        try {
-            System.out.println(objectToString(reportModel));
-        } catch (JsonProcessingException e) {
-            e.printStackTrace();
-        }
         productRepository.findByName(productName)
                 .orElseThrow(NOT_FOUND_SUPPLIER.apply(ProductEntity.class, NOT_FOUND_ERROR_MESSAGE));
 
