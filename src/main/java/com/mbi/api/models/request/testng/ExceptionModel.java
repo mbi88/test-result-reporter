@@ -13,10 +13,12 @@ public class ExceptionModel {
 
     @XmlElement(name = "full-stacktrace")
     public String getStacktrace() {
+        System.out.println("??? " + stacktrace);
         return stacktrace;
     }
 
     public void setStacktrace(final String stacktrace) {
+        System.out.println("!!! " + stacktrace);
         this.stacktrace = stacktrace;
     }
 }
