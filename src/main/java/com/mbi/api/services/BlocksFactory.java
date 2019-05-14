@@ -193,10 +193,9 @@ public class BlocksFactory {
 
     public SectionBlock getStackTrace(final String testCaseName, final String message) {
         final var text = new Text();
-        text.setType("plain_text");
+        text.setType("mrkdwn");
         text.setText(String.format("*%s*%n%s", testCaseName, message.substring(0, Math.min(2000, message.length()))));
-        System.out.println(String.format("*%s*%n%s", testCaseName, message.substring(0, Math.min(2000, message.length()))));
-        System.out.println(message);
+
         final var block = new SectionBlock();
         block.setType("section");
         block.setText(text);

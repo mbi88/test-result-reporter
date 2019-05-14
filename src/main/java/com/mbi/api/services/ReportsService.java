@@ -114,6 +114,7 @@ public class ReportsService extends BaseService {
         testCaseModel.setStatus(MethodStatus.valueOf(status));
         // Set exception
         if (Objects.nonNull(method.getException())) {
+            System.out.println(method.getException().getStacktrace());
             testCaseModel.setException(method.getException().getStacktrace().trim());
         }
 
