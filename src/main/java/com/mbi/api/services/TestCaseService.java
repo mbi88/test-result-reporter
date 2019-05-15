@@ -36,7 +36,11 @@ public class TestCaseService extends BaseService {
 
         final var testCaseEntity = mapper.map(testCaseModel, TestCaseEntity.class);
         testCaseEntity.setTestRunEntity(testRunEntity);
-        testCaseRepository.save(testCaseEntity);
+
+        // Save only FAILED tests. No other statuses are needed yet
+        if (testCaseModel.getStatus().equals(MethodStatus.FAILED)) {
+            testCaseRepository.save(testCaseEntity);
+        }
 
         return mapper.map(testCaseEntity, CreatedResponse.class);
     }
