@@ -20,7 +20,7 @@ public class TestCaseEntity {
 
     private String status;
 
-    @Column(length = 15_000)
+    @Column(columnDefinition = "text")
     private String exception;
 
     private String className;
