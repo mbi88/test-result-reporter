@@ -12,14 +12,14 @@ import javax.validation.constraints.NotNull;
 public class SlackRequestModel {
 
     @NotNull
-    private int id;
+    private int testRunId;
 
     @ApiModelProperty(required = true, value = "test run id")
-    public int getId() {
-        return id;
+    public int getTestRunId() {
+        return testRunId;
     }
 
-    public void setId(int id) {
-        this.id = id;
+    public void setTestRunId(int testRunId) {
+        this.testRunId = testRunId;
     }
 }

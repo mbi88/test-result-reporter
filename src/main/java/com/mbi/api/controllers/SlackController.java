@@ -31,7 +31,7 @@ public class SlackController {
     @RequestMapping(method = POST, path = "/slack/messages", produces = "application/json")
     public ResponseEntity<MessageEntity> sendMessage(@Valid @RequestBody final SlackRequestModel slackRequestModel)
             throws JsonProcessingException, NotFoundException, BadRequestException {
-        return new ResponseEntity<>(messageService.createSlackMessage(slackRequestModel.getId()), HttpStatus.OK);
+        return new ResponseEntity<>(messageService.createSlackMessage(slackRequestModel.getTestRunId()), HttpStatus.OK);
     }
 
     @RequestMapping(method = POST, path = "/slack/interact")
