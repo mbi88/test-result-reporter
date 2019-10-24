@@ -11,7 +11,7 @@ import java.util.List;
  */
 @JsonIgnoreProperties(ignoreUnknown = true)
 @JsonInclude(JsonInclude.Include.NON_NULL)
-public class SectionBlock {
+public class SectionBlock extends Block {
 
     private String type;
 

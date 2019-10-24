@@ -9,7 +9,7 @@ import java.util.List;
  * Context block request model.
  */
 @JsonInclude(JsonInclude.Include.NON_NULL)
-public class ContextBlock {
+public class ContextBlock extends Block{
 
     private String type;
 

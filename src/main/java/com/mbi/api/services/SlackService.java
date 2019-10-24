@@ -2,6 +2,7 @@ package com.mbi.api.services;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.mbi.SlackConfig;
+import com.mbi.api.models.request.slack.Block;
 import com.mbi.api.models.response.SlackResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpEntity;
@@ -22,7 +23,7 @@ public class SlackService extends BaseService {
     @Autowired
     private SlackConfig config;
 
-    public SlackResponse sendSlackMessage(final String token, final String channel, final List<Object> blocks)
+    public SlackResponse sendSlackMessage(final String token, final String channel, final List<Block> blocks)
             throws JsonProcessingException {
         final var headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_FORM_URLENCODED);
@@ -40,16 +41,16 @@ public class SlackService extends BaseService {
                 .getBody();
     }
 
-    public SlackResponse sendSlackMessage(final List<Object> blocks) throws JsonProcessingException {
+    public SlackResponse sendSlackMessage(final List<Block> blocks) throws JsonProcessingException {
         return sendSlackMessage(config.getToken(), config.getChannel(), blocks);
     }
 
-    public SlackResponse sendSlackMessage(final String channel, final List<Object> blocks)
+    public SlackResponse sendSlackMessage(final String channel, final List<Block> blocks)
             throws JsonProcessingException {
         return sendSlackMessage(config.getToken(), channel, blocks);
     }
 
-    public SlackResponse updateSlackMessage(final List<Object> blocks, final String ts) throws JsonProcessingException {
+    public SlackResponse updateSlackMessage(final List<Block> blocks, final String ts) throws JsonProcessingException {
         final var headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_FORM_URLENCODED);
 

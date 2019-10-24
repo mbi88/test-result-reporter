@@ -14,8 +14,8 @@ import java.util.List;
  */
 public class BlocksFactory {
 
-    public List<Object> getMainMessage(final TestRunResponse testRun, final TestRunDeltaResponse testRunDiff) {
-        final List<Object> blocks = new ArrayList<>();
+    public List<Block> getMainMessage(final TestRunResponse testRun, final TestRunDeltaResponse testRunDiff) {
+        final List<Block> blocks = new ArrayList<>();
 
         // Tested product name
         blocks.add(getProductNameBlock(testRun));
@@ -31,8 +31,8 @@ public class BlocksFactory {
         return blocks;
     }
 
-    public List<Object> getDefectsMessage(final Page<TestCaseResponse> testCases) {
-        final List<Object> blocks = new ArrayList<>();
+    public List<Block> getDefectsMessage(final Page<TestCaseResponse> testCases) {
+        final List<Block> blocks = new ArrayList<>();
 
         // Add test cases
         for (var testCase : testCases) {

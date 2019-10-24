@@ -8,6 +8,7 @@ import com.mbi.api.enums.DefectsPage;
 import com.mbi.api.enums.MethodStatus;
 import com.mbi.api.exceptions.BadRequestException;
 import com.mbi.api.exceptions.NotFoundException;
+import com.mbi.api.models.request.slack.Block;
 import com.mbi.api.models.response.TestCaseResponse;
 import com.mbi.api.repositories.MessageRepository;
 import com.mbi.api.repositories.TestCaseRepository;
@@ -87,7 +88,7 @@ public class MessageService extends BaseService {
         final var testRunDiff = testRunService.getBuildDifference(testRunId);
 
         // Add blocks
-        final List<Object> blocks = new BlocksFactory().getMainMessage(testRun, testRunDiff);
+        final List<Block> blocks = new BlocksFactory().getMainMessage(testRun, testRunDiff);
 
         // Send message
         final var slackResponse = slackService.sendSlackMessage(blocks);
@@ -131,7 +132,7 @@ public class MessageService extends BaseService {
         final var testRunDiff = testRunService.getBuildDifference(message.getTestRunId());
 
         // Add main part of message
-        final List<Object> blocksList = new BlocksFactory().getMainMessage(testRun, testRunDiff);
+        final List<Block> blocksList = new BlocksFactory().getMainMessage(testRun, testRunDiff);
 
         // Send
         slackService.updateSlackMessage(blocksList, message.getTs());

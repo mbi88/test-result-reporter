@@ -9,7 +9,7 @@ import java.util.List;
  * Actions block request model.
  */
 @JsonInclude(JsonInclude.Include.NON_NULL)
-public class ActionsBlock {
+public class ActionsBlock extends Block {
 
     private String type;
 
