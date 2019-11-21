@@ -51,7 +51,8 @@ public class ProductService extends BaseService {
         final var productEntity = productRepository.findByName(name)
                 .orElseThrow(NOT_FOUND_SUPPLIER.apply(ProductEntity.class, NOT_FOUND_ERROR_MESSAGE));
 
-        if (testRunRepository.findAllByProduct(productEntity, pageable).isPresent()) {
+        final var testRuns = testRunRepository.findAllByProduct(productEntity, pageable);
+        if (testRuns.isPresent() && !testRuns.get().getContent().isEmpty()) {
             throw BAD_REQUEST_SUPPLIER.apply(ProductEntity.class,
                     "Can't remove product! Dependent test-runs exist").get();
         }
