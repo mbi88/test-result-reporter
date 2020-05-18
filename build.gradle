@@ -33,7 +33,7 @@ dependencies {
     compile group: 'javax.activation', name: 'activation', version: '1.1.1'
     compile group: 'org.glassfish.jaxb', name: 'jaxb-runtime', version: '2.3.3'
     compile group: 'org.json', name: 'json', version: '20190722'
-    compile group: 'com.vladmihalcea', name: 'hibernate-types-52', version: '2.9.9'
+    compile group: 'com.vladmihalcea', name: 'hibernate-types-52', version: '2.9.10'
 }
 
 task sourcesJar(type: Jar, dependsOn: classes) {
