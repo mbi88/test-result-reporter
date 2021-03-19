@@ -13,14 +13,6 @@ import static org.springframework.web.bind.annotation.RequestMethod.GET;
 @Configuration
 public class SwaggerController {
 
-    public void addResourceHandlers(ResourceHandlerRegistry registry) {
-        registry.addResourceHandler("/swagger-ui.html**")
-                .addResourceLocations("classpath:/META-INF/resources/");
-
-        registry.addResourceHandler("/webjars/**")
-                .addResourceLocations("classpath:/META-INF/resources/webjars/");
-    }
-
     /**
      * Redirects to expected url.
      */
