@@ -1,8 +1,7 @@
 package com.mbi.api.models.request.report;
 
-import org.hibernate.validator.constraints.Length;
-
 import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
 
 /**
  * Product request model.
@@ -10,7 +9,7 @@ import javax.validation.constraints.NotNull;
 public class ProductModel {
 
     @NotNull
-    @Length(min = 2, max = 30)
+    @Size(min = 2, max = 30)
     private String name;
 
     public String getName() {

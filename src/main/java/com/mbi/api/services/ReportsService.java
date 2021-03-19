@@ -1,6 +1,5 @@
 package com.mbi.api.services;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.mbi.api.entities.product.ProductEntity;
 import com.mbi.api.enums.MethodStatus;
 import com.mbi.api.exceptions.NotFoundException;
@@ -109,8 +108,8 @@ public class ReportsService extends BaseService {
         testCaseModel.setDuration(Integer.parseInt(method.getDuration()));
         // Set status
         final var status = Stream.of(MethodStatus.values())
-                .filter(s -> s.name().toLowerCase().startsWith(method.getStatus().toLowerCase()))
                 .map(Enum::name)
+                .filter(s -> s.toLowerCase().startsWith(method.getStatus().toLowerCase()))
                 .collect(Collectors.joining());
         testCaseModel.setStatus(MethodStatus.valueOf(status));
         // Set exception
