@@ -1,0 +1,18 @@
+version: 2
+updates:
+- package-ecosystem: gradle
+  directory: "/"
+  schedule:
+    interval: daily
+    time: "03:00"
+  open-pull-requests-limit: 99
+  ignore:
+  - dependency-name: org.modelmapper:modelmapper
+    versions:
+    - 2.4.1
+  - dependency-name: io.springfox:springfox-swagger-ui
+    versions:
+    - 3.0.0
+  - dependency-name: io.springfox:springfox-swagger2
+    versions:
+    - 3.0.0
