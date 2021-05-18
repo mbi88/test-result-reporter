@@ -19,7 +19,7 @@ public class SwaggerController {
     static class SwaggerRedirection {
         @RequestMapping(method = GET, path = "/swagger", produces = "application/json")
         public String redirect() {
-            return "redirect:/swagger-ui.html";
+            return "redirect:/swagger-ui/";
         }
     }
 }
