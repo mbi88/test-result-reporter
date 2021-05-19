@@ -5,7 +5,7 @@ plugins {
 }
 
 tasks.bootJar {
-    archiveBaseName.set("app.jar")
+    archiveBaseName.set("test-result-reporter-api")
     archiveVersion.set("1.0")
 }
 
