@@ -22,7 +22,7 @@ public class Application {
 
     @Bean
     public Docket api() {
-        return new Docket(DocumentationType.OAS_30)
+        return new Docket(DocumentationType.SWAGGER_2)
                 .select()
                 .apis(RequestHandlerSelectors.basePackage("com.mbi.api"))
                 .paths(PathSelectors.any())
