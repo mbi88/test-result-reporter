@@ -23,6 +23,8 @@ dependencies {
     implementation("org.postgresql", "postgresql")
     implementation("org.modelmapper", "modelmapper", "2.4.3")
     implementation("javax.xml.bind", "jaxb-api", "2.3.1")
+    implementation("com.sun.xml.bind", "jaxb-impl", "2.3.1")
+    implementation("com.sun.xml.bind", "jaxb-core", "2.3.0.1")
     implementation("javax.activation", "activation", "1.1.1")
     implementation("org.glassfish.jaxb", "jaxb-runtime", "3.0.1")
     implementation("org.json", "json", "20210307")
