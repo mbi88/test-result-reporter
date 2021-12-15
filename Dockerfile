@@ -1,4 +1,4 @@
-FROM gradle:jdk16 AS builder
+FROM gradle:jdk17-alpine AS builder
 ADD . /code
 WORKDIR /code
 USER root
