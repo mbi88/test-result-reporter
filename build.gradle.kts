@@ -28,7 +28,7 @@ dependencies {
     implementation("javax.activation:activation:1.1.1")
     implementation("org.glassfish.jaxb:jaxb-runtime:4.0.0")
     implementation("org.json:json:20220320")
-    implementation("com.vladmihalcea:hibernate-types-52:2.19.0")
+    implementation("com.vladmihalcea:hibernate-types-52:2.19.1")
 }
 
 tasks.withType<Jar>().all {
