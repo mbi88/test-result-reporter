@@ -27,7 +27,7 @@ dependencies {
     implementation("com.sun.xml.bind:jaxb-core:4.0.0")
     implementation("javax.activation:activation:1.1.1")
     implementation("org.glassfish.jaxb:jaxb-runtime:4.0.0")
-    implementation("org.json:json:20220320")
+    implementation("org.json:json:20220924")
     implementation("com.vladmihalcea:hibernate-types-52:2.19.2")
 }
 
