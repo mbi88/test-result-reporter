@@ -24,7 +24,7 @@ dependencies {
     implementation("org.modelmapper:modelmapper:3.2.0")
     implementation("javax.xml.bind:jaxb-api:2.4.0-b180830.0359")
     implementation("com.sun.xml.bind:jaxb-impl:4.0.5")
-    implementation("com.sun.xml.bind:jaxb-core:4.0.4")
+    implementation("com.sun.xml.bind:jaxb-core:4.0.5")
     implementation("javax.activation:activation:1.1.1")
     implementation("org.glassfish.jaxb:jaxb-runtime:4.0.5")
     implementation("org.json:json:20240303")
