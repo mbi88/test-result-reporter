@@ -21,7 +21,7 @@ dependencies {
     implementation("org.springframework.boot", "spring-boot-starter-test")
     implementation("io.springfox:springfox-boot-starter:3.0.0")
     implementation("org.postgresql", "postgresql")
-    implementation("org.modelmapper:modelmapper:3.2.0")
+    implementation("org.modelmapper:modelmapper:3.2.1")
     implementation("javax.xml.bind:jaxb-api:2.4.0-b180830.0359")
     implementation("com.sun.xml.bind:jaxb-impl:4.0.5")
     implementation("com.sun.xml.bind:jaxb-core:4.0.5")
